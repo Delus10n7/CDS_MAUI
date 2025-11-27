@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CDS_MAUI.CarsPage"
+             Title="Автомобили">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
+            <!-- Поисковая строка и кнопка фильтра -->
+            <Grid ColumnDefinitions="90*, 10*" ColumnSpacing="10">
+                <SearchBar Placeholder="Поиск" 
+                           Grid.Column="0" 
+                           x:Name="SearchBarControl"/>
+                <Button Text="Фильтры" 
+                        Grid.Column="1" 
+                        x:Name="FilterButton" 
+                        Clicked="OnFilterButtonClicked"/>
+            </Grid>
+
+            <!-- Панель фильтров (изначально скрыта) -->
+            <Border x:Name="FilterPanel"
+                    IsVisible="False"
+                    Opacity="0"
+                    Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    StrokeThickness="1">
+                <VerticalStackLayout Spacing="10">
+                    <!-- Марка и модель -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Picker x:Name="BrandPicker" 
+                                Grid.Column="0"
+                                Title="Марка"
+                                BackgroundColor="Transparent"
+                                SelectedIndexChanged="OnBrandPickerSelectedIndexChanged"/>
+                        <Picker x:Name="ModelPicker" 
+                                Grid.Column="1"
+                                Title="Модель"
+                                BackgroundColor="Transparent"
+                                IsEnabled="False"/>
+                    </Grid>
+
+                    <!-- Тип трансмиссии, привода, кузова и двигателя -->
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                        <Picker x:Name="TransmissionPicker" 
+                                Grid.Column="0"
+                                Title="Коробка передач"
+                                BackgroundColor="Transparent">
+                            <Picker.Items>
+                                <x:String>Любая</x:String>
+                                <x:String>Механическая</x:String>
+                                <x:String>Автоматическая</x:String>
+                                <x:String>Роботизированная</x:String>
+                                <x:String>Вариатор</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Picker x:Name="DriveTypePicker" 
+                                Grid.Column="1"
+                                Title="Привод"
+                                BackgroundColor="Transparent">
+                            <Picker.Items>
+                                <x:String>Любой</x:String>
+                                <x:String>Передний</x:String>
+                                <x:String>Задний</x:String>
+                                <x:String>Полный</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Picker x:Name="BodyTypePicker" 
+                                Grid.Column="2"
+                                Title="Тип кузова"
+                                BackgroundColor="Transparent">
+                            <Picker.Items>
+                                <x:String>Любой</x:String>
+                                <x:String>Седан</x:String>
+                                <x:String>Хэтчбек</x:String>
+                                <x:String>Универсал</x:String>
+                                <x:String>Внедорожник</x:String>
+                                <x:String>Купе</x:String>
+                                <x:String>Кабриолет</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Picker x:Name="EngineTypePicker" 
+                                Grid.Column="3"
+                                Title="Тип двигателя"
+                                BackgroundColor="Transparent">
+                            <Picker.Items>
+                                <x:String>Любой</x:String>
+                                <x:String>Бензин</x:String>
+                                <x:String>Дизель</x:String>
+                                <x:String>Гибрид</x:String>
+                                <x:String>Электрический</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Grid>
+
+                    <!-- Объем и мощность двигателя -->
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Label Text="Объем двигателя, л" Grid.Column="0"/>
+                            <Label Text="Мощность двигателя, лс" Grid.Column="1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                            <Entry x:Name="EngineVolumeFrom" 
+                                   Grid.Column="0" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"/>
+                            <Entry x:Name="EngineVolumeTo" 
+                                   Grid.Column="1" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"/>
+                            <Entry x:Name="EnginePowerFrom" 
+                                   Grid.Column="2" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"/>
+                            <Entry x:Name="EnginePowerTo" 
+                                   Grid.Column="3" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки применения фильтров -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" 
+                                Text="Сбросить"
+                                Clicked="OnResetFiltersClicked"/>
+                        <Button Grid.Column="1"
+                                Text="Применить"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Контейнер для карточек автомобилей -->
+            <VerticalStackLayout x:Name="CarsContainer"
+                    Spacing="15"
+                    Margin="10">
+                
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+    
+</ContentPage>
