@@ -9,7 +9,7 @@ public partial class CarsPage : ContentPage
     public CarsPage()
 	{
 		InitializeComponent();
-        Application.Current.UserAppTheme = AppTheme.Light;
+        Application.Current.UserAppTheme = AppTheme.Dark;
 
         InitializeBrandPicker();
         LoadModelsForBrand("");

@@ -14,7 +14,7 @@
     <Color x:Key="SecondaryDark">#7AAE85</Color>
     <Color x:Key="SecondaryHover">#6FAA7E</Color>
     <Color x:Key="SecondaryDarkHover">#8CBE96</Color>
-    <Color x:Key="Background">#F8F9FA</Color>
+    <Color x:Key="Background">#E8ECEF</Color>
     <Color x:Key="BackgroundDark">#1A1D21</Color>
     <Color x:Key="TextPrimary">#212529</Color>
     <Color x:Key="TextPrimaryDark">#E8EAED</Color>
@@ -22,6 +22,8 @@
     <Color x:Key="TextSecondaryDark">#9AA0A6</Color>
     <Color x:Key="Surface">#FFFFFF</Color>
     <Color x:Key="SurfaceDark">#25282D</Color>
+    <Color x:Key="SurfaceSecondary">#F0F2F5</Color>
+    <Color x:Key="SurfaceSecondaryDark">#3C4043</Color>
     <Color x:Key="Border">#DEE2E6</Color>
     <Color x:Key="BorderDark">#3C4043</Color>
     <Color x:Key="WarningError">#C4554E</Color>

@@ -24,8 +24,9 @@
                     Padding="15"
                     Margin="10"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
-                    StrokeThickness="1">
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
                 <VerticalStackLayout Spacing="10">
                     <!-- Марка и модель -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
