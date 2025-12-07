@@ -15,9 +15,9 @@ public partial class ServiceContracts
 
     public DateOnly? SaleDate { get; set; }
 
-    public virtual Users Client { get; set; } = null!;
+    public virtual UserBase Client { get; set; } = null!;
 
-    public virtual Users Manager { get; set; } = null!;
+    public virtual UserBase Manager { get; set; } = null!;
 
     public virtual ICollection<SelectedService> SelectedService { get; set; } = new List<SelectedService>();
 }

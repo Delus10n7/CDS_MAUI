@@ -25,9 +25,9 @@ public partial class Orders
 
     public virtual Cars? Car { get; set; }
 
-    public virtual Users Client { get; set; } = null!;
+    public virtual UserBase Client { get; set; } = null!;
 
-    public virtual Users Manager { get; set; } = null!;
+    public virtual UserBase Manager { get; set; } = null!;
 
     public virtual OrderStatus? Status { get; set; }
 

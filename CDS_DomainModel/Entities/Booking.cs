@@ -21,5 +21,5 @@ public partial class Booking
 
     public virtual Cars Car { get; set; } = null!;
 
-    public virtual Users User { get; set; } = null!;
+    public virtual UserBase User { get; set; } = null!;
 }

@@ -56,10 +56,27 @@ public partial class SqlDbContext : DbContext
 
     public virtual DbSet<TransmissionType> TransmissionType { get; set; }
 
-    public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<UserBase> Users { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<Manager> Managers { get; set; }
+    public virtual DbSet<Administrator> Administrators { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserBase>()
+            .ToTable("Users")
+            .HasDiscriminator<int>("RoleId")
+            .HasValue<Customer>(1)
+            .HasValue<Manager>(2)
+            .HasValue<Administrator>(3);
+
+        modelBuilder.Entity<UserBase>()
+            .HasOne(u => u.Role)
+            .WithMany(r => r.Users)
+            .HasForeignKey("RoleId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<AdditionalService>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Addition__3214EC0787D51D76");
@@ -400,36 +417,7 @@ public partial class SqlDbContext : DbContext
             entity.Property(e => e.TransmissionName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<Users>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC072363E094");
-
-            entity.HasIndex(e => e.IsActive, "IX_Users_Active").HasFilter("([IsActive]=(1))");
-
-            entity.HasIndex(e => e.Email, "IX_Users_Email");
-
-            entity.HasIndex(e => e.PhoneNumber, "IX_Users_Phone");
-
-            entity.HasIndex(e => e.RoleId, "IX_Users_RoleId");
-
-            entity.HasIndex(e => e.UserLogin, "UQ__Users__7F8E8D5E08B254FA").IsUnique();
-
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Email).HasMaxLength(100);
-            entity.Property(e => e.FullName).HasMaxLength(100);
-            entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
-            entity.Property(e => e.PasswordHash).HasMaxLength(255);
-            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-            entity.Property(e => e.UserLogin).HasMaxLength(50);
-
-            entity.HasOne(d => d.Role).WithMany(p => p.Users)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Users__RoleId__5535A963");
-        });
+        modelBuilder.Ignore<Users>();
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -27,7 +27,7 @@ public partial class Discount
 
     public virtual Brand? Brand { get; set; }
 
-    public virtual Users? Client { get; set; }
+    public virtual UserBase? Client { get; set; }
 
     public virtual DiscountType? DiscountType { get; set; }
 
