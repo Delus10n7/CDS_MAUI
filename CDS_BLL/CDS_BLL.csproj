@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CDS_DAL\CDS_DAL.csproj" />
+    <ProjectReference Include="..\CDS_Interfaces\CDS_Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

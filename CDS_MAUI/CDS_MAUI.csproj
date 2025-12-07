@@ -82,6 +82,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CDS_BLL\CDS_BLL.csproj" />
+	  <ProjectReference Include="..\CDS_Interfaces\CDS_Interfaces.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="CarsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
