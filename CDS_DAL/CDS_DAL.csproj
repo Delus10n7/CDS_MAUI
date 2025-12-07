@@ -21,4 +21,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CDS_DomainModel\CDS_DomainModel.csproj" />
+    <ProjectReference Include="..\CDS_Interfaces\CDS_Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>
