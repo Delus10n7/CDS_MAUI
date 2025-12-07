@@ -23,7 +23,7 @@
     <Color x:Key="Surface">#FFFFFF</Color>
     <Color x:Key="SurfaceDark">#25282D</Color>
     <Color x:Key="SurfaceSecondary">#F0F2F5</Color>
-    <Color x:Key="SurfaceSecondaryDark">#3C4043</Color>
+    <Color x:Key="SurfaceSecondaryDark">#555B5F</Color>
     <Color x:Key="Border">#DEE2E6</Color>
     <Color x:Key="BorderDark">#3C4043</Color>
     <Color x:Key="WarningError">#C4554E</Color>
