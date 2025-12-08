@@ -7,7 +7,7 @@ public partial class Orders
 {
     public int Id { get; set; }
 
-    public bool? IsTradeIn { get; set; }
+    public bool? IsTradeIn { get; set; } = false;
 
     public decimal? TradeInValue { get; set; }
 
