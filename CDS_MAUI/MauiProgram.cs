@@ -1,4 +1,10 @@
 ﻿using CDS_BLL;
+using CDS_BLL.Service;
+using CDS_Interfaces.Service;
+using CDS_MAUI.ViewModels;
+using CDS_MAUI.Views;
+using CDS_MAUI.Views.CarDetailsModal;
+using CDS_MAUI.Views.OrderDetailsModal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -27,7 +33,35 @@ namespace CDS_MAUI
 
             var connectionString = builder.Configuration.GetConnectionString("CDS_SQL_DB")
                 ?? throw new InvalidOperationException("Строка подключения не найдена!");
+
+            // Репозиторий БД
             builder.Services.AddDBFromBLL(connectionString);
+
+            // Сервисы
+            builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<ICarConfigurationService, CarConfigurationService>();
+            builder.Services.AddScoped<ICarService, CarService>();
+            builder.Services.AddScoped<IDiscountService, DiscountService>();
+            builder.Services.AddScoped<IModelService, ModelService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IReportService, ReportService>();
+            builder.Services.AddScoped<IServiceContractsService, ServiceContractsService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            // Регистрация ViewModels
+            builder.Services.AddTransient<CarsViewModel>();
+            builder.Services.AddTransient<OrdersViewModel>();
+            builder.Services.AddTransient<ReportsViewModel>();
+            builder.Services.AddTransient<CarDetailsViewModel>();
+            builder.Services.AddTransient<OrderDetailsViewModel>();
+
+            // Регистрация Views
+            builder.Services.AddTransient<CarsPage>();
+            builder.Services.AddTransient<OrdersPage>();
+            builder.Services.AddTransient<ReportsPage>();
+            builder.Services.AddTransient<CarDetailsModal>();
+            builder.Services.AddTransient<OrderDetailsModal>();
 
             return builder.Build();
         }

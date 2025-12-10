@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels"
+             xmlns:models="clr-namespace:CDS_MAUI.Models"
+             xmlns:converters="clr-namespace:CDS_MAUI.Converters"
+             x:Class="CDS_MAUI.Views.OrdersPage"
+             x:DataType="viewmodels:OrdersViewModel"
+             Title="{Binding Title}">
+
+    <!-- Ресурсы для конвертеров -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToFilterTextConverter x:Key="BoolToFilterTextConverter" />
+            <converters:BoolToEnabledConverter x:Key="BoolToEnabledConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
+            <!-- Поисковая строка и кнопка фильтра -->
+            <Grid ColumnDefinitions="90*, 10*" ColumnSpacing="10">
+                <SearchBar Placeholder="Поиск" 
+                           Grid.Column="0"
+                           Text="{Binding SearchText}"
+                           SearchCommand="{Binding SearchCommand}"/>
+
+                <Button Text="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToFilterTextConverter}}" 
+                        Grid.Column="1" 
+                        Command="{Binding ToggleFiltersCommand}"/>
+            </Grid>
+
+            <!-- Панель фильтров -->
+            <Border IsVisible="{Binding IsFilterPanelVisible}"
+                    Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Spacing="10">
+                    <!-- Марка и модель -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Picker Grid.Column="0"
+                                Title="Марка"
+                                ItemsSource="{Binding Brands}"
+                                SelectedItem="{Binding SelectedBrand}"/>
+
+                        <Picker Grid.Column="1"
+                                Title="Модель"
+                                ItemsSource="{Binding Models}"
+                                SelectedItem="{Binding SelectedModel}"
+                                IsEnabled="{Binding Models.Count, Converter={StaticResource BoolToEnabledConverter}}"/>
+                    </Grid>
+
+                    <!-- Менеджер -->
+                    <Picker Title="Менеджер"
+                            ItemsSource="{Binding Managers}"
+                            SelectedItem="{Binding SelectedManager}"/>
+
+                    <!-- Покупатель -->
+                    <VerticalStackLayout>
+                        <Label Text="Клиент"/>
+                        <Entry Placeholder="Введите ФИО клиента"
+                               Text="{Binding ClientName}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Сумма заказа -->
+                    <VerticalStackLayout>
+                        <Label Text="Сумма заказа, руб."/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Entry Grid.Column="0" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   Text="{Binding PriceFrom}"/>
+                            <Entry Grid.Column="1" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   Text="{Binding PriceTo}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки применения фильтров -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" 
+                                Text="Сбросить"
+                                Command="{Binding ResetFiltersCommand}"/>
+                        <Button Grid.Column="1"
+                                Text="Применить"
+                                Command="{Binding ApplyFiltersCommand}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Контейнер для карточек заказов -->
+            <CollectionView ItemsSource="{Binding Orders}"
+                            EmptyView="Нет заказов"
+                            Margin="10">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" 
+                           ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:OrderModel">
+                        <Border Margin="0,0,0,15"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+
+                            <Grid ColumnDefinitions="180, *, 150"
+                                  ColumnSpacing="15">
+
+                                <!-- Изображение -->
+                                <Border Grid.Column="0"
+                                        WidthRequest="150"
+                                        HeightRequest="120"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="LightGray">
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="5">
+                                        <Image Source="dotnet_bot.png"
+                                               HeightRequest="70"
+                                               WidthRequest="70"
+                                               Aspect="AspectFit"/>
+                                        <Label Text="Фото авто"
+                                               FontSize="10"
+                                               HorizontalOptions="Center"/>
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!-- Информация -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding DisplayInfo}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+
+                                    <Label Text="{Binding VIN}"
+                                           FontSize="14"
+                                           FontAttributes="Italic"/>
+
+                                    <Label Text="{Binding FormattedDate}"
+                                           FontSize="12"/>
+
+                                    <Grid ColumnDefinitions="*,*">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding CustomerName}"
+                                               FontSize="14"/>
+
+                                        <Label Grid.Column="1"
+                                               Text="{Binding ManagerName}"
+                                               FontSize="14"
+                                               TextColor="{StaticResource Primary}"/>
+                                    </Grid>
+
+                                    <Label Text="{Binding FormattedPrice}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"/>
+                                </VerticalStackLayout>
+
+                                <!-- Кнопки -->
+                                <VerticalStackLayout Grid.Column="2"
+                                                     Spacing="5"
+                                                     VerticalOptions="Center">
+                                    <Button Text="Подробнее"
+                                            CornerRadius="8"
+                                            HeightRequest="35"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, 
+                                                     Path=ShowOrderDetailsCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="50"
+                               WidthRequest="50"/>
+
+            <!-- Сообщение об ошибке -->
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasError}"
+                   TextColor="Red"
+                   HorizontalOptions="Center"
+                   Margin="10"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

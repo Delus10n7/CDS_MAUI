@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels"
+             xmlns:models="clr-namespace:CDS_MAUI.Models"
+             xmlns:converters="clr-namespace:CDS_MAUI.Converters"
+             x:Class="CDS_MAUI.Views.CarsPage"
+             x:DataType="viewmodels:CarsViewModel"
+             Title="{Binding Title}">
+
+    <!-- Ресурсы для конвертеров -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToFilterTextConverter x:Key="BoolToFilterTextConverter" />
+            <converters:BoolToEnabledConverter x:Key="BoolToEnabledConverter" />
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
+            <!-- Поисковая строка и кнопка фильтра -->
+            <Grid ColumnDefinitions="90*, 10*" ColumnSpacing="10">
+                <SearchBar Placeholder="Поиск" 
+                           Grid.Column="0"
+                           Text="{Binding SearchText}"
+                           SearchCommand="{Binding SearchCommand}"/>
+
+                <Button Text="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToFilterTextConverter}}" 
+                        Grid.Column="1" 
+                        Command="{Binding ToggleFiltersCommand}"/>
+            </Grid>
+
+            <!-- Панель фильтров -->
+            <Border IsVisible="{Binding IsFilterPanelVisible}"
+                    Opacity="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToOpacityConverter}}"
+                    Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Spacing="10">
+                    <!-- Марка и модель -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Picker Grid.Column="0"
+                                Title="Марка"
+                                ItemsSource="{Binding Brands}"
+                                SelectedItem="{Binding SelectedBrand}"/>
+
+                        <Picker Grid.Column="1"
+                                Title="Модель"
+                                ItemsSource="{Binding Models}"
+                                SelectedItem="{Binding SelectedModel}"
+                                IsEnabled="{Binding Models.Count, Converter={StaticResource BoolToEnabledConverter}}"/>
+                    </Grid>
+
+                    <!-- Тип трансмиссии, привода, кузова и двигателя -->
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                        <Picker Grid.Column="0"
+                                Title="Коробка передач"
+                                ItemsSource="{Binding TransmissionTypes}"
+                                SelectedItem="{Binding SelectedTransmission}"/>
+
+                        <Picker Grid.Column="1"
+                                Title="Привод"
+                                ItemsSource="{Binding DriveTypes}"
+                                SelectedItem="{Binding SelectedDriveType}"/>
+
+                        <Picker Grid.Column="2"
+                                Title="Тип кузова"
+                                ItemsSource="{Binding BodyTypes}"
+                                SelectedItem="{Binding SelectedBodyType}"/>
+
+                        <Picker Grid.Column="3"
+                                Title="Тип двигателя"
+                                ItemsSource="{Binding EngineTypes}"
+                                SelectedItem="{Binding SelectedEngineType}"/>
+                    </Grid>
+
+                    <!-- Объем и мощность двигателя -->
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Label Text="Объем двигателя, л" Grid.Column="0"/>
+                            <Label Text="Мощность двигателя, лс" Grid.Column="1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                            <Entry Grid.Column="0" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   Text="{Binding EngineVolumeFrom}"/>
+                            <Entry Grid.Column="1" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   Text="{Binding EngineVolumeTo}"/>
+                            <Entry Grid.Column="2" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   Text="{Binding EnginePowerFrom}"/>
+                            <Entry Grid.Column="3" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   Text="{Binding EnginePowerTo}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки применения фильтров -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" 
+                                Text="Сбросить"
+                                Command="{Binding ResetFiltersCommand}"/>
+                        <Button Grid.Column="1"
+                                Text="Применить"
+                                Command="{Binding ApplyFiltersCommand}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Контейнер для карточек автомобилей -->
+            <CollectionView ItemsSource="{Binding Cars}"
+                            EmptyView="Нет автомобилей"
+                            Margin="10">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" 
+                           ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:CarModel">
+                        <Border Margin="0,0,0,15"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+
+                            <Grid ColumnDefinitions="180, *, 150"
+                                  ColumnSpacing="15">
+
+                                <!-- Изображение -->
+                                <Border Grid.Column="0"
+                                        WidthRequest="150"
+                                        HeightRequest="120"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="LightGray">
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="5">
+                                        <Image Source="dotnet_bot.png"
+                                               HeightRequest="70"
+                                               WidthRequest="70"
+                                               Aspect="AspectFit"/>
+                                        <Label Text="Фото авто"
+                                               FontSize="10"
+                                               HorizontalOptions="Center"/>
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!-- Информация -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding DisplayInfo}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+
+                                    <Label Text="{Binding Specifications}"
+                                           FontSize="14"/>
+
+                                    <Label Text="{Binding Features}"
+                                           FontSize="12"/>
+
+                                    <Label Text="{Binding FormattedPrice}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"/>
+                                </VerticalStackLayout>
+
+                                <!-- Кнопка -->
+                                <Button Grid.Column="2"
+                                        Text="Подробнее"
+                                        CornerRadius="8"
+                                        HeightRequest="35"
+                                        VerticalOptions="Center"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CarsViewModel}}, 
+                                                 Path=ShowCarDetailsCommand}"
+                                        CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="50"
+                               WidthRequest="50"/>
+
+            <!-- Сообщение об ошибке -->
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasError}"
+                   TextColor="Red"
+                   HorizontalOptions="Center"
+                   Margin="10"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

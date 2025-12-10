@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels"
+             x:Class="CDS_MAUI.Views.OrderDetailsModal.OrderDetailsModal"
+             x:DataType="viewmodels:OrderDetailsViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, Auto, *, Auto"
+              RowSpacing="0"
+              Margin="20, 50">
+
+            <!-- Фон с закруглениями -->
+            <Border Grid.RowSpan="4"
+                    StrokeShape="RoundRectangle 16"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                    Stroke="{StaticResource Primary}"
+                    StrokeThickness="1"/>
+
+            <!-- Кнопка закрытия -->
+            <Button Grid.Row="0"
+                    Text="✕"
+                    FontSize="24"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    CornerRadius="20"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="10"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    Command="{Binding CloseModalCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <!-- Заголовок -->
+            <Label Grid.Row="1"
+                   Text="{Binding Order.DisplayInfo}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,10"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+            <!-- Контент -->
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="20"
+                  Padding="20,0">
+
+                <!-- Изображение -->
+                <Border Grid.Column="0"
+                        HeightRequest="300"
+                        StrokeShape="RoundRectangle 12"
+                        BackgroundColor="LightGray"
+                        VerticalOptions="Center">
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Spacing="10">
+                        <Image Source="dotnet_bot.png"
+                               HeightRequest="200"
+                               WidthRequest="200"
+                               Aspect="AspectFit"/>
+                        <Label Text="Фото автомобиля"
+                               FontSize="12"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Детали заказа -->
+                <VerticalStackLayout Grid.Column="1"
+                                     Spacing="15">
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="VIN:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Order.VIN}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Клиент:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Order.CustomerName}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Менеджер:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Order.ManagerName}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Дата заказа:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Order.Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Статус:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="Оформлен"
+                               TextColor="{StaticResource Success}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Цена и кнопка -->
+            <VerticalStackLayout Grid.Row="3"
+                                 Spacing="20"
+                                 Padding="0,30,0,30"
+                                 HorizontalOptions="Center">
+
+                <Label Text="{Binding Order.FormattedPrice}"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"/>
+
+                <Button Text="Изменить заказ"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        WidthRequest="220"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Command="{Binding EditOrderCommand}"
+                        IsEnabled="{Binding IsNotBusy}"/>
+            </VerticalStackLayout>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator Grid.RowSpan="4"
+                               IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="50"
+                               WidthRequest="50"/>
+        </Grid>
+    </ScrollView>
+</ContentPage>

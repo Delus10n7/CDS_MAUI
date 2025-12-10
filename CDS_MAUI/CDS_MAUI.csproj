@@ -73,6 +73,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11">
@@ -97,13 +98,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="CarsPage.xaml">
+	  <MauiXaml Update="Views\CarDetailsModal\CarDetailsModal.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="OrdersPage.xaml">
+	  <MauiXaml Update="Views\CarsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ReportsPage.xaml">
+	  <MauiXaml Update="Views\OrderDetailsModal\OrderDetailsModal.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\OrdersPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ReportsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
