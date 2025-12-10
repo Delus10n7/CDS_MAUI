@@ -15,10 +15,6 @@ namespace CDS_Interfaces.DTO
         public decimal? TotalPrice { get; set; }
         public DateOnly? SaleDate { get; set; }
 
-        public CustomerDTO? Client { get; set; }
-        public ManagerDTO? Manager { get; set; }
-        public List<SelectedServiceDTO>? SelectedServices { get; set; }
-
         public ServiceContractDTO() { }
 
         public ServiceContractDTO(ServiceContracts s)
@@ -28,16 +24,6 @@ namespace CDS_Interfaces.DTO
             ManagerId = s.ManagerId;
             TotalPrice = s.TotalPrice;
             SaleDate = s.SaleDate;
-
-            if (s.Client is Customer customer)
-            {
-                Client = new CustomerDTO(customer);
-            }
-
-            if (s.Manager is Manager manager)
-            {
-                Manager = new ManagerDTO(manager);
-            }
         }
     }
 }

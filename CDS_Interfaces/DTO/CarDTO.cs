@@ -20,10 +20,6 @@ namespace CDS_Interfaces.DTO
         public int? AvailabilityId { get; set; }
         public int? ConfigurationId { get; set; }
 
-        public CarConditionDTO? Condition { get; set; }
-        public AvailabilityStatusDTO? Availability { get; set; }
-        public CarConfigurationDTO? Configuration { get; set; }
-
         public CarDTO() { }
 
         public CarDTO(Cars c)
@@ -37,10 +33,6 @@ namespace CDS_Interfaces.DTO
             ConditionId = c.ConditionId;
             AvailabilityId = c.AvailabilityId;
             ConfigurationId = c.ConfigurationId;
-
-            Condition = c.Condition != null ? new CarConditionDTO(c.Condition) : null;
-            Availability = c.Availability != null ? new AvailabilityStatusDTO(c.Availability) : null;
-            Configuration = c.Configuration != null ? new CarConfigurationDTO(c.Configuration) : null;
         }
     }
 }

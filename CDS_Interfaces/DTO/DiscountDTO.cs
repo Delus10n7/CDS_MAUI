@@ -20,11 +20,6 @@ namespace CDS_Interfaces.DTO
         public DateOnly? EndDate { get; set; }
         public bool? IsActive { get; set; }
 
-        public ModelDTO? Model { get; set; }
-        public BrandDTO? Brand { get; set; }
-        public CustomerDTO? Client { get; set; }
-        public DiscountTypeDTO? DiscountType { get; set; }
-
         public DiscountDTO() { }
 
         public DiscountDTO(Discount d)
@@ -39,11 +34,6 @@ namespace CDS_Interfaces.DTO
             StartDate = d.StartDate;
             EndDate = d.EndDate;
             IsActive = d.IsActive;
-
-            if (d.Client is Customer customer)
-            {
-                Client = new CustomerDTO(customer);
-            }
         }
     }
 }

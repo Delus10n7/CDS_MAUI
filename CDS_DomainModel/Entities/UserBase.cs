@@ -19,7 +19,6 @@ namespace CDS_DomainModel.Entities
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        // Навигационные свойства
         public virtual ICollection<Booking> Booking { get; set; } = new List<Booking>();
         public virtual ICollection<Discount> Discount { get; set; } = new List<Discount>();
         public virtual ICollection<Orders> OrdersClient { get; set; } = new List<Orders>();

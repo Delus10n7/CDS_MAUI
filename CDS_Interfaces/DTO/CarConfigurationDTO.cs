@@ -20,12 +20,6 @@ namespace CDS_Interfaces.DTO
         public int? TransmissionTypeId { get; set; }
         public int? DriveTypeId { get; set; }
 
-        public ModelDTO? Model { get; set; }
-        public BodyTypeDTO? BodyType { get; set; }
-        public EngineTypeDTO? EngineType { get; set; }
-        public TransmissionTypeDTO? TransmissionType { get; set; }
-        public DriveTypeDTO? DriveType { get; set; }
-
         public CarConfigurationDTO() { }
 
         public CarConfigurationDTO(CarConfiguration c)
@@ -40,12 +34,6 @@ namespace CDS_Interfaces.DTO
             EngineTypeId = c.EngineTypeId;
             TransmissionTypeId = c.TransmissionTypeId;
             DriveTypeId = c.DriveTypeId;
-
-            Model = c.Model != null ? new ModelDTO(c.Model) : null;
-            BodyType = c.BodyType != null ? new BodyTypeDTO(c.BodyType) : null;
-            EngineType = c.EngineType != null ? new EngineTypeDTO(c.EngineType) : null;
-            TransmissionType = c.TransmissionType != null ? new TransmissionTypeDTO(c.TransmissionType) : null;
-            DriveType = c.DriveType != null ? new DriveTypeDTO(c.DriveType) : null;
         }
     }
 }

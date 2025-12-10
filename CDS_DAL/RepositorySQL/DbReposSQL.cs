@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CDS_DAL.RepositorySQL
 {
-    public class DbReposSQL
+    public class DbReposSQL : IDbRepos
     {
         private SqlDbContext db;
         private UsersRepositorySQL usersRepository;

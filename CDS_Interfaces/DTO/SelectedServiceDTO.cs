@@ -15,8 +15,6 @@ namespace CDS_Interfaces.DTO
         public int? Quantity { get; set; }
         public decimal? TotalPrice { get; set; }
 
-        public AdditionalServiceDTO? AdditionalService { get; set; }
-
         public SelectedServiceDTO() { }
 
         public SelectedServiceDTO(SelectedService s)

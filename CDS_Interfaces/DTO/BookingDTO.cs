@@ -16,10 +16,6 @@ namespace CDS_Interfaces.DTO
         public DateOnly? EndDate { get; set; }
         public int BookingStatusId { get; set; }
 
-        public CustomerDTO? User { get; set; }
-        public CarDTO? Car { get; set; }
-        public BookingStatusDTO? BookingStatus { get; set; }
-
         public BookingDTO() { }
 
         public BookingDTO(Booking b)
@@ -30,11 +26,6 @@ namespace CDS_Interfaces.DTO
             StartDate = b.StartDate;
             EndDate = b.EndDate;
             BookingStatusId = b.BookingStatusId;
-
-            if (b.User is Customer customer)
-            {
-                User = new CustomerDTO(customer);
-            }
         }
     }
 }

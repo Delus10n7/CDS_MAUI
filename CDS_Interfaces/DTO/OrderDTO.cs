@@ -19,12 +19,6 @@ namespace CDS_Interfaces.DTO
         public DateOnly? OrderDate { get; set; }
         public int? StatusId { get; set; }
 
-        public CustomerDTO? Client { get; set; }
-        public ManagerDTO? Manager { get; set; }
-        public CarDTO? Car { get; set; }
-        public OrderStatusDTO? Status { get; set; }
-        public CarDTO? TradeInCar { get; set; }
-
         public OrderDTO() { }
 
         public OrderDTO(Orders o)
@@ -38,17 +32,6 @@ namespace CDS_Interfaces.DTO
             CarId = o.CarId;
             OrderDate = o.OrderDate;
             StatusId = o.StatusId;
-
-            // TPH автоматически приводит к нужным типам
-            if (o.Client is Customer customer)
-            {
-                Client = new CustomerDTO(customer);
-            }
-
-            if (o.Manager is Manager manager)
-            {
-                Manager = new ManagerDTO(manager);
-            }
         }
     }
 }

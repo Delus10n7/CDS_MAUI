@@ -12,7 +12,6 @@ namespace CDS_Interfaces.DTO
         public int Id { get; set; }
         public string? BrandName { get; set; }
         public int? CountryId { get; set; }
-        public CountryDTO? Country { get; set; }
 
         public BrandDTO() { }
         public BrandDTO(Brand b)
@@ -20,7 +19,6 @@ namespace CDS_Interfaces.DTO
             Id = b.Id;
             BrandName = b.BrandName;
             CountryId = b.CountryId;
-            Country = b.Country != null ? new CountryDTO(b.Country) : null;
         }
     }
 }

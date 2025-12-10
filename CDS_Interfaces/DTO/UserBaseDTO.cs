@@ -11,6 +11,7 @@ namespace CDS_Interfaces.DTO
     {
         public int Id { get; set; }
         public string UserLogin { get; set; } = null!;
+        public string PasswordHash { get; set; }
         public string? FullName { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
@@ -18,7 +19,6 @@ namespace CDS_Interfaces.DTO
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
-        public string RoleName { get; set; } = null!;
 
         public UserBaseDTO() { }
 
@@ -26,13 +26,14 @@ namespace CDS_Interfaces.DTO
         {
             Id = user.Id;
             UserLogin = user.UserLogin;
+            PasswordHash = user.PasswordHash;
             FullName = user.FullName;
             PhoneNumber = user.PhoneNumber;
             Email = user.Email;
+            RoleId = user.RoleId;
             IsActive = user.IsActive;
             CreatedDate = user.CreatedDate;
             ModifiedDate = user.ModifiedDate;
-            RoleName = user.Role?.RoleName ?? "Unknown";
         }
     }
 }

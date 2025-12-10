@@ -12,7 +12,6 @@ namespace CDS_Interfaces.DTO
         public int Id { get; set; }
         public string? ModelName { get; set; }
         public int? BrandId { get; set; }
-        public BrandDTO? Brand { get; set; }
 
         public ModelDTO() { }
         public ModelDTO(Model m)
@@ -20,7 +19,6 @@ namespace CDS_Interfaces.DTO
             Id = m.Id;
             ModelName = m.ModelName;
             BrandId = m.BrandId;
-            Brand = m.Brand != null ? new BrandDTO(m.Brand) : null;
         }
     }
 }
