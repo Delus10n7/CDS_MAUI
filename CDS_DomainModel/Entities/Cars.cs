@@ -15,6 +15,8 @@ public partial class Cars
 
     public decimal? Price { get; set; }
 
+    public string? CarColor { get; set; }
+
     public byte[]? Photo { get; set; }
 
     public int? ConditionId { get; set; }

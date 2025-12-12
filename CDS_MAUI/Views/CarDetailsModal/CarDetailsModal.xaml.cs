@@ -16,7 +16,6 @@ public partial class CarDetailsModal : ContentPage
             _car = value;
             OnPropertyChanged();
 
-            // Устанавливаем Car в ViewModel
             if (BindingContext is CarDetailsViewModel viewModel)
             {
                 viewModel.Car = value;

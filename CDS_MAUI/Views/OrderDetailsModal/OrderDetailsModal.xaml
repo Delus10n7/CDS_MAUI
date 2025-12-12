@@ -21,7 +21,7 @@
             <!-- Кнопка закрытия -->
             <Button Grid.Row="0"
                     Text="✕"
-                    FontSize="24"
+                    FontSize="20"
                     WidthRequest="40"
                     HeightRequest="40"
                     CornerRadius="20"

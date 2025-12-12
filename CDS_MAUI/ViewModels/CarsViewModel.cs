@@ -1,4 +1,5 @@
-﻿using CDS_MAUI.Models;
+﻿using CDS_Interfaces.Service;
+using CDS_MAUI.Models;
 using CDS_MAUI.Views.CarDetailsModal;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

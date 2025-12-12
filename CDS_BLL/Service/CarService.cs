@@ -40,6 +40,7 @@ namespace CDS_BLL.Service
                 Mileage = c.Mileage,
                 ReleaseYear = c.ReleaseYear,
                 Price = c.Price,
+                CarColor = c.CarColor,
                 Photo = c.Photo,
                 ConditionId = c.ConditionId,
                 AvailabilityId = c.AvailabilityId,
@@ -60,6 +61,7 @@ namespace CDS_BLL.Service
             car.Mileage = c.Mileage;
             car.ReleaseYear = c.ReleaseYear;
             car.Price = c.Price;
+            car.CarColor = c.CarColor;
             car.Photo = c.Photo;
             car.ConditionId = c.ConditionId;
             car.AvailabilityId = c.AvailabilityId;
