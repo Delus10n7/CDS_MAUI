@@ -1,4 +1,5 @@
-﻿using CDS_Interfaces.Service;
+﻿using CDS_Interfaces.DTO;
+using CDS_Interfaces.Service;
 using CDS_MAUI.Models;
 using CDS_MAUI.Views.CarDetailsModal;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -18,6 +19,9 @@ namespace CDS_MAUI.ViewModels
         // === КОЛЛЕКЦИИ ДАННЫХ ===
         [ObservableProperty]
         private ObservableCollection<CarModel> _cars = new();
+
+        [ObservableProperty]
+        private ObservableCollection<CarModel> _filteredCars = new();
 
         [ObservableProperty]
         private ObservableCollection<string> _brands = new();
@@ -67,8 +71,20 @@ namespace CDS_MAUI.ViewModels
         [ObservableProperty]
         private CarModel _selectedCar;
 
-        public CarsViewModel()
+        // === СЕРВИСЫ ===
+        private ICarService _carService;
+        private IBrandService _brandService;
+
+        // === Страницы ===
+        private const int PageSize = 20; // По 20 авто за раз
+        private int _currentPage = 0;
+        private bool _isLoadingMore = false;
+
+        public CarsViewModel(ICarService carService, IBrandService brandService)
         {
+            _carService = carService;
+            _brandService = brandService;
+
             Title = "Автомобили";
             Initialize();
         }
@@ -79,19 +95,21 @@ namespace CDS_MAUI.ViewModels
             InitializeBrands();
             InitializeFilterOptions();
 
-            // Загрузка тестовых данных
-            LoadTestCars();
+            // Загрузка машин
+            LoadCars();
         }
 
         private void InitializeBrands()
         {
             Brands.Clear();
             Brands.Add("Любой");
-            Brands.Add("Audi");
-            Brands.Add("BMW");
-            Brands.Add("Mercedes");
-            Brands.Add("Toyota");
-            Brands.Add("Honda");
+
+            List<BrandDTO> brandDTOs = _brandService.GetAllBrands();
+
+            foreach (var b in brandDTOs)
+            {
+                Brands.Add(b.BrandName);
+            }
         }
 
         private void InitializeFilterOptions()
@@ -219,65 +237,26 @@ namespace CDS_MAUI.ViewModels
 
         // === ЗАГРУЗКА ДАННЫХ ===
 
-        private void LoadTestCars()
+        private void LoadCars()
         {
             Cars.Clear();
 
-            var testCars = new List<CarModel>
-        {
-            new CarModel
-            {
-                Brand = "Audi",
-                Model = "A4",
-                Year = 2022,
-                EngineVolume = 2.0,
-                Power = 190,
-                Price = 3_200_000,
-                Transmission = "Автоматическая",
-                DriveType = "Полный",
-                EngineType = "Бензин",
-                BodyType = "Седан",
-                Color = "Черный",
-                Mileage = 15000
-            },
-            new CarModel
-            {
-                Brand = "BMW",
-                Model = "3 Series",
-                Year = 2023,
-                EngineVolume = 2.0,
-                Power = 184,
-                Price = 3_500_000,
-                Transmission = "Автоматическая",
-                DriveType = "Задний",
-                EngineType = "Бензин",
-                BodyType = "Седан",
-                Color = "Белый",
-                Mileage = 45000
-            },
-            new CarModel
-            {
-                Brand = "Mercedes",
-                Model = "C-Class",
-                Year = 2021,
-                EngineVolume = 1.5,
-                Power = 170,
-                Price = 3_800_000,
-                Transmission = "Автоматическая",
-                DriveType = "Задний",
-                EngineType = "Бензин",
-                BodyType = "Седан",
-                Color = "Белый",
-                Mileage = 105000
-            }
-        };
+            List<CarDTO> carDTOs = _carService.GetAllCars();
 
-            foreach (var car in testCars)
+            //foreach (var car in carDTOs)
+            //{
+            //    Cars.Add(new CarModel(car));
+            //}
+
+            for (int i = 0; i < 20; i++)
             {
-                Cars.Add(car);
+                Cars.Add(new CarModel(carDTOs[i]));
             }
 
             UpdateModelsForBrand("Любой");
+
+            // Инициализируем отфильтрованные данные
+            FilterCars();
         }
 
         private void FilterCars()
@@ -302,8 +281,15 @@ namespace CDS_MAUI.ViewModels
                     c.Color.ToLower().Contains(searchLower));
             }
 
-            // Обновляем отображение
-            var filteredList = filtered.ToList();
+            // Обновляем отфильтрованную коллекцию
+            FilteredCars.Clear();
+            foreach (var car in filtered.ToList())
+            {
+                FilteredCars.Add(car);
+            }
+
+            // Обновляем модели для выбранного бренда
+            UpdateModelsForBrand(SelectedBrand);
         }
     }
 }

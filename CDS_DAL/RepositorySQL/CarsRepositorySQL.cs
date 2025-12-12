@@ -27,6 +27,10 @@ namespace CDS_DAL.RepositorySQL
                 .Include(c => c.Configuration)
                     .ThenInclude(cc => cc.Model)
                         .ThenInclude(m => m.Brand)
+                .Include(cc => cc.Configuration.BodyType)
+                .Include(cc => cc.Configuration.EngineType)
+                .Include(cc => cc.Configuration.TransmissionType)
+                .Include(cc => cc.Configuration.DriveType)
                 .ToList();
         }
 
@@ -38,6 +42,10 @@ namespace CDS_DAL.RepositorySQL
                 .Include(c => c.Configuration)
                     .ThenInclude(cc => cc.Model)
                         .ThenInclude(m => m.Brand)
+                .Include(cc => cc.Configuration.BodyType)
+                .Include(cc => cc.Configuration.EngineType)
+                .Include(cc => cc.Configuration.TransmissionType)
+                .Include(cc => cc.Configuration.DriveType)
                 .FirstOrDefault(c => c.Id == id);
         }
 
