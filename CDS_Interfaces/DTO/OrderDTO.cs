@@ -19,6 +19,15 @@ namespace CDS_Interfaces.DTO
         public DateOnly? OrderDate { get; set; }
         public int? StatusId { get; set; }
 
+        // Навигационные свойства
+        public string? BrandName { get; set; }
+        public string? ModelName { get; set; }
+        public string? VIN { get; set; }
+        public string? CustomerName { get; set; }
+        public string? ManagerName { get; set; }
+        public string? OrderStatus { get; set; }
+        public decimal? Price { get; set; }
+
         public OrderDTO() { }
 
         public OrderDTO(Orders o)
@@ -32,6 +41,15 @@ namespace CDS_Interfaces.DTO
             CarId = o.CarId;
             OrderDate = o.OrderDate;
             StatusId = o.StatusId;
+
+            // Навигационные свойства
+            BrandName = o.Car.Configuration.Model.Brand.BrandName;
+            ModelName = o.Car.Configuration.Model.ModelName;
+            VIN = o.Car.VIN;
+            CustomerName = o.Client.FullName;
+            ManagerName = o.Manager.FullName;
+            OrderStatus = o.Status.StatusName;
+            Price = o.Car.Price;
         }
     }
 }

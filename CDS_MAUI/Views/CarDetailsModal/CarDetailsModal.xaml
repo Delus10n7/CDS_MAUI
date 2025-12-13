@@ -72,6 +72,15 @@
                                      Spacing="15">
 
                     <Grid ColumnDefinitions="*,*">
+                        <Label Text="VIN:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.VIN}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
                         <Label Text="Год выпуска:"
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>

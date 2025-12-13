@@ -25,6 +25,9 @@ namespace CDS_DAL.RepositorySQL
                 .Include(o => o.Client)
                 .Include(o => o.Manager)
                 .Include(o => o.Car)
+                    .ThenInclude(c => c.Configuration)
+                        .ThenInclude(cc => cc.Model)
+                            .ThenInclude(m => m.Brand)
                 .Include(o => o.Status)
                 .ToList();
         }
@@ -35,6 +38,9 @@ namespace CDS_DAL.RepositorySQL
                 .Include(o => o.Client)
                 .Include(o => o.Manager)
                 .Include(o => o.Car)
+                    .ThenInclude(c => c.Configuration)
+                        .ThenInclude(cc => cc.Model)
+                            .ThenInclude(m => m.Brand)
                 .Include(o => o.Status)
                 .FirstOrDefault(o => o.Id == id);
         }

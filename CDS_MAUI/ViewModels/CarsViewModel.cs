@@ -83,7 +83,7 @@ namespace CDS_MAUI.ViewModels
         [ObservableProperty]
         private CarModel _selectedCar;
 
-        // === ДАННЫЕ ===
+        // === СТРАНИЦЫ ===
         private List<CarModel> _allCars = new();
         private const int _pageSize = 20;
         private int _pageCount = 1;
@@ -358,7 +358,7 @@ namespace CDS_MAUI.ViewModels
 
         private void LoadAllCars()
         {
-            Cars.Clear();
+            _allCars.Clear();
 
             List<CarDTO> carDTOs = _carService.GetAllCars();
 
@@ -420,9 +420,9 @@ namespace CDS_MAUI.ViewModels
             {
                 var searchLower = SearchText.ToLower();
                 filtered = filtered.Where(c =>
+                    c.VIN.ToLower().Contains(searchLower) ||
                     c.Brand.ToLower().Contains(searchLower) ||
-                    c.Model.ToLower().Contains(searchLower) ||
-                    c.VIN.ToLower().Contains(searchLower))
+                    c.Model.ToLower().Contains(searchLower))
                     .ToList();
             }
 

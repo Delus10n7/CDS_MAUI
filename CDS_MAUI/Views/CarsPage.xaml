@@ -195,6 +195,10 @@
                                            FontSize="16"
                                            FontAttributes="Bold"/>
 
+                                    <Label Text="{Binding VIN}"
+                                           FontSize="14"
+                                           FontAttributes="Italic"/>
+
                                     <Label Text="{Binding Specifications}"
                                            FontSize="14"/>
 
