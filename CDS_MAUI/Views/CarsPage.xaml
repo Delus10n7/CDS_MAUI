@@ -117,6 +117,37 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Кнопки переключения между страницами -->
+            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="На первую"
+                        Command="{Binding FirstPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Button Grid.Column="1"
+                        Text="Назад"
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Border Grid.Column="2"
+                        Padding="10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        StrokeThickness="2">
+                    <Label Text="{Binding CurPage}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </Border>
+                <Button Grid.Column="3"
+                        Text="Вперед"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+                <Button Grid.Column="4"
+                        Text="На последнюю"
+                        Command="{Binding LastPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+            </Grid>
+
             <!-- Контейнер для карточек автомобилей -->
             <CollectionView ItemsSource="{Binding Cars}"
                             EmptyView="Нет автомобилей"
@@ -190,6 +221,37 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <!-- Кнопки переключения между страницами -->
+            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="На первую"
+                        Command="{Binding FirstPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Button Grid.Column="1"
+                        Text="Назад"
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Border Grid.Column="2"
+                        Padding="10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        StrokeThickness="2">
+                    <Label Text="{Binding CurPage}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </Border>
+                <Button Grid.Column="3"
+                        Text="Вперед"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+                <Button Grid.Column="4"
+                        Text="На последнюю"
+                        Command="{Binding LastPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+            </Grid>
 
             <!-- Индикатор загрузки -->
             <ActivityIndicator IsVisible="{Binding IsBusy}"

@@ -75,10 +75,20 @@ namespace CDS_MAUI.ViewModels
         private ICarService _carService;
         private IBrandService _brandService;
 
-        // === Страницы ===
-        private const int PageSize = 20; // По 20 авто за раз
-        private int _currentPage = 0;
-        private bool _isLoadingMore = false;
+        // === ДАННЫЕ ===
+        private List<CarModel> _allCars = new();
+        private const int _pageSize = 20;
+        private int _pageCount = 1;
+        private int _currentPage = 1;
+
+        [ObservableProperty]
+        private string _curPage = "1";
+
+        [ObservableProperty]
+        private bool _canGoNextPage = true;
+
+        [ObservableProperty]
+        private bool _canGoPrevPage = false;
 
         public CarsViewModel(ICarService carService, IBrandService brandService)
         {
@@ -96,7 +106,8 @@ namespace CDS_MAUI.ViewModels
             InitializeFilterOptions();
 
             // Загрузка машин
-            LoadCars();
+            LoadAllCars();
+            LoadCurrentPageCars();
         }
 
         private void InitializeBrands()
@@ -207,6 +218,62 @@ namespace CDS_MAUI.ViewModels
             FilterCars();
         }
 
+        [RelayCommand]
+        private void NextPage()
+        {
+            if (_currentPage < _pageCount) _currentPage++;
+
+            CurPage = _currentPage.ToString();
+
+            if (_currentPage > 1) CanGoPrevPage = true;
+            else CanGoPrevPage = false;
+            if (_currentPage < _pageCount) CanGoNextPage = true;
+            else CanGoNextPage = false;
+
+            LoadCurrentPageCars();
+        }
+
+        [RelayCommand]
+        private void PrevPage()
+        {
+            if (_currentPage > 1) _currentPage--;
+
+            CurPage = _currentPage.ToString();
+
+            if (_currentPage > 1) CanGoPrevPage = true;
+            else CanGoPrevPage = false;
+            if (_currentPage < _pageCount) CanGoNextPage = true;
+            else CanGoNextPage = false;
+
+            LoadCurrentPageCars();
+        }
+
+        [RelayCommand]
+        private void FirstPage()
+        {
+            _currentPage = 1;
+
+            CurPage = _currentPage.ToString();
+
+            CanGoPrevPage = false;
+            CanGoNextPage = true;
+
+            LoadCurrentPageCars();
+        }
+
+        [RelayCommand]
+        private void LastPage()
+        {
+            _currentPage = _pageCount;
+
+            CurPage = _currentPage.ToString();
+
+            CanGoPrevPage = true;
+            CanGoNextPage = false;
+
+            LoadCurrentPageCars();
+        }
+
         // === ОБРАБОТЧИКИ ИЗМЕНЕНИЙ ===
 
         partial void OnSelectedBrandChanged(string value)
@@ -237,21 +304,18 @@ namespace CDS_MAUI.ViewModels
 
         // === ЗАГРУЗКА ДАННЫХ ===
 
-        private void LoadCars()
+        private void LoadAllCars()
         {
             Cars.Clear();
 
             List<CarDTO> carDTOs = _carService.GetAllCars();
 
-            //foreach (var car in carDTOs)
-            //{
-            //    Cars.Add(new CarModel(car));
-            //}
-
-            for (int i = 0; i < 20; i++)
+            foreach (var car in carDTOs)
             {
-                Cars.Add(new CarModel(carDTOs[i]));
+                _allCars.Add(new CarModel(car));
             }
+
+            _pageCount = (int)Math.Ceiling((decimal)_allCars.Count / _pageSize);
 
             UpdateModelsForBrand("Любой");
 
@@ -261,7 +325,7 @@ namespace CDS_MAUI.ViewModels
 
         private void FilterCars()
         {
-            var filtered = Cars.AsEnumerable();
+            var filtered = _allCars.AsEnumerable();
 
             // Фильтрация по марке
             if (SelectedBrand != "Любой")
@@ -290,6 +354,20 @@ namespace CDS_MAUI.ViewModels
 
             // Обновляем модели для выбранного бренда
             UpdateModelsForBrand(SelectedBrand);
+        }
+
+        private void LoadCurrentPageCars()
+        {
+            var currIndex = _currentPage - 1;
+
+            var startIndex = currIndex * 20;
+            var endIndex = (currIndex * 20 + 19) > _allCars.Count() ? _allCars.Count() - 1 : (currIndex * 20 + 19);
+
+            Cars.Clear();
+            for (int i  = startIndex; i < endIndex; i++)
+            {
+                Cars.Add(_allCars[i]);
+            }
         }
     }
 }
