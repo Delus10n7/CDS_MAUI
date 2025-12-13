@@ -223,7 +223,7 @@
             </CollectionView>
 
             <!-- Кнопки переключения между страницами -->
-            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10">
+            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10" IsVisible="{Binding HasFooterPageButtons}">
                 <Button Grid.Column="0"
                         Text="На первую"
                         Command="{Binding FirstPageCommand}"

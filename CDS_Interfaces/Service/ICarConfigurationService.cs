@@ -11,6 +11,11 @@ namespace CDS_Interfaces.Service
     {
         List<CarConfigurationDTO> GetAllCarConfigurations();
         CarConfigurationDTO GetCarConfiguration(int Id);
+        List<BrandDTO> GetAllBrands();
+        List<BodyTypeDTO> GetAllBodyTypes();
+        List<EngineTypeDTO> GetAllEngineTypes();
+        List<TransmissionTypeDTO> GetAllTransmissionTypes();
+        List<DriveTypeDTO> GetAllDriveTypes();
         void CreateCarConfiguration(CarConfigurationDTO c);
         void UpdateCarConfiguration(CarConfigurationDTO c);
         void DeleteCarConfiguration(int Id);

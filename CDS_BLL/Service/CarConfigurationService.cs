@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DriveType = CDS_DomainModel.Entities.DriveType;
 
 namespace CDS_BLL.Service
 {
@@ -20,6 +21,26 @@ namespace CDS_BLL.Service
         public List<CarConfigurationDTO> GetAllCarConfigurations()
         {
             return db.CarConfigurations.GetList().Select(i => new CarConfigurationDTO(i)).ToList();
+        }
+        public List<BrandDTO> GetAllBrands()
+        {
+            return db.Brands.GetList().Select(i => new BrandDTO(i)).ToList();
+        }
+        public List<BodyTypeDTO> GetAllBodyTypes()
+        {
+            return db.BodyTypes.GetList().Select(i => new BodyTypeDTO(i)).ToList();
+        }
+        public List<EngineTypeDTO> GetAllEngineTypes()
+        {
+            return db.EngineTypes.GetList().Select(i => new EngineTypeDTO(i)).ToList();
+        }
+        public List<TransmissionTypeDTO> GetAllTransmissionTypes()
+        {
+            return db.TransmissionTypes.GetList().Select(i => new TransmissionTypeDTO(i)).ToList();
+        }
+        public List<DriveTypeDTO> GetAllDriveTypes()
+        {
+            return db.DriveTypes.GetList().Select(i => new DriveTypeDTO(i)).ToList();
         }
         public CarConfigurationDTO GetCarConfiguration(int Id)
         {

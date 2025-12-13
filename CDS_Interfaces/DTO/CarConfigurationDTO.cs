@@ -20,6 +20,14 @@ namespace CDS_Interfaces.DTO
         public int? TransmissionTypeId { get; set; }
         public int? DriveTypeId { get; set; }
 
+        // Навигационные свойства
+        public string? BrandName { get; set; }
+        public string? ModelName { get; set; }
+        public string? BodyName { get; set; }
+        public string? EngineName { get; set; }
+        public string? TransmissionName { get; set; }
+        public string? DriveName { get; set; }
+
         public CarConfigurationDTO() { }
 
         public CarConfigurationDTO(CarConfiguration c)
@@ -34,6 +42,14 @@ namespace CDS_Interfaces.DTO
             EngineTypeId = c.EngineTypeId;
             TransmissionTypeId = c.TransmissionTypeId;
             DriveTypeId = c.DriveTypeId;
+
+            // Навигационные свойства
+            BrandName = c.Model.Brand.BrandName;
+            ModelName = c.Model.ModelName;
+            BodyName = c.BodyType.BodyName;
+            EngineName = c.EngineType.EngineName;
+            TransmissionName = c.TransmissionType.TransmissionName;
+            DriveName = c.DriveType.DriveName;
         }
     }
 }

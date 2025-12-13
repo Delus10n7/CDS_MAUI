@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DriveType = CDS_DomainModel.Entities.DriveType;
 
 namespace CDS_DAL.RepositorySQL
 {
@@ -22,6 +23,10 @@ namespace CDS_DAL.RepositorySQL
         private BookingRepositorySQL bookingRepository;
         private ServiceContractsRepositorySQL serviceContractsRepository;
         private ReportRepositorySQL reportRepository;
+        private BodyTypeRepositorySQL bodyTypeRepository;
+        private EngineTypeRepositorySQL engineTypeRepository;
+        private TransmissionTypeRepositorySQL transmissionTypeRepository;
+        private DriveTypeRepositorySQL driveTypeRepository;
 
         public DbReposSQL(SqlDbContext context)
         {
@@ -125,6 +130,46 @@ namespace CDS_DAL.RepositorySQL
                 if (reportRepository == null)
                     reportRepository = new ReportRepositorySQL(db);
                 return reportRepository;
+            }
+        }
+
+        public IRepository<BodyType> BodyTypes
+        {
+            get
+            {
+                if (bodyTypeRepository == null)
+                    bodyTypeRepository = new BodyTypeRepositorySQL(db);
+                return bodyTypeRepository;
+            }
+        }
+
+        public IRepository<EngineType> EngineTypes
+        {
+            get
+            {
+                if (engineTypeRepository == null)
+                    engineTypeRepository = new EngineTypeRepositorySQL(db);
+                return engineTypeRepository;
+            }
+        }
+
+        public IRepository<TransmissionType> TransmissionTypes
+        {
+            get
+            {
+                if (transmissionTypeRepository == null)
+                    transmissionTypeRepository = new TransmissionTypeRepositorySQL(db);
+                return transmissionTypeRepository;
+            }
+        }
+
+        public IRepository<DriveType> DriveTypes
+        {
+            get
+            {
+                if (driveTypeRepository == null)
+                    driveTypeRepository = new DriveTypeRepositorySQL(db);
+                return driveTypeRepository;
             }
         }
 

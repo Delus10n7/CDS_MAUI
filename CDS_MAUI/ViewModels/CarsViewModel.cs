@@ -29,6 +29,18 @@ namespace CDS_MAUI.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> _models = new();
 
+        [ObservableProperty]
+        private ObservableCollection<string> _bodyTypes = new();
+
+        [ObservableProperty]
+        private ObservableCollection<string> _engineTypes = new();
+
+        [ObservableProperty]
+        private ObservableCollection<string> _transmissionTypes = new();
+
+        [ObservableProperty]
+        private ObservableCollection<string> _driveTypes = new();
+
         // === ФИЛЬТРЫ ===
         [ObservableProperty]
         private string _selectedBrand = "Любой";
@@ -71,10 +83,6 @@ namespace CDS_MAUI.ViewModels
         [ObservableProperty]
         private CarModel _selectedCar;
 
-        // === СЕРВИСЫ ===
-        private ICarService _carService;
-        private IBrandService _brandService;
-
         // === ДАННЫЕ ===
         private List<CarModel> _allCars = new();
         private const int _pageSize = 20;
@@ -90,10 +98,17 @@ namespace CDS_MAUI.ViewModels
         [ObservableProperty]
         private bool _canGoPrevPage = false;
 
-        public CarsViewModel(ICarService carService, IBrandService brandService)
+        [ObservableProperty]
+        private bool _hasFooterPageButtons = false;
+
+        // === СЕРВИСЫ ===
+        private ICarService _carService;
+        private ICarConfigurationService _carConfigService;
+
+        public CarsViewModel(ICarService carService, ICarConfigurationService carConfigService)
         {
             _carService = carService;
-            _brandService = brandService;
+            _carConfigService = carConfigService;
 
             Title = "Автомобили";
             Initialize();
@@ -103,6 +118,7 @@ namespace CDS_MAUI.ViewModels
         {
             // Инициализация списков
             InitializeBrands();
+            InitializeCarConfigurations();
             InitializeFilterOptions();
 
             // Загрузка машин
@@ -115,11 +131,45 @@ namespace CDS_MAUI.ViewModels
             Brands.Clear();
             Brands.Add("Любой");
 
-            List<BrandDTO> brandDTOs = _brandService.GetAllBrands();
+            List<BrandDTO> brandDTOs = _carConfigService.GetAllBrands();
 
             foreach (var b in brandDTOs)
             {
                 Brands.Add(b.BrandName);
+            }
+        }
+
+        private void InitializeCarConfigurations()
+        {
+            BodyTypes.Clear();
+            BodyTypes.Add("Любой");
+            EngineTypes.Clear();
+            EngineTypes.Add("Любой");
+            TransmissionTypes.Clear();
+            TransmissionTypes.Add("Любая");
+            DriveTypes.Clear();
+            DriveTypes.Add("Любой");
+
+            List<BodyTypeDTO> bodyTypeDTOs = _carConfigService.GetAllBodyTypes();
+            List<EngineTypeDTO> engineTypeDTOs = _carConfigService.GetAllEngineTypes();
+            List<TransmissionTypeDTO> transmissionTypeDTOs = _carConfigService.GetAllTransmissionTypes();
+            List<DriveTypeDTO> driveTypeDTOs = _carConfigService.GetAllDriveTypes();
+
+            foreach (var b in bodyTypeDTOs)
+            {
+                BodyTypes.Add(b.BodyName);
+            }
+            foreach (var e in engineTypeDTOs)
+            {
+                EngineTypes.Add(e.EngineName);
+            }
+            foreach (var t in transmissionTypeDTOs)
+            {
+                TransmissionTypes.Add(t.TransmissionName);
+            }
+            foreach (var d in driveTypeDTOs)
+            {
+                DriveTypes.Add(d.DriveName);
             }
         }
 
@@ -160,6 +210,7 @@ namespace CDS_MAUI.ViewModels
         private void ApplyFilters()
         {
             FilterCars();
+            LoadCurrentPageCars();
             IsFilterPanelVisible = false;
         }
 
@@ -215,7 +266,7 @@ namespace CDS_MAUI.ViewModels
         [RelayCommand]
         private void Search()
         {
-            FilterCars();
+            ApplyFilters();
         }
 
         [RelayCommand]
@@ -256,7 +307,7 @@ namespace CDS_MAUI.ViewModels
             CurPage = _currentPage.ToString();
 
             CanGoPrevPage = false;
-            CanGoNextPage = true;
+            CanGoNextPage = _currentPage < _pageCount ? true : false;
 
             LoadCurrentPageCars();
         }
@@ -268,7 +319,7 @@ namespace CDS_MAUI.ViewModels
 
             CurPage = _currentPage.ToString();
 
-            CanGoPrevPage = true;
+            CanGoPrevPage = _currentPage > 1 ? true : false;
             CanGoNextPage = false;
 
             LoadCurrentPageCars();
@@ -279,6 +330,7 @@ namespace CDS_MAUI.ViewModels
         partial void OnSelectedBrandChanged(string value)
         {
             UpdateModelsForBrand(value);
+            SelectedModel = Models[0];
         }
 
         private void UpdateModelsForBrand(string brand)
@@ -290,7 +342,7 @@ namespace CDS_MAUI.ViewModels
                 return;
 
             // Получаем уникальные модели для выбранной марки
-            var brandModels = Cars
+            var brandModels = _allCars
                 .Where(c => c.Brand == brand)
                 .Select(c => c.Model)
                 .Distinct()
@@ -315,8 +367,6 @@ namespace CDS_MAUI.ViewModels
                 _allCars.Add(new CarModel(car));
             }
 
-            _pageCount = (int)Math.Ceiling((decimal)_allCars.Count / _pageSize);
-
             UpdateModelsForBrand("Любой");
 
             // Инициализируем отфильтрованные данные
@@ -325,15 +375,45 @@ namespace CDS_MAUI.ViewModels
 
         private void FilterCars()
         {
-            var filtered = _allCars.AsEnumerable();
+            var filtered = _allCars.ToList();
 
             // Фильтрация по марке
-            if (SelectedBrand != "Любой")
-                filtered = filtered.Where(c => c.Brand == SelectedBrand);
+            if (SelectedBrand != "Любой" && !string.IsNullOrEmpty(SelectedBrand))
+                filtered = filtered.Where(c => c.Brand == SelectedBrand).ToList();
 
             // Фильтрация по модели
-            if (SelectedModel != "Любая")
-                filtered = filtered.Where(c => c.Model == SelectedModel);
+            if (SelectedModel != "Любая" && !string.IsNullOrEmpty(SelectedModel))
+                filtered = filtered.Where(c => c.Model == SelectedModel).ToList();
+
+            // Фильтрация по типу кузова
+            if (SelectedBodyType != "Любой" && !string.IsNullOrEmpty(SelectedBodyType))
+                filtered = filtered.Where(c => c.BodyType == SelectedBodyType).ToList();
+
+            // Фильтрация по типу двигателя
+            if (SelectedEngineType != "Любой" && !string.IsNullOrEmpty(SelectedEngineType))
+                filtered = filtered.Where(c => c.EngineType == SelectedEngineType).ToList();
+
+            // Фильтрация по типу трансмиссии
+            if (SelectedTransmission != "Любая" && !string.IsNullOrEmpty(SelectedTransmission))
+                filtered = filtered.Where(c => c.Transmission == SelectedTransmission).ToList();
+
+            // Фильтрация по типу привода
+            if (SelectedDriveType != "Любой" && !string.IsNullOrEmpty(SelectedDriveType))
+                filtered = filtered.Where(c => c.DriveType == SelectedDriveType).ToList();
+
+            // Фильтрация по объему двигателя
+            if (!string.IsNullOrEmpty(EngineVolumeFrom))
+                filtered = filtered.Where(c => c.EngineVolume >= Decimal.Parse(EngineVolumeFrom)).ToList();
+
+            if (!string.IsNullOrEmpty(EngineVolumeTo))
+                filtered = filtered.Where(c => c.EngineVolume <= Decimal.Parse(EngineVolumeTo)).ToList();
+
+            // Фильтрация по мощности двигателя
+            if (!string.IsNullOrEmpty(EnginePowerFrom))
+                filtered = filtered.Where(c => c.Power >= int.Parse(EnginePowerFrom)).ToList();
+
+            if (!string.IsNullOrEmpty(EnginePowerTo))
+                filtered = filtered.Where(c => c.Power <= int.Parse(EnginePowerTo)).ToList();
 
             // Поиск по тексту
             if (!string.IsNullOrWhiteSpace(SearchText))
@@ -342,18 +422,21 @@ namespace CDS_MAUI.ViewModels
                 filtered = filtered.Where(c =>
                     c.Brand.ToLower().Contains(searchLower) ||
                     c.Model.ToLower().Contains(searchLower) ||
-                    c.Color.ToLower().Contains(searchLower));
+                    c.VIN.ToLower().Contains(searchLower))
+                    .ToList();
             }
 
             // Обновляем отфильтрованную коллекцию
             FilteredCars.Clear();
-            foreach (var car in filtered.ToList())
+            foreach (var car in filtered)
             {
                 FilteredCars.Add(car);
             }
 
-            // Обновляем модели для выбранного бренда
-            UpdateModelsForBrand(SelectedBrand);
+            _pageCount = (int)Math.Ceiling((decimal)FilteredCars.Count / _pageSize);
+            _currentPage = 1;
+            CanGoPrevPage = false;
+            CanGoNextPage = _currentPage < _pageCount ? true : false;
         }
 
         private void LoadCurrentPageCars()
@@ -361,13 +444,16 @@ namespace CDS_MAUI.ViewModels
             var currIndex = _currentPage - 1;
 
             var startIndex = currIndex * 20;
-            var endIndex = (currIndex * 20 + 19) > _allCars.Count() ? _allCars.Count() - 1 : (currIndex * 20 + 19);
+            var endIndex = (currIndex * 20 + 19) > FilteredCars.Count() ? FilteredCars.Count() - 1 : (currIndex * 20 + 19);
 
             Cars.Clear();
             for (int i  = startIndex; i < endIndex; i++)
             {
-                Cars.Add(_allCars[i]);
+                Cars.Add(FilteredCars[i]);
             }
+
+            if (Cars.Count >= 5) HasFooterPageButtons = true;
+            else HasFooterPageButtons = false;
         }
     }
 }
