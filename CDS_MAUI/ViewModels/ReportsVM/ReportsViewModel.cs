@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS_MAUI.ViewModels
+namespace CDS_MAUI.ViewModels.ReportsVM
 {
     public partial class ReportsViewModel : BaseViewModel
     {

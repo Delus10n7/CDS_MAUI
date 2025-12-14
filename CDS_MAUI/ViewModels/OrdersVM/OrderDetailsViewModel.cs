@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CDS_MAUI.Models;
 
-namespace CDS_MAUI.ViewModels;
+namespace CDS_MAUI.ViewModels.OrdersVM;
 
 public partial class OrderDetailsViewModel : BaseViewModel
 {

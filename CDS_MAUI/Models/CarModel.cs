@@ -22,6 +22,7 @@ namespace CDS_MAUI.Models
         public string? BodyType { get; set; }
         public string? Color { get; set; }
         public int? Mileage { get; set; }
+        public string? Availability { get; set; }
 
         // Вычисляемые свойства для удобства привязки
         public string DisplayInfo => $"{Brand} {Model}";
@@ -45,6 +46,7 @@ namespace CDS_MAUI.Models
             BodyType = c.BodyTypeName;
             Color = c.CarColor;
             Mileage = c.Mileage;
+            Availability = c.AvailabilityName;
         }
     }
 }

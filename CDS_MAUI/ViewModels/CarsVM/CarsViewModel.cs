@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static CDS_MAUI.Views.CarsPage;
 
-namespace CDS_MAUI.ViewModels
+namespace CDS_MAUI.ViewModels.CarsVM
 {
     public partial class CarsViewModel : BaseViewModel
     {
@@ -232,38 +232,6 @@ namespace CDS_MAUI.ViewModels
         }
 
         [RelayCommand]
-        private async Task CreateOrder(CarModel car)
-        {
-            if (car == null) return;
-
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Оформление заказа",
-                $"Оформить заказ на {car.Brand} {car.Model} за {car.Price:N0} руб.?",
-                "Да, оформить",
-                "Отмена");
-
-            if (confirm)
-            {
-                IsBusy = true;
-                try
-                {
-                    // Логика создания заказа
-                    await Task.Delay(500);
-
-                    // Показываем уведомление
-                    await Shell.Current.DisplayAlert("Успех", "Заказ оформлен!", "OK");
-
-                    // Закрываем модальное окно
-                    await Shell.Current.GoToAsync("..");
-                }
-                finally
-                {
-                    IsBusy = false;
-                }
-            }
-        }
-
-        [RelayCommand]
         private void Search()
         {
             ApplyFilters();
@@ -364,7 +332,10 @@ namespace CDS_MAUI.ViewModels
 
             foreach (var car in carDTOs)
             {
-                _allCars.Add(new CarModel(car));
+                if (car.AvailabilityId != 3)
+                {
+                    _allCars.Add(new CarModel(car));
+                }
             }
 
             UpdateModelsForBrand("Любой");

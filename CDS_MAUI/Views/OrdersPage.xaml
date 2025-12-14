@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.OrdersVM"
              xmlns:models="clr-namespace:CDS_MAUI.Models"
              xmlns:converters="clr-namespace:CDS_MAUI.Converters"
              x:Class="CDS_MAUI.Views.OrdersPage"
@@ -149,7 +149,7 @@
                                         WidthRequest="150"
                                         HeightRequest="120"
                                         StrokeShape="RoundRectangle 8"
-                                        BackgroundColor="LightGray">
+                                        BackgroundColor="Transparent">
                                     <VerticalStackLayout HorizontalOptions="Center"
                                                          VerticalOptions="Center"
                                                          Spacing="5">

@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static CDS_MAUI.Views.OrdersPage;
 
-namespace CDS_MAUI.ViewModels
+namespace CDS_MAUI.ViewModels.OrdersVM
 {
     public partial class OrdersViewModel : BaseViewModel
     {

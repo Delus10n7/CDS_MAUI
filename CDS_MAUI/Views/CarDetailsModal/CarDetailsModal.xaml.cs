@@ -1,4 +1,4 @@
-using CDS_MAUI.ViewModels;
+using CDS_MAUI.ViewModels.CarsVM;
 using CDS_MAUI.Models;
 
 namespace CDS_MAUI.Views.CarDetailsModal;
