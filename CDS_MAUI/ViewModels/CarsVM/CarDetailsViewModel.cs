@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CDS_MAUI.Models;
 using CDS_Interfaces.Service;
-using CDS_MAUI.Views.CarDetailsModal;
+using CDS_MAUI.Views.CarsModal;
 
 namespace CDS_MAUI.ViewModels.CarsVM;
 

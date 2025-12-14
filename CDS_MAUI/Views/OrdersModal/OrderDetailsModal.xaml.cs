@@ -1,7 +1,7 @@
 using CDS_MAUI.ViewModels.OrdersVM;
 using CDS_MAUI.Models;
 
-namespace CDS_MAUI.Views.OrderDetailsModal;
+namespace CDS_MAUI.Views.OrdersModal;
 
 [QueryProperty(nameof(Order), "Order")]
 public partial class OrderDetailsModal : ContentPage

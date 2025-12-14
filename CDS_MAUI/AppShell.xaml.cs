@@ -1,5 +1,5 @@
-﻿using CDS_MAUI.Views.CarDetailsModal;
-using CDS_MAUI.Views.OrderDetailsModal;
+﻿using CDS_MAUI.Views.CarsModal;
+using CDS_MAUI.Views.OrdersModal;
 
 namespace CDS_MAUI
 {

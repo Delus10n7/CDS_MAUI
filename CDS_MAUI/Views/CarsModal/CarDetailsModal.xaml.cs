@@ -1,7 +1,7 @@
 using CDS_MAUI.ViewModels.CarsVM;
 using CDS_MAUI.Models;
 
-namespace CDS_MAUI.Views.CarDetailsModal;
+namespace CDS_MAUI.Views.CarsModal;
 
 [QueryProperty(nameof(Car), "Car")]
 public partial class CarDetailsModal : ContentPage

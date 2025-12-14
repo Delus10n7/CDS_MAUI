@@ -1,7 +1,7 @@
 ﻿using CDS_Interfaces.DTO;
 using CDS_Interfaces.Service;
 using CDS_MAUI.Models;
-using CDS_MAUI.Views.OrderDetailsModal;
+using CDS_MAUI.Views.OrdersModal;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;

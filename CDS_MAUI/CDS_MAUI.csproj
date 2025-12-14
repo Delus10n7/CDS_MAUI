@@ -98,13 +98,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\CarDetailsModal\CarDetailsModal.xaml">
+	  <MauiXaml Update="Views\CarsModal\CarDetailsModal.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CarsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\OrderDetailsModal\OrderDetailsModal.xaml">
+	  <MauiXaml Update="Views\OrdersModal\OrderDetailsModal.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\OrdersPage.xaml">
