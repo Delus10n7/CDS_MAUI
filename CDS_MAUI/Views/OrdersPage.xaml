@@ -185,14 +185,12 @@
 
                                         <Label Grid.Column="1"
                                                Text="{Binding ManagerName}"
-                                               FontSize="14"
-                                               TextColor="{StaticResource Primary}"/>
+                                               FontSize="14"/>
                                     </Grid>
 
                                     <Label Text="{Binding FormattedPrice}"
                                            FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource Primary}"/>
+                                           FontAttributes="Bold"/>
                                 </VerticalStackLayout>
 
                                 <!-- Кнопки -->

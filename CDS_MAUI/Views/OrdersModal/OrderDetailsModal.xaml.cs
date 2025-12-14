@@ -3,29 +3,21 @@ using CDS_MAUI.Models;
 
 namespace CDS_MAUI.Views.OrdersModal;
 
-[QueryProperty(nameof(Order), "Order")]
-public partial class OrderDetailsModal : ContentPage
+public partial class OrderDetailsModal : ContentPage, IQueryAttributable
 {
-    private OrderModel _order;
-
-    public OrderModel Order
-    {
-        get => _order;
-        set
-        {
-            _order = value;
-            OnPropertyChanged();
-
-            if (BindingContext is OrderDetailsViewModel viewModel)
-            {
-                viewModel.Order = value;
-            }
-        }
-    }
+    public OrderDetailsViewModel ViewModel { get; }
 
     public OrderDetailsModal(OrderDetailsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = ViewModel = viewModel;
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("Order", out var order) && order is OrderModel orderModel)
+        {
+            ViewModel.Order = orderModel;
+        }
     }
 }

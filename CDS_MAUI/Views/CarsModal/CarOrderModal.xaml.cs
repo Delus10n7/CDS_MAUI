@@ -3,29 +3,21 @@ using CDS_MAUI.Models;
 
 namespace CDS_MAUI.Views.CarsModal;
 
-[QueryProperty(nameof(Car), "Car")]
-public partial class CarOrderModal : ContentPage
+public partial class CarOrderModal : ContentPage, IQueryAttributable
 {
-	private CarModel _car;
-
-	public CarModel Car
-	{
-		get => _car;
-		set 
-		{
-            _car = value;
-            OnPropertyChanged();
-
-            if (BindingContext is CarOrderViewModel viewModel)
-            {
-                viewModel.Car = value;
-            }
-        }
-	}
+	public CarOrderViewModel ViewModel { get; }
 
 	public CarOrderModal(CarOrderViewModel viewModel)
 	{
 		InitializeComponent();
-		BindingContext = viewModel;
+		BindingContext = ViewModel = viewModel;
+	}
+
+	public void ApplyQueryAttributes(IDictionary<string, object> query)
+	{
+		if (query.TryGetValue("Car", out var car) && car is CarModel carModel)
+		{
+			ViewModel.Car = carModel;
+		}
 	}
 }

@@ -19,9 +19,11 @@ namespace CDS_MAUI.Models
         public string? Status { get; set; }
 
         public string DisplayInfo => $"{Brand} {Model}";
-        public string FormattedDate => Date.ToString();
-        public string FormattedPrice => $"{Price:N0} руб.";
-        public string ShortDate => Date.ToString();
+        public string FormattedDate => Date?.ToString("dd.MM.yyyy") ?? string.Empty;
+        public string FormattedPrice => Price?.ToString("N0") + "руб." ?? string.Empty;
+        public string ShortDate => Date?.ToString("dd.MM.yyyy") ?? string.Empty;
+
+        public OrderModel() { }
 
         public OrderModel(OrderDTO o)
         {

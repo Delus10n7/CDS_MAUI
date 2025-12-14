@@ -15,7 +15,7 @@
             <Border Grid.RowSpan="4"
                     StrokeShape="RoundRectangle 16"
                     BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
-                    Stroke="{StaticResource Primary}"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                     StrokeThickness="1"/>
 
             <!-- Кнопка закрытия -->
@@ -103,7 +103,7 @@
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                         <Label Grid.Column="1"
-                               Text="{Binding Order.Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                               Text="{Binding Order.FormattedDate}"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                     </Grid>
 
