@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.CarsVM"
+             xmlns:models="clr-namespace:CDS_MAUI.Models"
              x:Class="CDS_MAUI.Views.CarsModal.CarOrderModal"
              x:DataType="viewmodels:CarOrderViewModel"
              Title="{Binding Title}">
@@ -44,22 +45,120 @@
                     <Label Text="Информация о клиенте и менеджере"
                            FontSize="20"
                            FontAttributes="Bold"/>
+                    
+                    <!-- Клиент -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Button Grid.Column="0"
+                                Text="Существующий клиент"
+                                FontAttributes="Bold"
+                                Command="{Binding ShowOldCustomerMenuCommand}"/>
 
-                    <Label Text="ФИО клиента"/>
+                        <Button Grid.Column="1"
+                                Text="Новый клиент"
+                                FontAttributes="Bold"
+                                Command="{Binding ShowNewCustomerMenuCommand}"/>
+                    </Grid>
 
-                    <Entry Placeholder="Введите ФИО клиента"
-                           Text="{Binding CustomerName}"/>
+                    <Border IsVisible="{Binding OldCustomer}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
 
-                    <Label Text="Номер телефона клиента"/>
+                        <VerticalStackLayout Spacing="20">
+                            <SearchBar Placeholder="Введите ФИО, номер телефона или Email клиента"
+                                       Text="{Binding SearchText}"
+                                       SearchCommand="{Binding SearchCommand}"/>
 
-                    <Entry Placeholder="Введите номер телефона клиента"
-                           Text="{Binding CustomerPhone}"/>
+                            <CollectionView ItemsSource="{Binding FilteredCustomers}"
+                                            EmptyView="Введите ФИО, номер телефона или Email клиента"
+                                            Margin="10">
 
-                    <Label Text="Email клиента"/>
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" 
+                                                       ItemSpacing="15" />
+                                </CollectionView.ItemsLayout>
 
-                    <Entry Placeholder="Введите Email клиента"
-                           Text="{Binding CustomerEmail}"/>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CustomerModel">
+                                        <Border Margin="10"
+                                                Padding="15"
+                                                StrokeShape="RoundRectangle 12"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
 
+                                            <Grid ColumnDefinitions="3*, 1*" ColumnSpacing="20">
+                                                <Grid ColumnDefinitions="*, *, *"
+                                                      Grid.Column="0" 
+                                                      ColumnSpacing="20">
+                                                    
+                                                    <Label Grid.Column="0"
+                                                           Text="{Binding FullName}"
+                                                           FontAttributes="Bold"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Phone}"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+
+                                                    <Label Grid.Column="2"
+                                                           Text="{Binding Email}"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+                                                </Grid>
+
+                                                <Button Grid.Column="1"
+                                                        Text="Выбрать"
+                                                        FontAttributes="Bold"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CarOrderViewModel}}, 
+                                                                 Path=SelectCustomerCommand}"
+                                                        CommandParameter="{Binding .}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border IsVisible="{Binding NewCustomer}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Label Text="ФИО клиента"/>
+
+                            <Entry Placeholder="Введите ФИО клиента"
+                                   Text="{Binding CustomerName}"/>
+
+                            <Label Text="Номер телефона клиента"/>
+
+                            <Entry Placeholder="Введите номер телефона клиента"
+                                   Text="{Binding CustomerPhone}"/>
+
+                            <Label Text="Email клиента"/>
+
+                            <Entry Placeholder="Введите Email клиента"
+                                   Text="{Binding CustomerEmail}"/>
+
+                            <Button Text="Подтвердить"
+                                    FontAttributes="Bold"
+                                    Command="{Binding SelectNewCustomerCommand}"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Picker Title="Клиент"
+                            ItemsSource="{Binding Customers}"
+                            SelectedItem="{Binding SelectedCustomer}"/>
+
+                    <!-- Менеджер -->
                     <Picker Title="Менеджер"
                             ItemsSource="{Binding Managers}"
                             SelectedItem="{Binding SelectedManager}"/>
@@ -160,6 +259,7 @@
                        HorizontalTextAlignment="Center"/>
 
                 <Button Text="Оформить заказ"
+                        FontAttributes="Bold"
                         WidthRequest="250"
                         Command="{Binding CloseAllModalCommand}"
                         IsEnabled="True"/>
