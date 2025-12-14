@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.CarsVM"
+             x:Class="CDS_MAUI.Views.CarsModal.CarOrderModal"
+             x:DataType="viewmodels:CarOrderViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *, Auto"
+              RowSpacing="0"
+              Margin="20, 20">
+
+            <!-- Фон с закруглениями -->
+            <Border Grid.RowSpan="4"
+                    StrokeShape="RoundRectangle 16"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="1"/>
+
+            <!-- Кнопка закрытия -->
+            <Button Grid.Row="0"
+                    Text="✕"
+                    FontSize="20"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    CornerRadius="20"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="10"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    Command="{Binding CloseModalCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <!-- Контент -->
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="2*, 1*"
+                  ColumnSpacing="40"
+                  Padding="20,0">
+                
+                <!-- Информация о клиенте и менеджере -->
+                <VerticalStackLayout Grid.Column="0" Spacing="20">
+                    <Label Text="Информация о клиенте и менеджере"
+                           FontSize="20"
+                           FontAttributes="Bold"/>
+
+                    <Label Text="ФИО клиента"/>
+
+                    <Entry Placeholder="Введите ФИО клиента"
+                           Text="{Binding CustomerName}"/>
+
+                    <Label Text="Номер телефона клиента"/>
+
+                    <Entry Placeholder="Введите номер телефона клиента"
+                           Text="{Binding CustomerPhone}"/>
+
+                    <Label Text="Email клиента"/>
+
+                    <Entry Placeholder="Введите Email клиента"
+                           Text="{Binding CustomerEmail}"/>
+
+                    <Picker Title="Менеджер"
+                            ItemsSource="{Binding Managers}"
+                            SelectedItem="{Binding SelectedManager}"/>
+
+                </VerticalStackLayout>
+
+                <!-- Информация о машине -->
+                <VerticalStackLayout Grid.Column="1" Spacing="20">
+                    <Label Text="Информация о машине"
+                           FontSize="20"
+                           FontAttributes="Bold"/>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="VIN:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.VIN}"
+                               FontSize="16"
+                               FontAttributes="Italic"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Марка:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.Brand}"
+                               FontSize="16"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Модель:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.Model}"
+                               FontSize="16"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Доступность:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.Availability}"
+                               FontSize="16"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Цена:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.FormattedPrice}"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Скидка:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+
+                        <Label Grid.Column="1"
+                               Text="0%"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20">
+                        <Label Text="Итого:"
+                               FontSize="20"
+                               FontAttributes="Bold"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding Car.FormattedPrice}"
+                               FontSize="20"
+                               FontAttributes="Bold"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Кнопка -->
+            <VerticalStackLayout Grid.Row="2"
+                                 Spacing="20"
+                                 Padding="0,30,0,30"
+                                 HorizontalOptions="Center">
+
+                <Label Text="{Binding Car.FormattedPrice}"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"/>
+
+                <Button Text="Оформить заказ"
+                        WidthRequest="250"
+                        Command="{Binding CloseAllModalCommand}"
+                        IsEnabled="True"/>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

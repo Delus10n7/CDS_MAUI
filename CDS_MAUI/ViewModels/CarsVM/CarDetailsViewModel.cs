@@ -11,19 +11,8 @@ public partial class CarDetailsViewModel : BaseViewModel
     [ObservableProperty]
     private CarModel _car;
 
-    // === СЕРВИСЫ ===
-    ICarService _carService;
-    ICarConfigurationService _carConfigService;
-    IOrderService _orderService;
-    IUserService _userService;
-
-    public CarDetailsViewModel(ICarService carService, ICarConfigurationService carConfigService, IOrderService orderService, IUserService userService)
+    public CarDetailsViewModel()
     {
-        _carService = carService;
-        _carConfigService = carConfigService;
-        _orderService = orderService;
-        _userService = userService;
-
         Title = "Детали автомобиля";
     }
 
@@ -51,12 +40,7 @@ public partial class CarDetailsViewModel : BaseViewModel
                     {"Car", Car}
                 };
 
-                //await Shell.Current.GoToAsync(nameof(CarOrderModal), true, parameters);
-
-                await Shell.Current.DisplayAlert("Успех", "Заказ успешно оформлен!", "OK");
-
-                // Закрываем модальное окно
-                await Shell.Current.Navigation.PopModalAsync();
+                await Shell.Current.GoToAsync(nameof(CarOrderModal), true, parameters);
             }
         }
         finally

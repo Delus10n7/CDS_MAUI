@@ -58,7 +58,7 @@ namespace CDS_MAUI
             builder.Services.AddTransient<ReportsViewModel>();
             builder.Services.AddTransient<CarDetailsViewModel>();
             builder.Services.AddTransient<OrderDetailsViewModel>();
-            //builder.Services.AddTransient<CarOrderViewModel>();
+            builder.Services.AddTransient<CarOrderViewModel>();
 
             // Регистрация Views
             builder.Services.AddTransient<CarsPage>();
@@ -66,7 +66,7 @@ namespace CDS_MAUI
             builder.Services.AddTransient<ReportsPage>();
             builder.Services.AddTransient<CarDetailsModal>();
             builder.Services.AddTransient<OrderDetailsModal>();
-            //builder.Services.AddTransient<CarOrderModal>();
+            builder.Services.AddTransient<CarOrderModal>();
 
             return builder.Build();
         }

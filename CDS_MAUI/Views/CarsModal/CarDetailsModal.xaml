@@ -9,13 +9,13 @@
     <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *, Auto"
               RowSpacing="0"
-              Margin="20, 50">
+              Margin="20, 20">
 
             <!-- Фон с закруглениями -->
             <Border Grid.RowSpan="4"
                     StrokeShape="RoundRectangle 16"
                     BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
-                    Stroke="{StaticResource Primary}"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                     StrokeThickness="1"/>
 
             <!-- Кнопка закрытия -->
@@ -46,7 +46,7 @@
             <Grid Grid.Row="2"
                   ColumnDefinitions="*,*"
                   ColumnSpacing="20"
-                  Padding="20,0">
+                  Padding="20">
 
                 <!-- Изображение -->
                 <Border Grid.Column="0"
@@ -179,14 +179,14 @@
                                  HorizontalOptions="Center">
 
                 <Label Text="{Binding Car.FormattedPrice}"
-                       FontSize="28"
+                       FontSize="32"
                        FontAttributes="Bold"
-                       TextColor="{StaticResource Primary}"/>
+                       HorizontalTextAlignment="Center"/>
 
                 <Button Text="Оформить заказ"
                         CornerRadius="10"
                         HeightRequest="50"
-                        WidthRequest="220"
+                        WidthRequest="250"
                         FontSize="16"
                         FontAttributes="Bold"
                         Command="{Binding ProcessOrderCommand}"

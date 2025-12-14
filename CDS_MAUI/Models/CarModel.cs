@@ -9,6 +9,7 @@ namespace CDS_MAUI.Models
 {
     public class CarModel
     {
+        public int? Id { get; set; }
         public string? VIN { get; set; }
         public string? Brand { get; set; }
         public string? Model { get; set; }
@@ -33,6 +34,7 @@ namespace CDS_MAUI.Models
 
         public CarModel(CarDTO c)
         {
+            Id = c.Id;
             VIN = c.VIN;
             Brand = c.BrandName;
             Model = c.ModelName;
