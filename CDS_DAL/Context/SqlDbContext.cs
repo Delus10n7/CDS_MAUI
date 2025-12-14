@@ -353,11 +353,6 @@ public partial class SqlDbContext : DbContext
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
                 .HasConstraintName("FK__Orders__StatusId__797309D9");
-
-            entity.HasOne(d => d.TradeInCar).WithMany(p => p.OrdersTradeInCar)
-                .HasForeignKey(d => d.TradeInCarId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Orders__TradeInC__75A278F5");
         });
 
         modelBuilder.Entity<RoleType>(entity =>

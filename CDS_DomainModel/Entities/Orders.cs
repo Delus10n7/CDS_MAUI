@@ -11,8 +11,6 @@ public partial class Orders
 
     public decimal? TradeInValue { get; set; }
 
-    public int? TradeInCarId { get; set; }
-
     public int ClientId { get; set; }
 
     public int ManagerId { get; set; }
@@ -30,6 +28,4 @@ public partial class Orders
     public virtual UserBase Manager { get; set; } = null!;
 
     public virtual OrderStatus? Status { get; set; }
-
-    public virtual Cars? TradeInCar { get; set; }
 }

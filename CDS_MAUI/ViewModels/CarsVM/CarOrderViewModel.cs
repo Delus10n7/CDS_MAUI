@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Audio;
 
 namespace CDS_MAUI.ViewModels.CarsVM
 {
@@ -173,6 +174,17 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
                 SelectedCustomer = CustomerName;
             }
+        }
+
+        [RelayCommand]
+        private async Task MakeOrder()
+        {
+            await CloseAllModal();
+        }
+
+        private void CreateNewOrder()
+        {
+
         }
     }
 }

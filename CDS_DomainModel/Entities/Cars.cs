@@ -34,6 +34,4 @@ public partial class Cars
     public virtual CarConfiguration? Configuration { get; set; }
 
     public virtual ICollection<Orders> OrdersCar { get; set; } = new List<Orders>();
-
-    public virtual ICollection<Orders> OrdersTradeInCar { get; set; } = new List<Orders>();
 }

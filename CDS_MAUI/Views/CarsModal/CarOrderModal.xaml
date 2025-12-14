@@ -261,7 +261,7 @@
                 <Button Text="Оформить заказ"
                         FontAttributes="Bold"
                         WidthRequest="250"
-                        Command="{Binding CloseAllModalCommand}"
+                        Command="{Binding MakeOrderCommand}"
                         IsEnabled="True"/>
             </VerticalStackLayout>
         </Grid>

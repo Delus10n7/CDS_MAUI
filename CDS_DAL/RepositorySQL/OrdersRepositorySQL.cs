@@ -94,16 +94,6 @@ namespace CDS_DAL.RepositorySQL
                 .ToList();
         }
 
-        public List<Orders> GetTradeInOrders()
-        {
-            return db.Orders
-                .Where(o => o.IsTradeIn.GetValueOrDefault(false))
-                .Include(o => o.TradeInCar)
-                .Include(o => o.Car)
-                .Include(o => o.Client)
-                .ToList();
-        }
-
         public decimal GetTotalSales(DateTime? startDate = null, DateTime? endDate = null)
         {
             var query = db.Orders

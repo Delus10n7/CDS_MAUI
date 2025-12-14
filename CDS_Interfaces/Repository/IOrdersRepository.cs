@@ -12,7 +12,6 @@ namespace CDS_Interfaces.Repository
         List<Orders> GetOrdersByClient(int clientId);
         List<Orders> GetOrdersByStatus(int statusId);
         List<Orders> GetOrdersByDateRange(DateTime startDate, DateTime endDate);
-        List<Orders> GetTradeInOrders();
         decimal GetTotalSales(DateTime? startDate = null, DateTime? endDate = null);
     }
 }

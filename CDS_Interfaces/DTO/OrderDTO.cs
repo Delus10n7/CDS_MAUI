@@ -12,7 +12,6 @@ namespace CDS_Interfaces.DTO
         public int Id { get; set; }
         public bool? IsTradeIn { get; set; }
         public decimal? TradeInValue { get; set; }
-        public int? TradeInCarId { get; set; }
         public int ClientId { get; set; }
         public int ManagerId { get; set; }
         public int? CarId { get; set; }
@@ -35,7 +34,6 @@ namespace CDS_Interfaces.DTO
             Id = o.Id;
             IsTradeIn = o.IsTradeIn;
             TradeInValue = o.TradeInValue;
-            TradeInCarId = o.TradeInCarId;
             ClientId = o.ClientId;
             ManagerId = o.ManagerId;
             CarId = o.CarId;
