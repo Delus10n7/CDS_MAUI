@@ -9,6 +9,7 @@ namespace CDS_MAUI.Models
 {
     public class OrderModel
     {
+        public int Id { get; set; }
         public string? Brand { get; set; }
         public string? Model { get; set; }
         public string? VIN { get; set; }
@@ -29,6 +30,7 @@ namespace CDS_MAUI.Models
 
         public OrderModel(OrderDTO o)
         {
+            Id = o.Id;
             Brand = o.BrandName;
             Model = o.ModelName;
             VIN = o.VIN;

@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CDS_MAUI.Models;
+using CDS_Interfaces.Service;
+using System.Collections.ObjectModel;
+using CDS_Interfaces.DTO;
 
 namespace CDS_MAUI.ViewModels.OrdersVM;
 
@@ -9,9 +12,40 @@ public partial class OrderDetailsViewModel : BaseViewModel
     [ObservableProperty]
     private OrderModel _order;
 
-    public OrderDetailsViewModel()
+    [ObservableProperty]
+    private ObservableCollection<string> _orderStatuses = new();
+
+    [ObservableProperty]
+    private string _selectedOrderStatus = "";
+
+    private List<OrderStatusDTO> _orderStatusDTOs;
+
+    // === СЕРВИСЫ ===
+    IOrderService _orderService;
+
+    public OrderDetailsViewModel(IOrderService orderService)
     {
+        _orderService = orderService;
+
         Title = "Детали заказа";
+        InitializeOrderStatuses();
+    }
+
+    public void InitializeOrderStatuses()
+    {
+        OrderStatuses.Clear();
+
+        _orderStatusDTOs = _orderService.GetAllOrderStatuses(); 
+
+        foreach (var orderStatus in _orderStatusDTOs)
+        {
+            OrderStatuses.Add(orderStatus.StatusName);
+        }
+    }
+
+    partial void OnOrderChanged(OrderModel value)
+    {
+        SelectedOrderStatus = Order.Status;
     }
 
     [RelayCommand]
@@ -33,8 +67,15 @@ public partial class OrderDetailsViewModel : BaseViewModel
             if (confirm)
             {
                 // Логика редактирования заказа
-                await Task.Delay(500);
-                await Shell.Current.DisplayAlert("Информация", "Редактирование заказа...", "OK");
+
+                OrderDTO orderDTO = _orderService.GetOrder(Order.Id);
+                OrderStatusDTO newOrderStatusDTO = _orderStatusDTOs.FirstOrDefault(i => i.StatusName == SelectedOrderStatus);
+                orderDTO.StatusId = newOrderStatusDTO.Id;
+                _orderService.UpdateOrder(orderDTO);
+
+                await Shell.Current.DisplayAlert("Успех!", $"Заказ на {Order.Brand} {Order.Model} успешно отредактирован", "OK");
+
+                await CloseModal();
             }
         }
         finally

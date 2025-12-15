@@ -21,6 +21,10 @@ namespace CDS_BLL.Service
         {
             return db.Orders.GetList().Select(i => new OrderDTO(i)).ToList();
         }
+        public List<OrderStatusDTO> GetAllOrderStatuses()
+        {
+            return db.OrderStatuses.GetList().Select(i => new OrderStatusDTO(i)).ToList();
+        }
         public OrderDTO GetOrder(int Id)
         {
             var order = db.Orders.GetItem(Id);

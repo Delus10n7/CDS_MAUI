@@ -19,15 +19,21 @@
     <ScrollView>
         <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
             <!-- Поисковая строка и кнопка фильтра -->
-            <Grid ColumnDefinitions="90*, 10*" ColumnSpacing="10">
+            <Grid ColumnDefinitions="2*, 2*, 1*, 2*, 2*" ColumnSpacing="10">
                 <SearchBar Placeholder="Поиск" 
-                           Grid.Column="0"
+                           Grid.ColumnSpan="4"
                            Text="{Binding SearchText}"
                            SearchCommand="{Binding SearchCommand}"/>
 
-                <Button Text="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToFilterTextConverter}}" 
-                        Grid.Column="1" 
-                        Command="{Binding ToggleFiltersCommand}"/>
+                <Grid Grid.Column="4" ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <Button Text="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToFilterTextConverter}}" 
+                            Grid.Column="0" 
+                            Command="{Binding ToggleFiltersCommand}"/>
+
+                    <Button Text="Обновить"
+                            Grid.Column="1"
+                            Command="{Binding RefreshCommand}"/>
+                </Grid>
             </Grid>
 
             <!-- Панель фильтров -->
@@ -94,7 +100,7 @@
             </Border>
 
             <!-- Кнопки переключения между страницами -->
-            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10">
+            <Grid ColumnDefinitions="2*, 2*, 1*, 2*, 2*" ColumnSpacing="10">
                 <Button Grid.Column="0"
                         Text="На первую"
                         Command="{Binding FirstPageCommand}"
@@ -197,7 +203,7 @@
                                 <VerticalStackLayout Grid.Column="2"
                                                      Spacing="5"
                                                      VerticalOptions="Center">
-                                    <Button Text="Подробнее"
+                                    <Button Text="Изменить"
                                             CornerRadius="8"
                                             HeightRequest="35"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, 

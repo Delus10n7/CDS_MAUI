@@ -10,6 +10,7 @@ namespace CDS_Interfaces.Service
     public interface IOrderService
     {
         List<OrderDTO> GetAllOrders();
+        List<OrderStatusDTO> GetAllOrderStatuses();
         OrderDTO GetOrder(int Id);
         void CreateOrder(OrderDTO o);
         void UpdateOrder(OrderDTO o);

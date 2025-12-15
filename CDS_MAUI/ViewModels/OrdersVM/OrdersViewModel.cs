@@ -141,6 +141,13 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         // === КОМАНДЫ ===
 
         [RelayCommand]
+        private void Refresh()
+        {
+            LoadAllOrders();
+            ApplyFilters();
+        }
+
+        [RelayCommand]
         private void ToggleFilters()
         {
             IsFilterPanelVisible = !IsFilterPanelVisible;
@@ -182,51 +189,6 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         };
 
             await Shell.Current.GoToAsync(nameof(OrderDetailsModal), true, parameters);
-        }
-
-        [RelayCommand]
-        private async Task EditOrder(OrderModel order)
-        {
-            if (order == null) return;
-
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Редактирование заказа",
-                $"Редактировать заказ {order.Brand} {order.Model}?",
-                "Да",
-                "Отмена");
-
-            if (confirm)
-            {
-                IsBusy = true;
-                try
-                {
-                    // Логика редактирования заказа
-                    await Task.Delay(500);
-                    await Shell.Current.DisplayAlert("Информация", "Редактирование заказа...", "OK");
-                }
-                finally
-                {
-                    IsBusy = false;
-                }
-            }
-        }
-
-        [RelayCommand]
-        private async Task DeleteOrder(OrderModel order)
-        {
-            if (order == null) return;
-
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Удаление заказа",
-                $"Удалить заказ {order.Brand} {order.Model} клиента {order.CustomerName}?",
-                "Удалить",
-                "Отмена");
-
-            if (confirm)
-            {
-                Orders.Remove(order);
-                await Shell.Current.DisplayAlert("Успех", "Заказ удален", "OK");
-            }
         }
 
         [RelayCommand]
@@ -307,7 +269,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
             if (brand == "Любой" || string.IsNullOrEmpty(brand))
                 return;
 
-            var brandModels = Orders
+            var brandModels = _allOrders
                 .Where(o => o.Brand == brand)
                 .Select(o => o.Model)
                 .Distinct()
@@ -332,8 +294,6 @@ namespace CDS_MAUI.ViewModels.OrdersVM
                 _allOrders.Add(new OrderModel(order));
             }
 
-            UpdateModelsForBrand("Любой");
-
             FilterOrders();
         }
 
@@ -341,20 +301,20 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         {
             // Фильтрация заказов
 
-            var filtered = _allOrders.AsEnumerable();
+            var filtered = _allOrders.ToList();
 
-            if (SelectedBrand != "Любой")
-                filtered = filtered.Where(o => o.Brand == SelectedBrand);
+            if (SelectedBrand != "Любой" && !string.IsNullOrEmpty(SelectedBrand))
+                filtered = filtered.Where(o => o.Brand == SelectedBrand).ToList();
 
-            if (SelectedModel != "Любая")
-                filtered = filtered.Where(o => o.Model == SelectedModel);
+            if (SelectedModel != "Любая" && !string.IsNullOrEmpty(SelectedModel))
+                filtered = filtered.Where(o => o.Model == SelectedModel).ToList();
 
-            if (SelectedManager != "Любой")
-                filtered = filtered.Where(o => o.ManagerName == SelectedManager);
+            if (SelectedManager != "Любой" && !string.IsNullOrEmpty(SelectedManager))
+                filtered = filtered.Where(o => o.ManagerName == SelectedManager).ToList();
 
             if (!string.IsNullOrWhiteSpace(ClientName))
                 filtered = filtered.Where(o =>
-                    o.CustomerName.Contains(ClientName, StringComparison.OrdinalIgnoreCase));
+                    o.CustomerName.Contains(ClientName, StringComparison.OrdinalIgnoreCase)).ToList();
 
             // Фильтрация по сумме заказа
             if (!string.IsNullOrEmpty(PriceFrom))
@@ -370,7 +330,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
                     o.Brand.ToLower().Contains(searchLower) ||
                     o.Model.ToLower().Contains(searchLower) ||
                     o.CustomerName.ToLower().Contains(searchLower) ||
-                    o.VIN.ToLower().Contains(searchLower));
+                    o.VIN.ToLower().Contains(searchLower)).ToList();
             }
 
             // Обновляем отфильтрованную коллекцию

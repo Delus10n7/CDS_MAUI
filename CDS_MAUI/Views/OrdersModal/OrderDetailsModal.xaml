@@ -42,90 +42,69 @@
                    Margin="0,20,0,10"
                    TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
-            <!-- Контент -->
-            <Grid Grid.Row="2"
-                  ColumnDefinitions="*,*"
-                  ColumnSpacing="20"
-                  Padding="20,0">
+            <!-- Детали заказа -->
+            <VerticalStackLayout Spacing="20" Margin="20">
 
-                <!-- Изображение -->
-                <Border Grid.Column="0"
-                        HeightRequest="300"
-                        StrokeShape="RoundRectangle 12"
-                        BackgroundColor="Transparent"
-                        VerticalOptions="Center">
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         Spacing="10">
-                        <Image Source="dotnet_bot.png"
-                               HeightRequest="200"
-                               WidthRequest="200"
-                               Aspect="AspectFit"/>
-                        <Label Text="Фото автомобиля"
-                               FontSize="12"
-                               HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
+                <Grid ColumnDefinitions="*, *">
+                    <Label Text="VIN:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="{Binding Order.VIN}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </Grid>
 
-                <!-- Детали заказа -->
-                <VerticalStackLayout Grid.Column="1"
-                                     Spacing="15">
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="Клиент:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="{Binding Order.CustomerName}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </Grid>
 
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="VIN:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.VIN}"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                    </Grid>
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="Менеджер:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="{Binding Order.ManagerName}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </Grid>
 
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="Клиент:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.CustomerName}"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                    </Grid>
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="Дата заказа:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="{Binding Order.FormattedDate}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </Grid>
 
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="Менеджер:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.ManagerName}"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                    </Grid>
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="Статус:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="Дата заказа:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.FormattedDate}"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                    </Grid>
+                    <Picker Grid.Column="1"
+                            ItemsSource="{Binding OrderStatuses}"
+                            SelectedItem="{Binding SelectedOrderStatus}"/>
+                </Grid>
 
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="Статус:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.Status}"
-                               TextColor="{StaticResource Success}"/>
-                    </Grid>
-
-                    <Grid ColumnDefinitions="*,*">
-                        <Label Text="Цена без скидок:"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                        <Label Grid.Column="1"
-                               Text="{Binding Order.FormattedPrice}"
-                               TextColor="{StaticResource Success}"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Grid>
+                <Grid ColumnDefinitions="*,*">
+                    <Label Text="Цена без скидок:"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    
+                    <Label Grid.Column="1"
+                           Text="{Binding Order.FormattedPrice}"
+                           TextColor="{StaticResource Success}"/>
+                </Grid>
+            </VerticalStackLayout>
 
             <!-- Цена и кнопка -->
             <VerticalStackLayout Grid.Row="3"
