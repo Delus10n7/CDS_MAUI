@@ -25,6 +25,8 @@ public partial class Discount
 
     public bool? IsActive { get; set; }
 
+    public int? OrdersNeeded { get; set; }
+
     public virtual Brand? Brand { get; set; }
 
     public virtual UserBase? Client { get; set; }

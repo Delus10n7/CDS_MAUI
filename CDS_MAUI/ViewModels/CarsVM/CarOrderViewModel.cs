@@ -30,19 +30,22 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private ObservableCollection<CustomerModel> _filteredCustomers = new();
 
         [ObservableProperty]
+        private ObservableCollection<string> _tradeInCars = new();
+
+        [ObservableProperty]
         private string _discountPercent = "";
 
         [ObservableProperty]
         private string _salePrice = "";
 
         [ObservableProperty]
-        private bool _isTradeIn = false;
-
-        [ObservableProperty]
         private string _selectedManager;
 
         [ObservableProperty]
         private string _selectedCustomer;
+
+        [ObservableProperty]
+        private string _selectedTradeInCar;
 
         [ObservableProperty]
         private string _customerName = "";
@@ -54,10 +57,28 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private string _customerEmail = "";
 
         [ObservableProperty]
+        private string _tradeInCarBrand = "";
+
+        [ObservableProperty]
+        private string _tradeInCarModel = "";
+
+        [ObservableProperty]
+        private string _tradeInCarPrice = "";
+
+        [ObservableProperty]
+        private string _tradeInCarPriceFormatted = "";
+
+        [ObservableProperty]
+        private bool _isTradeIn = false;
+
+        [ObservableProperty]
         private bool _newCustomer = false;
 
         [ObservableProperty]
         private bool _oldCustomer = false;
+
+        [ObservableProperty]
+        private bool _tradeInMenuVisible = false;
 
         [ObservableProperty]
         private string _searchText = "";
@@ -95,6 +116,15 @@ namespace CDS_MAUI.ViewModels.CarsVM
             }
         }
 
+        partial void OnSelectedTradeInCarChanged(string value)
+        {
+            if (value != "Нет" && value != string.Empty)
+            {
+                IsTradeIn = true;
+            }
+            else IsTradeIn = false;
+        }
+
         public void InitializeManagersAndCustomers()
         {
             Customers.Clear();
@@ -104,6 +134,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
             Managers.Clear();
             Managers.Add("Не выбран");
             SelectedManager = Managers[0];
+
+            TradeInCars.Clear();
+            TradeInCars.Add("Нет");
+            SelectedTradeInCar = TradeInCars[0];
 
             List<ManagerDTO> managerDTOs = _userService.GetAllManagers();
 
@@ -138,6 +172,12 @@ namespace CDS_MAUI.ViewModels.CarsVM
         {
             NewCustomer = false;
             OldCustomer = !OldCustomer;
+        }
+
+        [RelayCommand]
+        private void ShowTradeInMenu()
+        {
+            TradeInMenuVisible = !TradeInMenuVisible;
         }
 
         [RelayCommand]
@@ -250,6 +290,24 @@ namespace CDS_MAUI.ViewModels.CarsVM
         }
 
         [RelayCommand]
+        private void AddTradeInCar()
+        {
+            if (!string.IsNullOrEmpty(TradeInCarBrand) && !string.IsNullOrEmpty(TradeInCarModel) && !string.IsNullOrEmpty(TradeInCarPrice))
+            {
+                TradeInCars.Clear();
+                TradeInCars.Add("Нет");
+                TradeInCars.Add(TradeInCarBrand + " " + TradeInCarModel);
+                SelectedTradeInCar = TradeInCars[1];
+
+                TradeInMenuVisible = false;
+
+                TradeInCarPriceFormatted = Convert.ToDecimal(TradeInCarPrice).ToString("N0") + " руб.";
+
+                GetDiscountedPrice();
+            }
+        }
+
+        [RelayCommand]
         private async Task MakeOrder()
         {
             await CloseAllModal();
@@ -265,6 +323,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             DiscountPercent = "0.00 %";
             SalePrice = Car.FormattedPrice;
             decimal? discountPercent = (decimal)0.0;
+            decimal? tradeInCarValue = (decimal)0.0;
 
             List<DiscountDTO> discountDTOs = _discountService.GetAllDicsounts().Where(i => i.IsActive == true && 
                 i.EndDate.Value > DateOnly.FromDateTime(DateTime.Now)).ToList();
@@ -285,12 +344,14 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 {
                     discountPercent = discount.DiscountPercent;
                 }
-                else if (IsTradeIn && discount.DiscountTypeId == 5 
+                else if (SelectedTradeInCar != "Нет" && discount.DiscountTypeId == 5 
                     && discount.DiscountPercent > discountPercent)
                 {
                     discountPercent = discount.DiscountPercent;
+                    loyaltyDiscounts.Add(discount);
+                    tradeInCarValue = Convert.ToDecimal(TradeInCarPrice);
                 }
-                else if (discount.DiscountTypeId == 4)
+                if (discount.DiscountTypeId == 4)
                 {
                     loyaltyDiscounts.Add(discount);
                 }
@@ -304,12 +365,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
                 foreach (var discount in loyaltyDiscounts)
                 {
-                    if (discount.DiscountName == "Скидка постоянного клиента" && orderDTOs.Count >= 2)
-                    {
-                        loyaltyDiscountPercent += discount.DiscountPercent;
-                    }
-
-                    if (discount.DiscountName == "Бонус за вторую покупку" && orderDTOs.Count >= 1)
+                    if (discount.OrdersNeeded == null) loyaltyDiscountPercent += discount.DiscountPercent;
+                    else if (discount.OrdersNeeded <= orderDTOs.Count)
                     {
                         loyaltyDiscountPercent += discount.DiscountPercent;
                     }
@@ -319,7 +376,21 @@ namespace CDS_MAUI.ViewModels.CarsVM
             }
 
             DiscountPercent = discountPercent?.ToString() + " %";
-            if (discountPercent > 0) SalePrice = (Car.Price - (Car.Price * (discountPercent / 100)))?.ToString("N0") + " руб.";
+            
+            if (discountPercent > 0)
+            {
+                if (tradeInCarValue != (decimal)0.0)
+                {
+                    var price = Car.Price;
+                    price -= tradeInCarValue;
+
+                    SalePrice = (price - (price * (discountPercent / 100)))?.ToString("N0") + " руб.";
+                }
+                else
+                {
+                    SalePrice = (Car.Price - (Car.Price * (discountPercent / 100)))?.ToString("N0") + " руб.";
+                }
+            }
         }
     }
 }

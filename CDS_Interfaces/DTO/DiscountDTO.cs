@@ -19,6 +19,7 @@ namespace CDS_Interfaces.DTO
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public bool? IsActive { get; set; }
+        public int? OrdersNeeded { get; set; }
 
         public DiscountDTO() { }
 
@@ -34,6 +35,7 @@ namespace CDS_Interfaces.DTO
             StartDate = d.StartDate;
             EndDate = d.EndDate;
             IsActive = d.IsActive;
+            OrdersNeeded = d.OrdersNeeded;
         }
     }
 }

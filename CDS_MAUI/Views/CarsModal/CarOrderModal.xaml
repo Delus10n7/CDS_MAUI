@@ -162,6 +162,49 @@
                     <Picker Title="Менеджер"
                             ItemsSource="{Binding Managers}"
                             SelectedItem="{Binding SelectedManager}"/>
+                    
+                    <!-- Трейд-ин -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Picker Grid.Column="0"
+                                Title="Трейд-ин"
+                                ItemsSource="{Binding TradeInCars}"
+                                SelectedItem="{Binding SelectedTradeInCar}"/>
+
+                        <Button Grid.Column="1"
+                                Text="Трейд-ин меню"
+                                FontAttributes="Bold"
+                                Command="{Binding ShowTradeInMenuCommand}"/>
+                    </Grid>
+
+                    <Border IsVisible="{Binding TradeInMenuVisible}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Label Text="Марка авто"/>
+
+                            <Entry Placeholder="Введите марку авто"
+                                   Text="{Binding TradeInCarBrand}"/>
+
+                            <Label Text="Модель авто"/>
+
+                            <Entry Placeholder="Введите модель авто"
+                                   Text="{Binding TradeInCarModel}"/>
+
+                            <Label Text="Оценочная цена авто"/>
+
+                            <Entry Placeholder="Введите стоимость авто"
+                                   Text="{Binding TradeInCarPrice}"/>
+
+                            <Button Text="Добавить авто в трейд-ин"
+                                    FontAttributes="Bold"
+                                    Command="{Binding AddTradeInCarCommand}"/>
+                        </VerticalStackLayout>
+                    </Border>
 
                 </VerticalStackLayout>
 
@@ -230,6 +273,17 @@
 
                         <Label Grid.Column="1"
                                Text="{Binding DiscountPercent}"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20" IsVisible="{Binding IsTradeIn}">
+                        <Label Text="Сумма по трейд-ин:"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding TradeInCarPriceFormatted}"
                                FontSize="16"
                                FontAttributes="Bold"/>
                     </Grid>
