@@ -11,7 +11,8 @@ namespace CDS_Interfaces.Service
     {
         List<OrderDTO> GetAllOrders();
         OrderDTO GetOrder(int Id);
-
+        void CreateOrder(OrderDTO o);
+        void UpdateOrder(OrderDTO o);
         void DeleteOrder(int Id);
     }
 }

@@ -36,7 +36,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private string _discountPercent = "";
 
         [ObservableProperty]
-        private string _salePrice = "";
+        private string _salePriceFormatted = "";
 
         [ObservableProperty]
         private string _selectedManager;
@@ -84,6 +84,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private string _searchText = "";
 
         private CustomerModel _selectedCustomerModel;
+        private ManagerDTO _selectedManagerModel;
+        private decimal? _salePrice;
 
         // === СЕРВИСЫ ===
         ICarService _carService;
@@ -310,18 +312,62 @@ namespace CDS_MAUI.ViewModels.CarsVM
         [RelayCommand]
         private async Task MakeOrder()
         {
-            await CloseAllModal();
+            await CreateNewOrder();
         }
 
-        private void CreateNewOrder()
+        private async Task CreateNewOrder()
         {
+            IsBusy = true;
 
+            try
+            {
+                bool confirm = await Shell.Current.DisplayAlert(
+                    "Изменение заказа",
+                    $"Вы хотите оформить {Car.Brand} {Car.Model} на сумму {SalePriceFormatted}?",
+                    "Да",
+                    "Отмена"
+                );
+
+                if (confirm)
+                {
+                    // Логика оформления заказа
+
+                    CarDTO carDTO = _carService.GetCar(Car.Id);
+                    CustomerDTO customerDTO = _userService.GetCustomer(_selectedCustomerModel.Id);
+                    ManagerDTO managerDTO = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedManager);
+
+                    OrderDTO newOrder = new OrderDTO();
+                    newOrder.IsTradeIn = IsTradeIn;
+                    if (IsTradeIn) newOrder.TradeInValue = Convert.ToDecimal(TradeInCarPrice);
+                    else newOrder.TradeInValue = (decimal)0.0;
+                    newOrder.ClientId = customerDTO.Id;
+                    newOrder.ManagerId = managerDTO.Id;
+                    newOrder.CarId = carDTO.Id;
+                    newOrder.OrderDate = DateOnly.FromDateTime(DateTime.Now);
+                    newOrder.StatusId = 3; // В обработке
+                    newOrder.SalePrice = _salePrice;
+
+                    _orderService.CreateOrder(newOrder);
+
+                    carDTO.AvailabilityId = 3; // Продана
+                    _carService.UpdateCar(carDTO);
+
+                    await Shell.Current.DisplayAlert("Успех!", $"Заказ {Car.Brand} {Car.Model} на сумму {SalePriceFormatted} успешно создан", "OK");
+
+                    await CloseAllModal();
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void GetDiscountedPrice()
         {
             DiscountPercent = "0.00 %";
-            SalePrice = Car.FormattedPrice;
+            SalePriceFormatted = Car.FormattedPrice;
+            _salePrice = Car.Price;
             decimal? discountPercent = (decimal)0.0;
             decimal? tradeInCarValue = (decimal)0.0;
 
@@ -384,11 +430,13 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     var price = Car.Price;
                     price -= tradeInCarValue;
 
-                    SalePrice = (price - (price * (discountPercent / 100)))?.ToString("N0") + " руб.";
+                    _salePrice = (price - (price * (discountPercent / 100)));
+                    SalePriceFormatted = _salePrice?.ToString("N0") + " руб.";
                 }
                 else
                 {
-                    SalePrice = (Car.Price - (Car.Price * (discountPercent / 100)))?.ToString("N0") + " руб.";
+                    _salePrice = (Car.Price - (Car.Price * (discountPercent / 100)));
+                    SalePriceFormatted = _salePrice?.ToString("N0") + " руб.";
                 }
             }
         }

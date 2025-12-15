@@ -123,6 +123,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             // Загрузка машин
             LoadAllCars();
+            UpdateModelsForBrand("Любой");
             LoadCurrentPageCars();
         }
 
@@ -180,6 +181,13 @@ namespace CDS_MAUI.ViewModels.CarsVM
         }
 
         // === КОМАНДЫ ===
+
+        [RelayCommand]
+        private void Refresh()
+        {
+            LoadAllCars();
+            ApplyFilters();
+        }
 
         [RelayCommand]
         private void ToggleFilters()
@@ -337,8 +345,6 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     _allCars.Add(new CarModel(car));
                 }
             }
-
-            UpdateModelsForBrand("Любой");
 
             // Инициализируем отфильтрованные данные
             FilterCars();

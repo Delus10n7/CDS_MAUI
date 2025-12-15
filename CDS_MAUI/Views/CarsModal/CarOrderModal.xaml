@@ -294,7 +294,7 @@
                                FontAttributes="Bold"/>
 
                         <Label Grid.Column="1"
-                               Text="{Binding SalePrice}"
+                               Text="{Binding SalePriceFormatted}"
                                FontSize="20"
                                FontAttributes="Bold"/>
                     </Grid>
@@ -307,7 +307,7 @@
                                  Padding="0,30,0,30"
                                  HorizontalOptions="Center">
 
-                <Label Text="{Binding SalePrice}"
+                <Label Text="{Binding SalePriceFormatted}"
                        FontSize="32"
                        FontAttributes="Bold"
                        HorizontalTextAlignment="Center"/>

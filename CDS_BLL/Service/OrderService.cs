@@ -32,7 +32,42 @@ namespace CDS_BLL.Service
 
             return new OrderDTO(order);
         }
+        public void CreateOrder(OrderDTO o)
+        {
+            db.Orders.Create(new Orders()
+            {
+                IsTradeIn = o.IsTradeIn,
+                TradeInValue = o.TradeInValue,
+                ClientId = o.ClientId,
+                ManagerId = o.ManagerId,
+                CarId = o.CarId,
+                OrderDate = o.OrderDate,
+                StatusId = o.StatusId,
+                SalePrice = o.SalePrice
+            });
+            Save();
+        }
+        public void UpdateOrder(OrderDTO o)
+        {
+            Orders order = db.Orders.GetItem(o.Id);
 
+            if (order == null)
+            {
+                throw new ArgumentException($"Заказ с id {o.Id} не найден!");
+            }
+
+            order.IsTradeIn = o.IsTradeIn;
+            order.TradeInValue = o.TradeInValue;
+            order.ClientId = o.ClientId;
+            order.ManagerId = o.ManagerId;
+            order.CarId = o.CarId;
+            order.OrderDate = o.OrderDate;
+            order.StatusId = o.StatusId;
+            order.SalePrice = o.SalePrice;
+
+            db.Orders.Update(order);
+            Save();
+        }
         public void DeleteOrder(int Id)
         {
             if (db.Orders.GetItem(Id) != null)
@@ -40,6 +75,10 @@ namespace CDS_BLL.Service
                 db.Orders.Delete(Id);
                 db.Save();
             }
+        }
+        public bool Save()
+        {
+            return db.Save() > 0;
         }
     }
 }
