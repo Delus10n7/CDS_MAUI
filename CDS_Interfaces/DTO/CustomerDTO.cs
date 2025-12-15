@@ -11,5 +11,18 @@ namespace CDS_Interfaces.DTO
     {
         public CustomerDTO() { }
         public CustomerDTO(UserBase user) : base(user) { }
+        public CustomerDTO(string CustomerName, string CustomerPhone, string CustomerEmail, int CreateId = 0)
+        {
+            Id = 0;
+            UserLogin = "client" + CreateId.ToString();
+            PasswordHash = "hash_password_" + CreateId.ToString();
+            FullName = CustomerName;
+            PhoneNumber = CustomerPhone;
+            Email = CustomerEmail;
+            RoleId = 1;
+            IsActive = true;
+            CreatedDate = DateTime.Now;
+            ModifiedDate = DateTime.Now;
+        }
     }
 }

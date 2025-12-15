@@ -23,7 +23,9 @@ namespace CDS_Interfaces.DTO
         public int? ConfigurationId { get; set; }
 
         // Навигационные свойства
+        public int? BrandId { get; set; }
         public string? BrandName { get; set; }
+        public int? ModelId { get; set; }
         public string? ModelName { get; set; }
         public string? ConditionName { get; set; }
         public string? AvailabilityName { get; set; }
@@ -50,7 +52,9 @@ namespace CDS_Interfaces.DTO
             ConfigurationId = c.ConfigurationId;
 
             // Навигационные свойства
+            BrandId = c.Configuration.Model.BrandId;
             BrandName = c.Configuration.Model.Brand.BrandName;
+            ModelId = c.Configuration.ModelId;
             ModelName = c.Configuration.Model.ModelName;
             ConditionName = c.Condition.ConditionName;
             AvailabilityName = c.Availability.AvailabilityName;

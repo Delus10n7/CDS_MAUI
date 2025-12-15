@@ -9,6 +9,7 @@ namespace CDS_Interfaces.Service
 {
     public interface IUserService
     {
+        List<UserDTO> GetAllUsers();
         List<CustomerDTO> GetAllCustomers();
         CustomerDTO GetCustomer(int Id);
         List<ManagerDTO> GetAllManagers();

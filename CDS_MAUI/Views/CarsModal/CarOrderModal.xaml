@@ -148,7 +148,7 @@
                             <Entry Placeholder="Введите Email клиента"
                                    Text="{Binding CustomerEmail}"/>
 
-                            <Button Text="Подтвердить"
+                            <Button Text="Создать нового клиента"
                                     FontAttributes="Bold"
                                     Command="{Binding SelectNewCustomerCommand}"/>
                         </VerticalStackLayout>
@@ -229,7 +229,7 @@
                                FontAttributes="Bold"/>
 
                         <Label Grid.Column="1"
-                               Text="0%"
+                               Text="{Binding DiscountPercent}"
                                FontSize="16"
                                FontAttributes="Bold"/>
                     </Grid>
@@ -240,7 +240,7 @@
                                FontAttributes="Bold"/>
 
                         <Label Grid.Column="1"
-                               Text="{Binding Car.FormattedPrice}"
+                               Text="{Binding SalePrice}"
                                FontSize="20"
                                FontAttributes="Bold"/>
                     </Grid>
@@ -253,7 +253,7 @@
                                  Padding="0,30,0,30"
                                  HorizontalOptions="Center">
 
-                <Label Text="{Binding Car.FormattedPrice}"
+                <Label Text="{Binding SalePrice}"
                        FontSize="32"
                        FontAttributes="Bold"
                        HorizontalTextAlignment="Center"/>

@@ -11,7 +11,9 @@ namespace CDS_MAUI.Models
     {
         public int? Id { get; set; }
         public string? VIN { get; set; }
+        public int? BrandId { get; set; }
         public string? Brand { get; set; }
+        public int? ModelId { get; set; }
         public string? Model { get; set; }
         public int? Year { get; set; }
         public decimal? EngineVolume { get; set; }
@@ -36,7 +38,9 @@ namespace CDS_MAUI.Models
         {
             Id = c.Id;
             VIN = c.VIN;
+            BrandId = c.BrandId;
             Brand = c.BrandName;
+            ModelId = c.ModelId;
             Model = c.ModelName;
             Year = c.ReleaseYear;
             EngineVolume = c.EngineVolume;

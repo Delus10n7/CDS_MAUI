@@ -17,6 +17,10 @@ namespace CDS_BLL.Service
         {
             this.db = repos;
         }
+        public List<UserDTO> GetAllUsers()
+        {
+            return db.Users.GetList().Select(i => new UserDTO(i)).ToList();
+        }
         public List<CustomerDTO> GetAllCustomers()
         {
             return db.Users.GetCustomers().Select(i => new CustomerDTO(i)).ToList();

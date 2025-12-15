@@ -25,23 +25,13 @@ public partial class CarDetailsViewModel : BaseViewModel
 
         try
         {
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Оформление заказа",
-                $"Вы уверены, что хотите оформить заказ на\n\n{Car.Brand} {Car.Model}\nVIN: {Car.VIN}\n\nза {Car.Price:N0} руб.?",
-                "Да, оформить",
-                "Отмена"
-            );
-
-            if (confirm)
-            {
-                // Логика оформления заказа
-                var parameters = new Dictionary<string, object>()
+            // Логика оформления заказа
+            var parameters = new Dictionary<string, object>()
                 {
                     {"Car", Car}
                 };
 
-                await Shell.Current.GoToAsync(nameof(CarOrderModal), true, parameters);
-            }
+            await Shell.Current.GoToAsync(nameof(CarOrderModal), true, parameters);
         }
         finally
         {
