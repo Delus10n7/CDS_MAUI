@@ -21,6 +21,8 @@ public partial class Orders
 
     public int? StatusId { get; set; }
 
+    public decimal? SalePrice { get; set; }
+
     public virtual Cars? Car { get; set; }
 
     public virtual UserBase Client { get; set; } = null!;

@@ -17,6 +17,7 @@ namespace CDS_Interfaces.DTO
         public int? CarId { get; set; }
         public DateOnly? OrderDate { get; set; }
         public int? StatusId { get; set; }
+        public decimal? SalePrice { get; set; }
 
         // Навигационные свойства
         public string? BrandName { get; set; }
@@ -39,6 +40,7 @@ namespace CDS_Interfaces.DTO
             CarId = o.CarId;
             OrderDate = o.OrderDate;
             StatusId = o.StatusId;
+            SalePrice = o.SalePrice;
 
             // Навигационные свойства
             BrandName = o.Car.Configuration.Model.Brand.BrandName;

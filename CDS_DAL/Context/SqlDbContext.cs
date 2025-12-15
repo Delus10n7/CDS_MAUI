@@ -353,6 +353,9 @@ public partial class SqlDbContext : DbContext
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
                 .HasConstraintName("FK__Orders__StatusId__797309D9");
+
+            entity.Property(d => d.SalePrice)
+                .HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<RoleType>(entity =>

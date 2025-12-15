@@ -112,7 +112,16 @@
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                         <Label Grid.Column="1"
-                               Text="Оформлен"
+                               Text="{Binding Order.Status}"
+                               TextColor="{StaticResource Success}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Цена без скидок:"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding Order.FormattedPrice}"
                                TextColor="{StaticResource Success}"/>
                     </Grid>
                 </VerticalStackLayout>
@@ -124,10 +133,9 @@
                                  Padding="0,30,0,30"
                                  HorizontalOptions="Center">
 
-                <Label Text="{Binding Order.FormattedPrice}"
+                <Label Text="{Binding Order.FormattedSalePrice}"
                        FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="{StaticResource Primary}"/>
+                       FontAttributes="Bold"/>
 
                 <Button Text="Изменить заказ"
                         CornerRadius="10"

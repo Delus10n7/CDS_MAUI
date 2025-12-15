@@ -17,10 +17,12 @@ namespace CDS_MAUI.Models
         public decimal? Price { get; set; }
         public DateOnly? Date { get; set; }
         public string? Status { get; set; }
+        public decimal? SalePrice { get; set; }
 
         public string DisplayInfo => $"{Brand} {Model}";
         public string FormattedDate => Date?.ToString("dd.MM.yyyy") ?? string.Empty;
-        public string FormattedPrice => Price?.ToString("N0") + "руб." ?? string.Empty;
+        public string FormattedPrice => Price?.ToString("N0") + " руб." ?? string.Empty;
+        public string FormattedSalePrice => SalePrice?.ToString("N0") + " руб." ?? string.Empty;
         public string ShortDate => Date?.ToString("dd.MM.yyyy") ?? string.Empty;
 
         public OrderModel() { }
@@ -35,6 +37,7 @@ namespace CDS_MAUI.Models
             Price = o.Price;
             Date = o.OrderDate;
             Status = o.OrderStatus;
+            SalePrice = o.SalePrice;
         }
     }
 }

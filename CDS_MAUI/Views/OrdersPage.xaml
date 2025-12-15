@@ -188,7 +188,7 @@
                                                FontSize="14"/>
                                     </Grid>
 
-                                    <Label Text="{Binding FormattedPrice}"
+                                    <Label Text="{Binding FormattedSalePrice}"
                                            FontSize="16"
                                            FontAttributes="Bold"/>
                                 </VerticalStackLayout>
