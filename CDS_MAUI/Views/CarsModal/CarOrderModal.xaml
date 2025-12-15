@@ -206,6 +206,15 @@
                         </VerticalStackLayout>
                     </Border>
 
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Button Grid.Column="0"
+                                Text="Выбрать шаблон ДКП"
+                                FontAttributes="Bold"/>
+
+                        <Button Grid.Column="1"
+                                Text="Выбрать папку для сохранения ДКП"
+                                FontAttributes="Bold"/>
+                    </Grid>
                 </VerticalStackLayout>
 
                 <!-- Информация о машине -->

@@ -83,6 +83,12 @@ namespace CDS_MAUI.ViewModels.CarsVM
         [ObservableProperty]
         private string _searchText = "";
 
+        [ObservableProperty]
+        private string _templatePath = "";
+
+        [ObservableProperty]
+        private string _contractPath = "";
+
         private CustomerModel _selectedCustomerModel;
         private ManagerDTO _selectedManagerModel;
         private decimal? _salePrice;
@@ -352,7 +358,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     carDTO.AvailabilityId = 3; // Продана
                     _carService.UpdateCar(carDTO);
 
-                    await Shell.Current.DisplayAlert("Успех!", $"Заказ {Car.Brand} {Car.Model} на сумму {SalePriceFormatted} успешно создан", "OK");
+                    await Shell.Current.DisplayAlert("Успех!", $"Заказ {Car.Brand} {Car.Model} на сумму {SalePriceFormatted} успешно создан\n" +
+                        $"PDF договор сохранен по пути {ContractPath}", "OK");
 
                     await CloseAllModal();
                 }
