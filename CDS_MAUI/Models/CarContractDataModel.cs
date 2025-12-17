@@ -29,10 +29,10 @@ namespace CDS_MAUI.Models
         public string CarColor { get; set; }
 
         // Стоимость
-        public decimal OrderSalePrice { get; set; }
+        public decimal? OrderSalePrice { get; set; }
 
         // Форматированные значения
-        public string FormattedPrice => OrderSalePrice.ToString("N0");
+        public string FormattedPrice => OrderSalePrice?.ToString("N0") ?? "";
         public string ContractDay => ContractDate.Day.ToString();
         public string ContractMonth => GetMonthNameRus(ContractDate.Month);
         public string ContractYear => ContractDate.Year.ToString();
@@ -45,6 +45,28 @@ namespace CDS_MAUI.Models
             "июля", "августа", "сентября", "октября", "ноября", "декабря"
         };
             return month >= 1 && month <= 12 ? months[month - 1] : "";
+        }
+
+        public CarContractDataModel() { }
+
+        public CarContractDataModel(CarModel c, decimal? salePrice, string customerFullName)
+        {
+            CustomerFullName = customerFullName;
+
+            CarBrand = c.Brand;
+            CarModel = c.Model;
+            CarVIN = c.VIN;
+            CarReleaseYear = c.Year.ToString();
+            CarMileage = c.Mileage.ToString();
+            CarEngineVolume = c.EngineVolume.ToString();
+            CarEnginePower = c.Power.ToString();
+            CarEngineType = c.EngineType;
+            CarTransmissionType = c.Transmission;
+            CarDriveType = c.DriveType;
+            CarBodyType = c.BodyType;
+            CarColor = c.Color;
+
+            OrderSalePrice = salePrice;
         }
     }
 }

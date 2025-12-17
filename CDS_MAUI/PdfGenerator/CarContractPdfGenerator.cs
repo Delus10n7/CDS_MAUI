@@ -12,6 +12,54 @@ namespace CDS_MAUI.PdfGenerator
 {
     public class CarContractPdfGenerator
     {
+        private BaseFont _russianFont;
+
+        public CarContractPdfGenerator()
+        {
+            // Инициализируем шрифт для кириллицы
+            InitializeRussianFont();
+        }
+
+        private void InitializeRussianFont()
+        {
+            try
+            {
+                // Путь к шрифту Arial
+                string fontPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Fonts),
+                    "arial.ttf");
+
+                // Альтернативные пути к шрифтам на Windows
+                if (!File.Exists(fontPath))
+                {
+                    fontPath = @"C:\Windows\Fonts\arial.ttf";
+                }
+
+                if (File.Exists(fontPath))
+                {
+                    _russianFont = BaseFont.CreateFont(
+                        fontPath,
+                        BaseFont.IDENTITY_H, // Важно: используем IDENTITY_H для Unicode
+                        BaseFont.EMBEDDED); // Встраиваем шрифт в PDF
+                }
+                else
+                {
+                    // Используем стандартный шрифт, если Arial не найден
+                    _russianFont = BaseFont.CreateFont(
+                        BaseFont.HELVETICA,
+                        BaseFont.CP1252, // Кодировка Windows-1252
+                        BaseFont.NOT_EMBEDDED);
+                }
+            }
+            catch
+            {
+                _russianFont = BaseFont.CreateFont(
+                    BaseFont.HELVETICA,
+                    BaseFont.CP1252,
+                    BaseFont.NOT_EMBEDDED);
+            }
+        }
+
         public string FillPdfTemplate(CarContractDataModel data, string templatePdfPath, string outputFolder)
         {
             try
@@ -60,6 +108,16 @@ namespace CDS_MAUI.PdfGenerator
                 // Включаем генерацию внешнего вида для кириллицы
                 form.GenerateAppearances = true;
 
+                // Устанавливаем шрифт для всех полей
+                if (_russianFont != null)
+                {
+                    // Создаем объект Font для использования в полях
+                    var font = new iTextSharp.text.Font(_russianFont, 12);
+
+                    // Альтернативный способ: устанавливаем шрифт для каждого поля
+                    SetFieldFonts(form, _russianFont);
+                }
+
                 // Заполняем все поля данными
                 FillAllFormFields(form, data);
 
@@ -77,46 +135,83 @@ namespace CDS_MAUI.PdfGenerator
             }
         }
 
+        // Устанавливаем шрифт для всех полей формы
+        private void SetFieldFonts(AcroFields form, BaseFont font)
+        {
+            foreach (string fieldName in form.Fields.Keys)
+            {
+                try
+                {
+                    // Получаем тип поля
+                    int fieldType = form.GetFieldType(fieldName);
+
+                    // Создаем новый шрифт для поля
+                    form.SetFieldProperty(
+                        fieldName,
+                        "textfont",
+                        font,
+                        null);
+
+                    // Устанавливаем размер шрифта
+                    form.SetFieldProperty(
+                        fieldName,
+                        "textsize",
+                        12f, // Размер шрифта
+                        null);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Ошибка настройки шрифта для поля {fieldName}: {ex.Message}");
+                }
+            }
+        }
+
         // Заполнение всех полей формы
         private void FillAllFormFields(AcroFields form, CarContractDataModel data)
         {
             // 1. Информация о договоре
-            SetField(form, "car_dealership_city", data.CarDealershipCity);
-            SetField(form, "order_day", data.ContractDay);
-            SetField(form, "order_month", data.ContractMonth);
-            SetField(form, "order_year", data.ContractYear);
+            SetField(form, "Text1", data.CarDealershipCity);
+            SetField(form, "Text2", data.ContractDay);
+            SetField(form, "Text3", data.ContractMonth);
+            SetField(form, "Text4", data.ContractYear);
 
             // 2. Данные покупателя
-            SetField(form, "customer_fullname", data.CustomerFullName);
+            SetField(form, "Text5", data.CustomerFullName);
 
             // 3. Данные автомобиля
-            SetField(form, "car_brand", data.CarBrand);
-            SetField(form, "car_model", data.CarModel);
-            SetField(form, "car_vin", data.CarVIN);
-            SetField(form, "car_release_year", data.CarReleaseYear);
-            SetField(form, "car_mileage", data.CarMileage);
-            SetField(form, "car_engine_volume", data.CarEngineVolume);
-            SetField(form, "car_engine_power", data.CarEnginePower);
-            SetField(form, "car_engine_type", data.CarEngineType);
-            SetField(form, "car_transmission_type", data.CarTransmissionType);
-            SetField(form, "car_drive_type", data.CarDriveType);
-            SetField(form, "car_body_type", data.CarBodyType);
-            SetField(form, "car_color", data.CarColor);
+            SetField(form, "Text6", data.CarBrand);
+            SetField(form, "Text7", data.CarModel);
+            SetField(form, "Text8", data.CarVIN);
+            SetField(form, "Text9", data.CarReleaseYear);
+            SetField(form, "Text10", data.CarMileage);
+            SetField(form, "Text11", data.CarEngineVolume);
+            SetField(form, "Text12", data.CarEnginePower);
+            SetField(form, "Text13", data.CarEngineType);
+            SetField(form, "Text14", data.CarTransmissionType);
+            SetField(form, "Text15", data.CarDriveType);
+            SetField(form, "Text16", data.CarBodyType);
+            SetField(form, "Text17", data.CarColor);
 
             // 4. Финансовая информация
-            SetField(form, "order_saleprice", data.FormattedPrice);
+            SetField(form, "Text18", data.FormattedPrice);
         }
 
         private void SetField(AcroFields form, string fieldName, string value)
         {
             if (form.Fields.ContainsKey(fieldName))
             {
-                form.SetField(fieldName, value ?? "");
+                try
+                {
+                    form.SetField(fieldName, value ?? "");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Ошибка заполнения полей PDF");
+                }
             }
             else
             {
-                // Для отладки - логируем отсутствующие поля
-                System.Diagnostics.Debug.WriteLine($"Поле '{fieldName}' не найдено в шаблоне");
+                throw new Exception($"Поле '{fieldName}' не найдено в шаблоне");
             }
         }
     }

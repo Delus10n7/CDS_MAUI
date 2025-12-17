@@ -208,12 +208,14 @@
 
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
                         <Button Grid.Column="0"
-                                Text="Выбрать шаблон ДКП"
-                                FontAttributes="Bold"/>
+                                Text="{Binding TemplatePathButtonText}"
+                                FontAttributes="Bold"
+                                Command="{Binding SelectTemplateContractCommand}"/>
 
                         <Button Grid.Column="1"
-                                Text="Выбрать папку для сохранения ДКП"
-                                FontAttributes="Bold"/>
+                                Text="{Binding OutputFolderPathButtonText}"
+                                FontAttributes="Bold"
+                                Command="{Binding SelectOutputFileFolderCommand}"/>
                     </Grid>
                 </VerticalStackLayout>
 

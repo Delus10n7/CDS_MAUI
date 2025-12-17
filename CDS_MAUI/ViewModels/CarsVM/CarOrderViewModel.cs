@@ -2,8 +2,10 @@
 using CDS_Interfaces.DTO;
 using CDS_Interfaces.Service;
 using CDS_MAUI.Models;
+using CDS_MAUI.PdfGenerator;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -84,10 +86,16 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private string _searchText = "";
 
         [ObservableProperty]
-        private string _templatePath = "";
+        private FileResult? _selectedTemplateFile = null;
 
         [ObservableProperty]
-        private string _contractPath = "";
+        private string _selectedOutputFolderPath = "";
+
+        [ObservableProperty]
+        private string _templatePathButtonText = "";
+
+        [ObservableProperty]
+        private string _outputFolderPathButtonText = "";
 
         private CustomerModel _selectedCustomerModel;
         private ManagerDTO _selectedManagerModel;
@@ -99,6 +107,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
         IOrderService _orderService;
         IUserService _userService;
         IDiscountService _discountService;
+
+        // === PDF Генератор ===
+        CarContractPdfGenerator gen;
+        CarContractDataModel data;
 
         public CarOrderViewModel(ICarService carService, 
                                  ICarConfigurationService carConfigService, 
@@ -112,8 +124,14 @@ namespace CDS_MAUI.ViewModels.CarsVM
             _userService = userService;
             _discountService = discountService;
 
+            gen = new CarContractPdfGenerator();
+            data = new CarContractDataModel();
+
             Title = "Оформление заказа";
             InitializeManagersAndCustomers();
+
+            TemplatePathButtonText = "Выбрать шаблон ДКП";
+            OutputFolderPathButtonText = "Выбрать папку для сохранения ДКП";
         }
 
         partial void OnCarChanged(CarModel value)
@@ -316,6 +334,67 @@ namespace CDS_MAUI.ViewModels.CarsVM
         }
 
         [RelayCommand]
+        private async Task SelectTemplateContract()
+        {
+            try
+            {
+                // Настройка опций выбора файла
+                var options = new PickOptions
+                {
+                    PickerTitle = "Выберите файл для обработки",
+                    FileTypes = new FilePickerFileType(
+                        new Dictionary<DevicePlatform, IEnumerable<string>>
+                        {
+                            // Настройка фильтров по платформам
+                            [DevicePlatform.WinUI] = new[] { ".txt", ".csv", ".json", ".xml", ".pdf" },
+                            [DevicePlatform.Android] = new[] { "text/plain", "application/*" },
+                            [DevicePlatform.iOS] = new[] { "public.data" },
+                            [DevicePlatform.MacCatalyst] = new[] { "public.data" }
+                        })
+                };
+
+                SelectedTemplateFile = await FilePicker.Default.PickAsync(options);
+
+                if (SelectedTemplateFile != null)
+                {
+                    TemplatePathButtonText = SelectedTemplateFile.FullPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось выбрать файл: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
+        private async Task SelectOutputFileFolder()
+        {
+            try
+            {
+                // Для Windows используем нативный диалог
+                #if WINDOWS
+                SelectedOutputFolderPath = await PickFolderWindows();
+
+                #else
+                var result = await FolderPicker.Default.PickAsync();
+                if (result != null)
+                {
+                    _selectedFolderPath = result.FullPath;
+                }
+                #endif
+
+                if (!string.IsNullOrEmpty(SelectedOutputFolderPath))
+                {
+                    OutputFolderPathButtonText = SelectedOutputFolderPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось выбрать папку: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
         private async Task MakeOrder()
         {
             await CreateNewOrder();
@@ -337,10 +416,37 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 if (confirm)
                 {
                     // Логика оформления заказа
+                    if (_selectedCustomerModel == null)
+                    {
+                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран килент", "ОК");
+                        return;
+                    }
+                    if (SelectedTemplateFile == null)
+                    {
+                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора", "ОК");
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(SelectedOutputFolderPath))
+                    {
+                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбрана папка для сохранения договора", "ОК");
+                        return;
+                    }
 
                     CarDTO carDTO = _carService.GetCar(Car.Id);
                     CustomerDTO customerDTO = _userService.GetCustomer(_selectedCustomerModel.Id);
                     ManagerDTO managerDTO = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedManager);
+
+                    // Генерация PDF
+                    try
+                    {
+                        data = new CarContractDataModel(Car, _salePrice, _selectedCustomerModel.FullName);
+                        gen.FillPdfTemplate(data, SelectedTemplateFile.FullPath, SelectedOutputFolderPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        await Shell.Current.DisplayAlert("Ошибка!", $"Ошибка генерации договора: {ex.Message}", "ОК");
+                        return;
+                    }
 
                     OrderDTO newOrder = new OrderDTO();
                     newOrder.IsTradeIn = IsTradeIn;
@@ -359,7 +465,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     _carService.UpdateCar(carDTO);
 
                     await Shell.Current.DisplayAlert("Успех!", $"Заказ {Car.Brand} {Car.Model} на сумму {SalePriceFormatted} успешно создан\n" +
-                        $"PDF договор сохранен по пути {ContractPath}", "OK");
+                        $"PDF договор сохранен в папку {SelectedOutputFolderPath}", "OK");
 
                     await CloseAllModal();
                 }
@@ -447,5 +553,25 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 }
             }
         }
+
+        // Метод для Windows-специфичного выбора папки
+        #if WINDOWS
+        private async Task<string> PickFolderWindows()
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+
+            // Получаем handle окна MAUI
+            var window = MauiWinUIApplication.Current.Application.Windows[0].Handler.PlatformView;
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+
+            // Настройки диалога
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            folderPicker.FileTypeFilter.Add("*");
+
+            var folder = await folderPicker.PickSingleFolderAsync();
+            return folder?.Path;
+        }
+        #endif
     }
 }
