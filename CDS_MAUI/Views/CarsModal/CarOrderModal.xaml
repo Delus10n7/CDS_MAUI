@@ -177,7 +177,7 @@
                     </Grid>
 
                     <Border IsVisible="{Binding TradeInMenuVisible}"
-                            Padding="15"
+                            Padding="10"
                             Margin="10"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                             StrokeShape="RoundRectangle 12"
@@ -185,20 +185,96 @@
                             StrokeThickness="2">
 
                         <VerticalStackLayout Spacing="20">
-                            <Label Text="Марка авто"/>
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                                    <Label Text="Марка авто"/>
 
-                            <Entry Placeholder="Введите марку авто"
-                                   Text="{Binding TradeInCarBrand}"/>
+                                    <Entry Placeholder="Введите марку авто"
+                                           Text="{Binding TradeInCarBrand}"/>
+                                </VerticalStackLayout>
 
-                            <Label Text="Модель авто"/>
+                                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                                    <Label Text="Модель авто"/>
 
-                            <Entry Placeholder="Введите модель авто"
-                                   Text="{Binding TradeInCarModel}"/>
+                                    <Entry Placeholder="Введите модель авто"
+                                           Text="{Binding TradeInCarModel}"/>
+                                </VerticalStackLayout>
+                            </Grid>
 
-                            <Label Text="Оценочная цена авто"/>
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="VIN номер авто"/>
 
-                            <Entry Placeholder="Введите стоимость авто"
-                                   Text="{Binding TradeInCarPrice}"/>
+                                <Entry Placeholder="Введите VIN авто"
+                                       Text="{Binding TradeInCarVIN}"/>
+                            </VerticalStackLayout>
+
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                                    <Label Text="Пробег"/>
+
+                                    <Entry Placeholder="Введите пробег авто"
+                                           Text="{Binding TradeInCarMileage}"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                                    <Label Text="Год выпуска"/>
+
+                                    <Entry Placeholder="Введите год выпуска авто"
+                                           Text="{Binding TradeInCarYear}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                                    <Label Text="Объем двигателя"/>
+
+                                    <Entry Placeholder="Введите объем двигателя авто"
+                                           Text="{Binding TradeInCarEngineVolume}"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                                    <Label Text="Мощность двигателя"/>
+
+                                    <Entry Placeholder="Введите мощность двигателя авто"
+                                           Text="{Binding TradeInCarEnginePower}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="*, *" ColumnSpacing="20" RowSpacing="20">
+                                <Picker Grid.Column="0" Grid.Row="0"
+                                        Title="Тип двигателя"
+                                        ItemsSource="{Binding EngineTypes}"
+                                        SelectedItem="{Binding SelectedEngineType}"/>
+
+                                <Picker Grid.Column="1" Grid.Row="0"
+                                        Title="Тип трансмиссии"
+                                        ItemsSource="{Binding TransmissionTypes}"
+                                        SelectedItem="{Binding SelectedTransmission}"/>
+
+                                <Picker Grid.Column="0" Grid.Row="1"
+                                        Title="Тип привода"
+                                        ItemsSource="{Binding DriveTypes}"
+                                        SelectedItem="{Binding SelectedDriveType}"/>
+
+                                <Picker Grid.Column="1" Grid.Row="1"
+                                        Title="Тип кузова"
+                                        ItemsSource="{Binding BodyTypes}"
+                                        SelectedItem="{Binding SelectedBodyType}"/>
+                            </Grid>
+
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Цвет"/>
+
+                                <Entry Placeholder="Введите цвет авто"
+                                       Text="{Binding TradeInCarColor}"/>
+                            </VerticalStackLayout>
+                            
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Оценочная цена авто"/>
+
+                                <Entry Placeholder="Введите стоимость авто"
+                                       Text="{Binding TradeInCarPrice}"/>
+                            </VerticalStackLayout>
 
                             <Button Text="Добавить авто в трейд-ин"
                                     FontAttributes="Bold"
@@ -213,10 +289,15 @@
                                 Command="{Binding SelectTemplateContractCommand}"/>
 
                         <Button Grid.Column="1"
-                                Text="{Binding OutputFolderPathButtonText}"
+                                Text="{Binding TradeInTemplatePathButtonText}"
                                 FontAttributes="Bold"
-                                Command="{Binding SelectOutputFileFolderCommand}"/>
+                                Command="{Binding SelectTradeInTemplateContractCommand}"
+                                IsEnabled="{Binding IsTradeIn}"/>
                     </Grid>
+
+                    <Button Text="{Binding OutputFolderPathButtonText}"
+                            FontAttributes="Bold"
+                            Command="{Binding SelectOutputFileFolderCommand}"/>
                 </VerticalStackLayout>
 
                 <!-- Информация о машине -->

@@ -19,6 +19,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
 {
     public partial class CarOrderViewModel : BaseViewModel
     {
+        // === ОСНОВНОЕ ===
+
         [ObservableProperty]
         private CarModel _car;
 
@@ -26,13 +28,20 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private ObservableCollection<string> _managers = new();
 
         [ObservableProperty]
+        private string _selectedManager;
+
+        [ObservableProperty]
         private ObservableCollection<string> _customers = new();
+
+        [ObservableProperty]
+        private string _selectedCustomer;
 
         [ObservableProperty]
         private ObservableCollection<CustomerModel> _filteredCustomers = new();
 
-        [ObservableProperty]
-        private ObservableCollection<string> _tradeInCars = new();
+        private CustomerModel _selectedCustomerModel;
+
+        // === СКИДКА ===
 
         [ObservableProperty]
         private string _discountPercent = "";
@@ -40,14 +49,12 @@ namespace CDS_MAUI.ViewModels.CarsVM
         [ObservableProperty]
         private string _salePriceFormatted = "";
 
-        [ObservableProperty]
-        private string _selectedManager;
+        private decimal? _salePrice;
+
+        // === КЛИЕНТ ===
 
         [ObservableProperty]
-        private string _selectedCustomer;
-
-        [ObservableProperty]
-        private string _selectedTradeInCar;
+        private string _searchText = "";
 
         [ObservableProperty]
         private string _customerName = "";
@@ -59,10 +66,66 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private string _customerEmail = "";
 
         [ObservableProperty]
+        private bool _newCustomer = false;
+
+        [ObservableProperty]
+        private bool _oldCustomer = false;
+
+        // === ТРЕЙД-ИН ===
+
+        [ObservableProperty]
+        private ObservableCollection<string> _tradeInCars = new();
+
+        [ObservableProperty]
+        private string _selectedTradeInCar;
+
+        [ObservableProperty]
         private string _tradeInCarBrand = "";
 
         [ObservableProperty]
         private string _tradeInCarModel = "";
+
+        [ObservableProperty]
+        private string _tradeInCarVIN = "";
+
+        [ObservableProperty]
+        private string _tradeInCarYear = "";
+
+        [ObservableProperty]
+        private string _tradeInCarMileage = "";
+
+        [ObservableProperty]
+        private string _tradeInCarEngineVolume = "";
+
+        [ObservableProperty]
+        private string _tradeInCarEnginePower = "";
+
+        [ObservableProperty]
+        private ObservableCollection<string> _engineTypes = new();
+
+        [ObservableProperty]
+        private string _selectedEngineType = "";
+
+        [ObservableProperty]
+        private ObservableCollection<string> _transmissionTypes = new();
+
+        [ObservableProperty]
+        private string _selectedTransmission = "";
+
+        [ObservableProperty]
+        private ObservableCollection<string> _driveTypes = new();
+
+        [ObservableProperty]
+        private string _selectedDriveType = "";
+
+        [ObservableProperty]
+        private ObservableCollection<string> _bodyTypes = new();
+
+        [ObservableProperty]
+        private string _selectedBodyType = "";
+
+        [ObservableProperty]
+        private string _tradeInCarColor = "";
 
         [ObservableProperty]
         private string _tradeInCarPrice = "";
@@ -74,32 +137,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
         private bool _isTradeIn = false;
 
         [ObservableProperty]
-        private bool _newCustomer = false;
-
-        [ObservableProperty]
-        private bool _oldCustomer = false;
-
-        [ObservableProperty]
         private bool _tradeInMenuVisible = false;
-
-        [ObservableProperty]
-        private string _searchText = "";
-
-        [ObservableProperty]
-        private FileResult? _selectedTemplateFile = null;
-
-        [ObservableProperty]
-        private string _selectedOutputFolderPath = "";
-
-        [ObservableProperty]
-        private string _templatePathButtonText = "";
-
-        [ObservableProperty]
-        private string _outputFolderPathButtonText = "";
-
-        private CustomerModel _selectedCustomerModel;
-        private ManagerDTO _selectedManagerModel;
-        private decimal? _salePrice;
 
         // === СЕРВИСЫ ===
         ICarService _carService;
@@ -111,6 +149,27 @@ namespace CDS_MAUI.ViewModels.CarsVM
         // === PDF Генератор ===
         CarContractPdfGenerator gen;
         CarContractDataModel data;
+        CarContractDataModel tradeInData = new CarContractDataModel();
+
+        [ObservableProperty]
+        private FileResult? _selectedTemplateFile = null;
+
+        [ObservableProperty]
+        private FileResult? _selectedTradeInTemplateFile = null;
+
+        [ObservableProperty]
+        private string _selectedOutputFolderPath = "";
+
+        [ObservableProperty]
+        private string _templatePathButtonText = "";
+
+        [ObservableProperty]
+        private string _tradeInTemplatePathButtonText = "";
+
+        [ObservableProperty]
+        private string _outputFolderPathButtonText = "";
+
+        int skip = 0;
 
         public CarOrderViewModel(ICarService carService, 
                                  ICarConfigurationService carConfigService, 
@@ -129,8 +188,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             Title = "Оформление заказа";
             InitializeManagersAndCustomers();
+            InitializeCarConfigurations();
 
             TemplatePathButtonText = "Выбрать шаблон ДКП";
+            TradeInTemplatePathButtonText = "Выбрать шаблон трейд-ин ДКП";
             OutputFolderPathButtonText = "Выбрать папку для сохранения ДКП";
         }
 
@@ -149,6 +210,17 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 IsTradeIn = true;
             }
             else IsTradeIn = false;
+
+            if (skip > 0) GetDiscountedPrice();
+            else skip++;
+        }
+
+        partial void OnSelectedCustomerChanged(string value)
+        {
+            if (value != "Не выбран" && !string.IsNullOrEmpty(value))
+            {
+                if (IsTradeIn) tradeInData.CustomerFullName = value;
+            }
         }
 
         public void InitializeManagersAndCustomers()
@@ -170,6 +242,36 @@ namespace CDS_MAUI.ViewModels.CarsVM
             foreach (var m in managerDTOs)
             {
                 Managers.Add(m.FullName);
+            }
+        }
+
+        private void InitializeCarConfigurations()
+        {
+            BodyTypes.Clear();
+            EngineTypes.Clear();
+            TransmissionTypes.Clear();
+            DriveTypes.Clear();
+
+            List<BodyTypeDTO> bodyTypeDTOs = _carConfigService.GetAllBodyTypes();
+            List<EngineTypeDTO> engineTypeDTOs = _carConfigService.GetAllEngineTypes();
+            List<TransmissionTypeDTO> transmissionTypeDTOs = _carConfigService.GetAllTransmissionTypes();
+            List<DriveTypeDTO> driveTypeDTOs = _carConfigService.GetAllDriveTypes();
+
+            foreach (var b in bodyTypeDTOs)
+            {
+                BodyTypes.Add(b.BodyName);
+            }
+            foreach (var e in engineTypeDTOs)
+            {
+                EngineTypes.Add(e.EngineName);
+            }
+            foreach (var t in transmissionTypeDTOs)
+            {
+                TransmissionTypes.Add(t.TransmissionName);
+            }
+            foreach (var d in driveTypeDTOs)
+            {
+                DriveTypes.Add(d.DriveName);
             }
         }
 
@@ -316,21 +418,38 @@ namespace CDS_MAUI.ViewModels.CarsVM
         }
 
         [RelayCommand]
-        private void AddTradeInCar()
+        private async Task AddTradeInCar()
         {
-            if (!string.IsNullOrEmpty(TradeInCarBrand) && !string.IsNullOrEmpty(TradeInCarModel) && !string.IsNullOrEmpty(TradeInCarPrice))
-            {
-                TradeInCars.Clear();
-                TradeInCars.Add("Нет");
-                TradeInCars.Add(TradeInCarBrand + " " + TradeInCarModel);
-                SelectedTradeInCar = TradeInCars[1];
+            var flag = await TradeInSubmit();
+            if (!flag) return;
 
-                TradeInMenuVisible = false;
+            TradeInCars.Clear();
+            TradeInCars.Add("Нет");
+            TradeInCars.Add(TradeInCarBrand + " " + TradeInCarModel);
+            SelectedTradeInCar = TradeInCars[1];
 
-                TradeInCarPriceFormatted = Convert.ToDecimal(TradeInCarPrice).ToString("N0") + " руб.";
+            TradeInMenuVisible = false;
 
-                GetDiscountedPrice();
-            }
+            TradeInCarPriceFormatted = Convert.ToDecimal(TradeInCarPrice).ToString("N0") + " руб.";
+
+            GetDiscountedPrice();
+
+            if (_selectedCustomerModel != null) tradeInData.CustomerFullName = _selectedCustomerModel.FullName;
+
+            tradeInData.CarBrand = TradeInCarBrand;
+            tradeInData.CarModel = TradeInCarModel;
+            tradeInData.CarVIN = TradeInCarVIN;
+            tradeInData.CarReleaseYear = TradeInCarYear;
+            tradeInData.CarMileage = TradeInCarMileage;
+            tradeInData.CarEngineVolume = TradeInCarEngineVolume;
+            tradeInData.CarEnginePower = TradeInCarEnginePower;
+            tradeInData.CarEngineType = SelectedEngineType;
+            tradeInData.CarTransmissionType = SelectedTransmission;
+            tradeInData.CarDriveType = SelectedDriveType;
+            tradeInData.CarBodyType = SelectedBodyType;
+            tradeInData.CarColor = TradeInCarColor;
+
+            tradeInData.OrderSalePrice = Convert.ToDecimal(TradeInCarPrice);
         }
 
         [RelayCommand]
@@ -358,6 +477,39 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 if (SelectedTemplateFile != null)
                 {
                     TemplatePathButtonText = SelectedTemplateFile.FullPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось выбрать файл: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
+        private async Task SelectTradeInTemplateContract()
+        {
+            try
+            {
+                // Настройка опций выбора файла
+                var options = new PickOptions
+                {
+                    PickerTitle = "Выберите файл для обработки",
+                    FileTypes = new FilePickerFileType(
+                        new Dictionary<DevicePlatform, IEnumerable<string>>
+                        {
+                            // Настройка фильтров по платформам
+                            [DevicePlatform.WinUI] = new[] { ".txt", ".csv", ".json", ".xml", ".pdf" },
+                            [DevicePlatform.Android] = new[] { "text/plain", "application/*" },
+                            [DevicePlatform.iOS] = new[] { "public.data" },
+                            [DevicePlatform.MacCatalyst] = new[] { "public.data" }
+                        })
+                };
+
+                SelectedTradeInTemplateFile = await FilePicker.Default.PickAsync(options);
+
+                if (SelectedTradeInTemplateFile != null)
+                {
+                    TradeInTemplatePathButtonText = SelectedTradeInTemplateFile.FullPath;
                 }
             }
             catch (Exception ex)
@@ -406,6 +558,9 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             try
             {
+                var flag = await Submit();
+                if (!flag) return;
+
                 bool confirm = await Shell.Current.DisplayAlert(
                     "Изменение заказа",
                     $"Вы хотите оформить {Car.Brand} {Car.Model} на сумму {SalePriceFormatted}?",
@@ -416,22 +571,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 if (confirm)
                 {
                     // Логика оформления заказа
-                    if (_selectedCustomerModel == null)
-                    {
-                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран килент", "ОК");
-                        return;
-                    }
-                    if (SelectedTemplateFile == null)
-                    {
-                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора", "ОК");
-                        return;
-                    }
-                    if (string.IsNullOrEmpty(SelectedOutputFolderPath))
-                    {
-                        await Shell.Current.DisplayAlert("Ошибка!", $"Не выбрана папка для сохранения договора", "ОК");
-                        return;
-                    }
-
+                    
                     CarDTO carDTO = _carService.GetCar(Car.Id);
                     CustomerDTO customerDTO = _userService.GetCustomer(_selectedCustomerModel.Id);
                     ManagerDTO managerDTO = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedManager);
@@ -441,6 +581,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     {
                         data = new CarContractDataModel(Car, _salePrice, _selectedCustomerModel.FullName);
                         gen.FillPdfTemplate(data, SelectedTemplateFile.FullPath, SelectedOutputFolderPath);
+                        if (IsTradeIn) gen.FillPdfTemplate(tradeInData, SelectedTradeInTemplateFile.FullPath, SelectedOutputFolderPath);
                     }
                     catch (Exception ex)
                     {
@@ -503,8 +644,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 {
                     discountPercent = discount.DiscountPercent;
                 }
-                else if (SelectedTradeInCar != "Нет" && discount.DiscountTypeId == 5 
-                    && discount.DiscountPercent > discountPercent)
+                else if (SelectedTradeInCar != "Нет" && !string.IsNullOrEmpty(SelectedTradeInCar)
+                    && discount.DiscountTypeId == 5 && discount.DiscountPercent > discountPercent)
                 {
                     discountPercent = discount.DiscountPercent;
                     loyaltyDiscounts.Add(discount);
@@ -543,8 +684,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     var price = Car.Price;
                     price -= tradeInCarValue;
 
-                    _salePrice = (price - (price * (discountPercent / 100)));
-                    SalePriceFormatted = _salePrice?.ToString("N0") + " руб.";
+                    var priceWithTradeIn = (price - (price * (discountPercent / 100)));
+                    SalePriceFormatted = priceWithTradeIn?.ToString("N0") + " руб.";
+
+                    _salePrice = (Car.Price - (Car.Price * (discountPercent / 100)));
                 }
                 else
                 {
@@ -552,6 +695,107 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     SalePriceFormatted = _salePrice?.ToString("N0") + " руб.";
                 }
             }
+        }
+
+        private async Task<bool> Submit()
+        {
+            if (_selectedCustomerModel == null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран килент", "ОК");
+                return false;
+            }
+            if (SelectedManager == "Не выбран" || string.IsNullOrEmpty(SelectedManager))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран менеджер", "ОК");
+                return false;
+            }
+
+            if (SelectedTemplateFile == null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора", "ОК");
+                return false;
+            }
+            if (IsTradeIn && SelectedTradeInTemplateFile == null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(SelectedOutputFolderPath))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбрана папка для сохранения договора", "ОК");
+                return false;
+            }
+            return true;
+        }
+
+        private async Task<bool> TradeInSubmit()
+        {
+            if (string.IsNullOrEmpty(TradeInCarBrand))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введена марка авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarModel))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введена модель авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarVIN))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен VIN номер авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarYear))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен год выпуска авто в трейд-ин", "ОК");
+                return false; 
+            }
+            if (string.IsNullOrEmpty(TradeInCarMileage))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен пробег авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarEngineVolume))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен объем двигателя авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarEnginePower))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введена мощность двигателя авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(SelectedEngineType))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран тип двигателя авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(SelectedTransmission))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран тип трансмиссии авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(SelectedDriveType))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран тип привода авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(SelectedBodyType))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран тип кузова авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarColor))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен цвет авто в трейд-ин", "ОК");
+                return false;
+            }
+            if (string.IsNullOrEmpty(TradeInCarPrice))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введена цена авто в трейд-ин", "ОК");
+                return false;
+            }
+            return true;
         }
 
         // Метод для Windows-специфичного выбора папки
