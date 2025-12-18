@@ -287,7 +287,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         {
             _allOrders.Clear();
 
-            List<OrderDTO> orderDTOs = _orderService.GetAllOrders();
+            List<OrderDTO> orderDTOs = _orderService.GetAllOrders().OrderByDescending(i => i.OrderDate).ToList();
 
             foreach (var order in orderDTOs)
             {

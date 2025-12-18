@@ -17,6 +17,11 @@
         Route="OrdersPage" />
 
     <ShellContent
+        Title="Доп. услуги"
+        ContentTemplate="{DataTemplate local:ServiceContractsPage}"
+        Route="ServiceContractsPage" />
+
+    <ShellContent
         Title="Отчеты"
         ContentTemplate="{DataTemplate local:ReportsPage}"
         Route="ReportsPage" />
