@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.ReportsVM"
+             xmlns:models="clr-namespace:CDS_MAUI.Models"
              x:Class="CDS_MAUI.Views.ReportsPage"
-             Title="Отчеты">
+             x:DataType="viewmodels:ReportsViewModel"
+             Title="{Binding Title}">
 
     <ScrollView>
         <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
-            
+            <Label Text="Заказы за период"
+                   FontAttributes="Bold"
+                   FontSize="24"
+                   HorizontalOptions="Center"/>
+
+            <Border Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Spacing="20">
+                    <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
+                        <VerticalStackLayout Grid.Column="0" Grid.ColumnSpan="2" Spacing="10">
+                            <Label Text="Начальная дата"/>
+
+                            <DatePicker Date="{Binding PeriodFromDate}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="2" Grid.ColumnSpan="2" Spacing="10">
+                            <Label Text="Конечная дата"/>
+
+                            <DatePicker Date="{Binding PeriodToDate}"/>
+                        </VerticalStackLayout>
+
+                        <Button Grid.Column="4"
+                                Text="{Binding PeriodReportButtonText}"
+                                FontAttributes="Bold"
+                                Command="{Binding ExecutePeriodReportCommand}"/>
+                    </Grid>
+
+                    <Grid IsVisible="{Binding IsPeriodReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Label Grid.Column="0"
+                               Text="{Binding PeriodOrdersCount}"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding PeriodOrdersSum}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 
