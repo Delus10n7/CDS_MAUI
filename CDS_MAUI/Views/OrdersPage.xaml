@@ -206,9 +206,7 @@
                                     <Button Text="Изменить"
                                             CornerRadius="8"
                                             HeightRequest="35"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, 
-                                                     Path=ShowOrderDetailsCommand}"
-                                            CommandParameter="{Binding .}"/>
+                                            Clicked="Button_Clicked"/>
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
