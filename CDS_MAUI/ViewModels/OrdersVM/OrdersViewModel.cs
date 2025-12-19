@@ -351,7 +351,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
             var currIndex = _currentPage - 1;
 
             var startIndex = currIndex * 20;
-            var endIndex = (currIndex * 20 + 19) > FilteredOrders.Count() ? FilteredOrders.Count() - 1 : (currIndex * 20 + 19);
+            var endIndex = (currIndex * 20 + 19) >= FilteredOrders.Count() ? FilteredOrders.Count() - 1 : (currIndex * 20 + 19);
 
             Orders.Clear();
             for (int i = startIndex; i <= endIndex; i++)

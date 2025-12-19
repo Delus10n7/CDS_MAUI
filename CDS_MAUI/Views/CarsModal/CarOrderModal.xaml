@@ -268,7 +268,7 @@
                                 <Entry Placeholder="Введите цвет авто"
                                        Text="{Binding TradeInCarColor}"/>
                             </VerticalStackLayout>
-                            
+
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Оценочная цена авто"/>
 
@@ -281,19 +281,6 @@
                                     Command="{Binding AddTradeInCarCommand}"/>
                         </VerticalStackLayout>
                     </Border>
-
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
-                        <Button Grid.Column="0"
-                                Text="{Binding TemplatePathButtonText}"
-                                FontAttributes="Bold"
-                                Command="{Binding SelectTemplateContractCommand}"/>
-
-                        <Button Grid.Column="1"
-                                Text="{Binding TradeInTemplatePathButtonText}"
-                                FontAttributes="Bold"
-                                Command="{Binding SelectTradeInTemplateContractCommand}"
-                                IsEnabled="{Binding IsTradeIn}"/>
-                    </Grid>
 
                     <Button Text="{Binding OutputFolderPathButtonText}"
                             FontAttributes="Bold"

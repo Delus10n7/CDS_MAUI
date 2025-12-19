@@ -152,19 +152,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
         CarContractDataModel tradeInData = new CarContractDataModel();
 
         [ObservableProperty]
-        private FileResult? _selectedTemplateFile = null;
-
-        [ObservableProperty]
-        private FileResult? _selectedTradeInTemplateFile = null;
-
-        [ObservableProperty]
         private string _selectedOutputFolderPath = "";
-
-        [ObservableProperty]
-        private string _templatePathButtonText = "";
-
-        [ObservableProperty]
-        private string _tradeInTemplatePathButtonText = "";
 
         [ObservableProperty]
         private string _outputFolderPathButtonText = "";
@@ -190,8 +178,6 @@ namespace CDS_MAUI.ViewModels.CarsVM
             InitializeManagersAndCustomers();
             InitializeCarConfigurations();
 
-            TemplatePathButtonText = "Выбрать шаблон ДКП";
-            TradeInTemplatePathButtonText = "Выбрать шаблон трейд-ин ДКП";
             OutputFolderPathButtonText = "Выбрать папку для сохранения ДКП";
         }
 
@@ -453,72 +439,6 @@ namespace CDS_MAUI.ViewModels.CarsVM
         }
 
         [RelayCommand]
-        private async Task SelectTemplateContract()
-        {
-            try
-            {
-                // Настройка опций выбора файла
-                var options = new PickOptions
-                {
-                    PickerTitle = "Выберите файл для обработки",
-                    FileTypes = new FilePickerFileType(
-                        new Dictionary<DevicePlatform, IEnumerable<string>>
-                        {
-                            // Настройка фильтров по платформам
-                            [DevicePlatform.WinUI] = new[] { ".txt", ".csv", ".json", ".xml", ".pdf" },
-                            [DevicePlatform.Android] = new[] { "text/plain", "application/*" },
-                            [DevicePlatform.iOS] = new[] { "public.data" },
-                            [DevicePlatform.MacCatalyst] = new[] { "public.data" }
-                        })
-                };
-
-                SelectedTemplateFile = await FilePicker.Default.PickAsync(options);
-
-                if (SelectedTemplateFile != null)
-                {
-                    TemplatePathButtonText = SelectedTemplateFile.FullPath;
-                }
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось выбрать файл: {ex.Message}", "OK");
-            }
-        }
-
-        [RelayCommand]
-        private async Task SelectTradeInTemplateContract()
-        {
-            try
-            {
-                // Настройка опций выбора файла
-                var options = new PickOptions
-                {
-                    PickerTitle = "Выберите файл для обработки",
-                    FileTypes = new FilePickerFileType(
-                        new Dictionary<DevicePlatform, IEnumerable<string>>
-                        {
-                            // Настройка фильтров по платформам
-                            [DevicePlatform.WinUI] = new[] { ".txt", ".csv", ".json", ".xml", ".pdf" },
-                            [DevicePlatform.Android] = new[] { "text/plain", "application/*" },
-                            [DevicePlatform.iOS] = new[] { "public.data" },
-                            [DevicePlatform.MacCatalyst] = new[] { "public.data" }
-                        })
-                };
-
-                SelectedTradeInTemplateFile = await FilePicker.Default.PickAsync(options);
-
-                if (SelectedTradeInTemplateFile != null)
-                {
-                    TradeInTemplatePathButtonText = SelectedTradeInTemplateFile.FullPath;
-                }
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось выбрать файл: {ex.Message}", "OK");
-            }
-        }
-
-        [RelayCommand]
         private async Task SelectOutputFileFolder()
         {
             try
@@ -580,8 +500,11 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     try
                     {
                         data = new CarContractDataModel(Car, _salePrice, _selectedCustomerModel.FullName);
-                        gen.FillPdfTemplate(data, SelectedTemplateFile.FullPath, SelectedOutputFolderPath);
-                        if (IsTradeIn) gen.FillPdfTemplate(tradeInData, SelectedTradeInTemplateFile.FullPath, SelectedOutputFolderPath);
+                        //gen.FillPdfTemplate(data, SelectedTemplateFile.FullPath, SelectedOutputFolderPath);
+                        //if (IsTradeIn) gen.FillPdfTemplate(tradeInData, SelectedTradeInTemplateFile.FullPath, SelectedOutputFolderPath);
+
+                        gen.GenerateContractPdf(data, SelectedOutputFolderPath);
+                        if (IsTradeIn) gen.GenerateTradeInContractPdf(tradeInData, SelectedOutputFolderPath);
                     }
                     catch (Exception ex)
                     {
@@ -710,16 +633,6 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 return false;
             }
 
-            if (SelectedTemplateFile == null)
-            {
-                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора", "ОК");
-                return false;
-            }
-            if (IsTradeIn && SelectedTradeInTemplateFile == null)
-            {
-                await Shell.Current.DisplayAlert("Ошибка!", $"Не выбран шаблон договора трейд-ин", "ОК");
-                return false;
-            }
             if (string.IsNullOrEmpty(SelectedOutputFolderPath))
             {
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не выбрана папка для сохранения договора", "ОК");

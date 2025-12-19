@@ -421,7 +421,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             var currIndex = _currentPage - 1;
 
             var startIndex = currIndex * 20;
-            var endIndex = (currIndex * 20 + 19) > FilteredCars.Count() ? FilteredCars.Count() - 1 : (currIndex * 20 + 19);
+            var endIndex = (currIndex * 20 + 19) >= FilteredCars.Count() ? FilteredCars.Count() - 1 : (currIndex * 20 + 19);
 
             Cars.Clear();
             for (int i  = startIndex; i <= endIndex; i++)
