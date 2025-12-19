@@ -219,7 +219,7 @@ namespace CDS_MAUI.PdfGenerator
             }
         }
 
-        public void GenerateContractPdf(CarContractDataModel contractData, string outputDirectory)
+        public string GenerateContractPdf(CarContractDataModel contractData, string outputDirectory)
         {
             // Создаем директорию, если она не существует
             if (!Directory.Exists(outputDirectory))
@@ -330,13 +330,13 @@ namespace CDS_MAUI.PdfGenerator
 
 6. ПОДПИСИ СТОРОН
 
-ПОКУПАТЕЛЬ:                                   ПРОДАВЕЦ:
+ПОКУПАТЕЛЬ:                                    ПРОДАВЕЦ:
 
-_____________________                         _____________________
-(подпись)                                     (подпись)
+_____________________                   _____________________
+(подпись)                                             (подпись)
 
-_____________________                         _____________________
-(Ф.И.О.)                                      (Ф.И.О.)
+_____________________                   _____________________
+(Ф.И.О.)                                                (Ф.И.О.)
 
 Паспорт: _______________
 Выдан: _________________
@@ -354,9 +354,11 @@ _____________________                         _____________________
             AddPageNumbers(writer, document, smallFont);
 
             document.Close();
+
+            return filePath;
         }
 
-        public void GenerateTradeInContractPdf(CarContractDataModel contractData, string outputDirectory)
+        public string GenerateTradeInContractPdf(CarContractDataModel contractData, string outputDirectory)
         {
             // Создаем директорию, если она не существует
             if (!Directory.Exists(outputDirectory))
@@ -467,13 +469,13 @@ _____________________                         _____________________
 
 6. ПОДПИСИ СТОРОН
 
-ПРОДАВЕЦ:                                     ПОКУПАТЕЛЬ:
+ПРОДАВЕЦ:                                        ПОКУПАТЕЛЬ:
 
-_____________________                         _____________________
-(подпись)                                     (подпись)
+_____________________                   _____________________
+(подпись)                                             (подпись)
 
-_____________________                         _____________________
-(Ф.И.О.)                                      (Ф.И.О.)
+_____________________                   _____________________
+(Ф.И.О.)                                                (Ф.И.О.)
 
 Паспорт: _______________
 Выдан: _________________
@@ -491,6 +493,8 @@ _____________________                         _____________________
             AddPageNumbers(writer, document, smallFont);
 
             document.Close();
+
+            return filePath;
         }
 
         private void AddCarTableRow(PdfPTable table, string label, string value, Font font)

@@ -157,6 +157,12 @@ namespace CDS_MAUI.ViewModels.CarsVM
         [ObservableProperty]
         private string _outputFolderPathButtonText = "";
 
+        [ObservableProperty]
+        private string _generatedContractFilePath = "";
+
+        [ObservableProperty]
+        private string _generatedTradeInContractFilePath = "";
+
         int skip = 0;
 
         public CarOrderViewModel(ICarService carService, 
@@ -500,11 +506,9 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     try
                     {
                         data = new CarContractDataModel(Car, _salePrice, _selectedCustomerModel.FullName);
-                        //gen.FillPdfTemplate(data, SelectedTemplateFile.FullPath, SelectedOutputFolderPath);
-                        //if (IsTradeIn) gen.FillPdfTemplate(tradeInData, SelectedTradeInTemplateFile.FullPath, SelectedOutputFolderPath);
 
-                        gen.GenerateContractPdf(data, SelectedOutputFolderPath);
-                        if (IsTradeIn) gen.GenerateTradeInContractPdf(tradeInData, SelectedOutputFolderPath);
+                        GeneratedContractFilePath = gen.GenerateContractPdf(data, SelectedOutputFolderPath);
+                        if (IsTradeIn) GeneratedTradeInContractFilePath = gen.GenerateTradeInContractPdf(tradeInData, SelectedOutputFolderPath);
                     }
                     catch (Exception ex)
                     {
@@ -530,6 +534,9 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
                     await Shell.Current.DisplayAlert("Успех!", $"Заказ {Car.Brand} {Car.Model} на сумму {SalePriceFormatted} успешно создан\n" +
                         $"PDF договор сохранен в папку {SelectedOutputFolderPath}", "OK");
+
+                    await OpenGeneratedPdf(GeneratedContractFilePath);
+                    if (IsTradeIn) await OpenGeneratedPdf(GeneratedTradeInContractFilePath);
 
                     await CloseAllModal();
                 }
@@ -729,6 +736,36 @@ namespace CDS_MAUI.ViewModels.CarsVM
             var folder = await folderPicker.PickSingleFolderAsync();
             return folder?.Path;
         }
-        #endif
+#endif
+
+        public async Task OpenGeneratedPdf(string filePath)
+        {
+            try
+            {
+                // Проверяем существование файла
+                if (!File.Exists(filePath))
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Ошибка",
+                        $"Файл не найден:\n{filePath}",
+                        "OK");
+                    return;
+                }
+
+                // Открываем файл с помощью Launcher
+                await Launcher.Default.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile(filePath),
+                    Title = "Открыть PDF"
+                });
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Ошибка открытия",
+                    $"Не удалось открыть файл: {ex.Message}",
+                    "OK");
+            }
+        }
     }
 }
