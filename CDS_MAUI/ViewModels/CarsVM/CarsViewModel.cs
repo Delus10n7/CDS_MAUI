@@ -412,6 +412,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             _pageCount = (int)Math.Ceiling((decimal)FilteredCars.Count / _pageSize);
             _currentPage = 1;
+            CurPage = "1";
             CanGoPrevPage = false;
             CanGoNextPage = _currentPage < _pageCount ? true : false;
         }

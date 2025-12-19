@@ -15,6 +15,10 @@ namespace CDS_Interfaces.DTO
         public int? Quantity { get; set; }
         public decimal? TotalPrice { get; set; }
 
+        // Навигационные свойства
+        public string? AdditionalServiceName { get; set; }
+        public decimal? AdditionalServicePrice { get; set; }
+
         public SelectedServiceDTO() { }
 
         public SelectedServiceDTO(SelectedService s)
@@ -24,6 +28,10 @@ namespace CDS_Interfaces.DTO
             AdditionalServiceId = s.AdditionalServiceId;
             Quantity = s.Quantity;
             TotalPrice = s.TotalPrice;
+
+            // Навигационные свойства
+            AdditionalServiceName = s.AdditionalService.ServiceName;
+            AdditionalServicePrice = s.AdditionalService.Price;
         }
     }
 }

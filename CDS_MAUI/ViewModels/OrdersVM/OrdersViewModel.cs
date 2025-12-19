@@ -81,12 +81,14 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
         // === СЕРВИСЫ ===
         private IOrderService _orderService;
+        private ICarService _carService;
         private ICarConfigurationService _carConfigService;
         private IUserService _userService;
 
-        public OrdersViewModel(IOrderService orderService, ICarConfigurationService carConfigurationService, IUserService userService)
+        public OrdersViewModel(IOrderService orderService, ICarService carService, ICarConfigurationService carConfigurationService, IUserService userService)
         {
             _orderService = orderService;
+            _carService = carService;
             _carConfigService = carConfigurationService;
             _userService = userService;
 
@@ -113,7 +115,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
             List<BrandDTO> brandDTOs = _carConfigService.GetAllBrands();
 
-            foreach (var b in  brandDTOs)
+            foreach (var b in brandDTOs)
             {
                 Brands.Add(b.BrandName);
             }
@@ -342,6 +344,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
             _pageCount = (int)Math.Ceiling((decimal)FilteredOrders.Count / _pageSize);
             _currentPage = 1;
+            CurPage = "1";
             CanGoPrevPage = false;
             CanGoNextPage = _currentPage < _pageCount ? true : false;
         }

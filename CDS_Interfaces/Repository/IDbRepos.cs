@@ -25,6 +25,7 @@ namespace CDS_Interfaces.Repository
         IRepository<TransmissionType> TransmissionTypes { get; }
         IRepository<DriveType> DriveTypes { get; }
         IRepository<OrderStatus> OrderStatuses { get; }
+        IRepository<AdditionalService> AdditionalServices { get; }
         int Save();
         void Dispose();
     }

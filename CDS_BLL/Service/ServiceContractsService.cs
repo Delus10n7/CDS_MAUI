@@ -21,6 +21,10 @@ namespace CDS_BLL.Service
         {
             return db.ServiceContracts.GetList().Select(i => new ServiceContractDTO(i)).ToList();
         }
+        public List<AdditionalServiceDTO> GetAllAdditionalServices()
+        {
+            return db.AdditionalServices.GetList().Select(i => new AdditionalServiceDTO(i)).ToList();
+        }
         public ServiceContractDTO GetServiceContract(int Id)
         {
             var serviceContract = db.ServiceContracts.GetItem(Id);

@@ -15,6 +15,11 @@ namespace CDS_Interfaces.DTO
         public decimal? TotalPrice { get; set; }
         public DateOnly? SaleDate { get; set; }
 
+        // Навигационные свойства
+        public string? CustomerName { get; set; }
+        public string? ManagerName { get; set; }
+        public ICollection<SelectedServiceDTO> SelectedServices { get; set; } = new List<SelectedServiceDTO>();
+
         public ServiceContractDTO() { }
 
         public ServiceContractDTO(ServiceContracts s)
@@ -24,6 +29,14 @@ namespace CDS_Interfaces.DTO
             ManagerId = s.ManagerId;
             TotalPrice = s.TotalPrice;
             SaleDate = s.SaleDate;
+
+            // Навигационные свойства
+            CustomerName = s.Client.FullName;
+            ManagerName = s.Manager.FullName;
+            foreach(var sc in s.SelectedService)
+            {
+                SelectedServices.Add(new SelectedServiceDTO(sc));
+            }
         }
     }
 }

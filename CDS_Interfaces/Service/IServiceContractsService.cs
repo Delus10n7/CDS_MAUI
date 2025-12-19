@@ -10,6 +10,7 @@ namespace CDS_Interfaces.Service
     public interface IServiceContractsService
     {
         List<ServiceContractDTO> GetAllServiceContracts();
+        List<AdditionalServiceDTO> GetAllAdditionalServices();
         ServiceContractDTO GetServiceContract(int Id);
         void CreateServiceContract(ServiceContractDTO s);
         void UpdateServiceContract(ServiceContractDTO s);

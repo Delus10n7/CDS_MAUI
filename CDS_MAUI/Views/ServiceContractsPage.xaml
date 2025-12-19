@@ -3,13 +3,245 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.ServiceContractsVM"
              xmlns:models="clr-namespace:CDS_MAUI.Models"
+             xmlns:converters="clr-namespace:CDS_MAUI.Converters"
              x:Class="CDS_MAUI.Views.ServiceContractsPage"
              x:DataType="viewmodels:ServiceContractsViewModel"
              Title="{Binding Title}">
 
+    <!-- Ресурсы для конвертеров -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToFilterTextConverter x:Key="BoolToFilterTextConverter" />
+            <converters:BoolToEnabledConverter x:Key="BoolToEnabledConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ScrollView>
         <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
+            <!-- Поисковая строка и кнопка фильтра -->
+            <Grid ColumnDefinitions="2*, 2*, 1*, 2*, 2*" ColumnSpacing="10">
+                <SearchBar Placeholder="Поиск" 
+                           Grid.ColumnSpan="4"
+                           Text="{Binding SearchText}"
+                           SearchCommand="{Binding SearchCommand}"/>
+
+                <Grid Grid.Column="4" ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <Button Text="{Binding IsFilterPanelVisible, Converter={StaticResource BoolToFilterTextConverter}}" 
+                            Grid.Column="0" 
+                            Command="{Binding ToggleFiltersCommand}"/>
+
+                    <Button Text="Обновить"
+                            Grid.Column="1"
+                            Command="{Binding RefreshCommand}"/>
+                </Grid>
+            </Grid>
+
+            <!-- Панель фильтров -->
+            <Border IsVisible="{Binding IsFilterPanelVisible}"
+                    Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Spacing="10">
+                    <!-- Доп услуга -->
+                    <Picker Title="Дополнительная услуга"
+                            ItemsSource="{Binding AdditionalServices}"
+                            SelectedItem="{Binding SelectedAdditionalService}"/>
+
+                    <!-- Менеджер -->
+                    <Picker Title="Менеджер"
+                            ItemsSource="{Binding Managers}"
+                            SelectedItem="{Binding SelectedManager}"/>
+
+                    <!-- Покупатель -->
+                    <VerticalStackLayout>
+                        <Label Text="Клиент"/>
+                        <Entry Placeholder="Введите ФИО клиента"
+                               Text="{Binding ClientName}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Сумма заказа -->
+                    <VerticalStackLayout>
+                        <Label Text="Сумма заказа, руб."/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Entry Grid.Column="0" 
+                                   Placeholder="От"
+                                   Keyboard="Numeric"
+                                   Text="{Binding PriceFrom}"/>
+                            <Entry Grid.Column="1" 
+                                   Placeholder="До"
+                                   Keyboard="Numeric"
+                                   Text="{Binding PriceTo}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки применения фильтров -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" 
+                                Text="Сбросить"
+                                Command="{Binding ResetFiltersCommand}"/>
+                        <Button Grid.Column="1"
+                                Text="Применить"
+                                Command="{Binding ApplyFiltersCommand}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Кнопки переключения между страницами -->
+            <Grid ColumnDefinitions="2*, 2*, 1*, 2*, 2*" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="На первую"
+                        Command="{Binding FirstPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Button Grid.Column="1"
+                        Text="Назад"
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Border Grid.Column="2"
+                        Padding="10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        StrokeThickness="2">
+                    <Label Text="{Binding CurPage}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </Border>
+                <Button Grid.Column="3"
+                        Text="Вперед"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+                <Button Grid.Column="4"
+                        Text="На последнюю"
+                        Command="{Binding LastPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+            </Grid>
             
+            <!-- Кнопка оформления доп услуги -->
+            <Button Text="Оформить договор на дополнительные услуги"
+                    FontAttributes="Bold"/>
+
+            <!-- Контейнер для карточек заказов на доп услуги -->
+            <CollectionView ItemsSource="{Binding ServiceContracts}"
+                            EmptyView="Нет заказов на доп услуги"
+                            Margin="10">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" 
+                                       ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ServiceContractModel">
+                        <Border Margin="0,0,0,15"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <!-- Список услуг -->
+                                <Border Grid.Column="0"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                        StrokeThickness="2"
+                                        HeightRequest="100">
+
+                                    <ScrollView>
+                                        <StackLayout BindableLayout.ItemsSource="{Binding AdditionalServiceItems}">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate x:DataType="models:AdditionalServiceItemModel">
+                                                    <Grid ColumnDefinitions="*, *, *" ColumnSpacing="2"
+                                                          Padding="2"
+                                                          Margin="0,1">
+                                                        <Label Text="{Binding Name}"
+                                                               Grid.Column="0"
+                                                               FontSize="12"
+                                                               LineBreakMode="TailTruncation"/>
+                                                        <Label Text="{Binding FormattedQuantity}"
+                                                               Grid.Column="1"
+                                                               FontSize="12"
+                                                               FontAttributes="Bold"
+                                                               HorizontalTextAlignment="Center"/>
+                                                        <Label Text="{Binding FormattedPrice}"
+                                                               Grid.Column="2"
+                                                               FontSize="12"
+                                                               FontAttributes="Bold"
+                                                               HorizontalTextAlignment="Center"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </StackLayout>
+                                    </ScrollView>
+                                </Border>
+                                
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+
+                                    <Label Text="{Binding Date}"
+                                           FontSize="12"/>
+
+                                    <Label Text="{Binding FormattedCustomerName}"
+                                           FontSize="14"/>
+
+                                    <Label Text="{Binding FormattedManagerName}"
+                                           FontSize="14"/>
+
+                                    <Label Text="{Binding FormattedPrice}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопки переключения между страницами -->
+            <Grid ColumnDefinitions="*, *, 60, *, *" ColumnSpacing="10" IsVisible="{Binding HasFooterPageButtons}">
+                <Button Grid.Column="0"
+                        Text="На первую"
+                        Command="{Binding FirstPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Button Grid.Column="1"
+                        Text="Назад"
+                        Command="{Binding PrevPageCommand}"
+                        IsEnabled="{Binding CanGoPrevPage}"/>
+                <Border Grid.Column="2"
+                        Padding="10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                        StrokeThickness="2">
+                    <Label Text="{Binding CurPage}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </Border>
+                <Button Grid.Column="3"
+                        Text="Вперед"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+                <Button Grid.Column="4"
+                        Text="На последнюю"
+                        Command="{Binding LastPageCommand}"
+                        IsEnabled="{Binding CanGoNextPage}"/>
+            </Grid>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="50"
+                               WidthRequest="50"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

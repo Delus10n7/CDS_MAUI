@@ -28,6 +28,7 @@ namespace CDS_DAL.RepositorySQL
         private TransmissionTypeRepositorySQL transmissionTypeRepository;
         private DriveTypeRepositorySQL driveTypeRepository;
         private OrderStatusRepositorySQL orderStatusRepository;
+        private AdditionalServiceRepositorySQL additionalServiceRepository;
 
         public DbReposSQL(SqlDbContext context)
         {
@@ -181,6 +182,16 @@ namespace CDS_DAL.RepositorySQL
                 if (orderStatusRepository == null)
                     orderStatusRepository = new OrderStatusRepositorySQL(db);
                 return orderStatusRepository;
+            }
+        }
+
+        public IRepository<AdditionalService> AdditionalServices
+        {
+            get
+            {
+                if (additionalServiceRepository == null)
+                    additionalServiceRepository = new AdditionalServiceRepositorySQL(db);
+                return additionalServiceRepository;
             }
         }
 
