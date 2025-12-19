@@ -225,7 +225,9 @@
                                         CornerRadius="8"
                                         HeightRequest="35"
                                         VerticalOptions="Center"
-                                        Clicked="Button_Clicked"/>
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CarsViewModel}}, 
+                                                 Path=ShowCarDetailsCommand}"
+                                        CommandParameter="{Binding .}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

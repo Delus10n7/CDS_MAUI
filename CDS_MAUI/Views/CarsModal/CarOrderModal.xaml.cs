@@ -21,15 +21,4 @@ public partial class CarOrderModal : ContentPage, IQueryAttributable
 			ViewModel.Car = carModel;
 		}
 	}
-
-    private void Button_Clicked(object sender, EventArgs e)
-    {
-        if (sender is Button button && button.BindingContext is CustomerModel customer)
-        {
-            if (BindingContext is CarOrderViewModel viewModel)
-            {
-                viewModel.SelectCustomerCommand.Execute(customer);
-            }
-        }
-    }
 }

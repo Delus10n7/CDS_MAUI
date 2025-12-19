@@ -22,15 +22,4 @@ public partial class CarsPage : ContentPage
             
         }
     }
-
-    private async void Button_Clicked(object sender, EventArgs e)
-    {
-        if (sender is Button button && button.BindingContext is CarModel car)
-        {
-            if (BindingContext is CarsViewModel viewModel)
-            {
-                await viewModel.ShowCarDetailsCommand.ExecuteAsync(car);
-            }
-        }
-    }
 }

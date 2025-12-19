@@ -113,7 +113,9 @@
                                                 <Button Grid.Column="1"
                                                         Text="Выбрать"
                                                         FontAttributes="Bold"
-                                                        Clicked="Button_Clicked"/>
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CarOrderViewModel}}, 
+                                                                 Path=SelectCustomerCommand}"
+                                                        CommandParameter="{Binding .}"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
