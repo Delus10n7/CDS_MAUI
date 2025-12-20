@@ -11,7 +11,7 @@
         <VerticalStackLayout Padding="30, 10" Spacing="5" HorizontalOptions="Fill">
             <Label Text="Заказы за период"
                    FontAttributes="Bold"
-                   FontSize="24"
+                   FontSize="20"
                    HorizontalOptions="Center"/>
 
             <Border Padding="15"
@@ -23,17 +23,19 @@
 
                 <VerticalStackLayout Spacing="20">
                     <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
-                        <VerticalStackLayout Grid.Column="0" Grid.ColumnSpan="2" Spacing="10">
-                            <Label Text="Начальная дата"/>
+                        <Label Grid.Column="0"
+                               Text="Выберете начальную дату:"
+                               VerticalOptions="Center"/>
 
-                            <DatePicker Date="{Binding PeriodFromDate}"/>
-                        </VerticalStackLayout>
+                        <DatePicker Grid.Column="1"
+                                    Date="{Binding PeriodFromDate}"/>
 
-                        <VerticalStackLayout Grid.Column="2" Grid.ColumnSpan="2" Spacing="10">
-                            <Label Text="Конечная дата"/>
+                        <Label Grid.Column="2"
+                               Text="Выберете конечную дату:"
+                               VerticalOptions="Center"/>
 
-                            <DatePicker Date="{Binding PeriodToDate}"/>
-                        </VerticalStackLayout>
+                        <DatePicker Grid.Column="3"
+                                    Date="{Binding PeriodToDate}"/>
 
                         <Button Grid.Column="4"
                                 Text="{Binding PeriodReportButtonText}"
@@ -42,11 +44,84 @@
                     </Grid>
 
                     <Grid IsVisible="{Binding IsPeriodReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
-                        <Label Grid.Column="0"
-                               Text="{Binding PeriodOrdersCount}"/>
+                        <Border Grid.Column="0"
+                                Padding="15"
+                                Margin="10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="2">
 
-                        <Label Grid.Column="1"
-                               Text="{Binding PeriodOrdersSum}"/>
+                            <Label Text="{Binding PeriodOrdersCount}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                Padding="15"
+                                Margin="10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="2">
+
+                            <Label Text="{Binding PeriodOrdersSum}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Заказы конкретного менеджера"
+                   FontAttributes="Bold"
+                   FontSize="20"
+                   HorizontalOptions="Center"/>
+
+            <Border Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Spacing="20">
+                    <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
+                        <Label Grid.Column="0" 
+                               Grid.ColumnSpan="2" 
+                               Text="Выберете менеджера:"
+                               VerticalOptions="Center"/>
+
+                        <Picker Grid.Column="2" Grid.ColumnSpan="2" ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}"/>
+
+                        <Button Grid.Column="4"
+                                Text="{Binding ManagerReportButtonText}"
+                                FontAttributes="Bold"
+                                Command="{Binding ExecuteManagerReportCommand}"/>
+                    </Grid>
+
+                    <Grid IsVisible="{Binding IsManagerReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Border Grid.Column="0"
+                                Padding="15"
+                                Margin="10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="2">
+
+                            <Label Text="{Binding ManagerOrdersCount}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                Padding="15"
+                                Margin="10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="2">
+
+                            <Label Text="{Binding ManagerOrdersSum}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                        </Border>
                     </Grid>
                 </VerticalStackLayout>
             </Border>
