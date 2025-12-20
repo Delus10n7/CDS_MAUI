@@ -53,15 +53,39 @@ namespace CDS_MAUI.ViewModels.ReportsVM
         [ObservableProperty]
         private string _managerOrdersSum = "";
 
+        // === ОТЧЕТ ПРОДАЖ МАРКИ
+
+        [ObservableProperty]
+        private ObservableCollection<string> _brands = new ObservableCollection<string>();
+
+        [ObservableProperty]
+        private string _selectedBrand = "";
+
+        [ObservableProperty]
+        private bool _isBrandReportVisible = false;
+
+        [ObservableProperty]
+        private string _brandReportButtonText = "";
+
+        [ObservableProperty]
+        private string _brandOrdersCount = "";
+
+        [ObservableProperty]
+        private string _brandOrdersSum = "";
+
         // === СЕРВИСЫ ===
 
         IOrderService _orderService;
         IUserService _userService;
+        ICarService _carService;
+        ICarConfigurationService _carConfigurationService;
 
-        public ReportsViewModel(IOrderService orderService, IUserService userService)
+        public ReportsViewModel(IOrderService orderService, IUserService userService, ICarService carService, ICarConfigurationService carConfigurationService)
         {
             _orderService = orderService;
             _userService = userService;
+            _carService = carService;
+            _carConfigurationService = carConfigurationService;
 
             Title = "Отчеты";
 
@@ -75,6 +99,11 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             IsManagerReportVisible = false;
             ManagerReportButtonText = "Показать отчет";
             InitializeManagers();
+
+            // Отчет продаж марки
+            IsBrandReportVisible = false;
+            BrandReportButtonText = "Показать отчет";
+            InitializeBrands();
         }
 
         private void InitializeManagers()
@@ -91,6 +120,20 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             }
         }
 
+        private void InitializeBrands()
+        {
+            Brands.Clear();
+            Brands.Add("Не выбрана");
+            SelectedBrand = Brands[0];
+
+            List<BrandDTO> brandDTOs = _carConfigurationService.GetAllBrands();
+
+            foreach(var b in brandDTOs)
+            {
+                Brands.Add(b.BrandName);
+            }
+        }
+
         [RelayCommand]
         private void ExecutePeriodReport()
         {
@@ -101,7 +144,7 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             if (string.IsNullOrEmpty(PeriodOrdersCount) && string.IsNullOrEmpty(PeriodOrdersSum))
             {
                 List<OrderDTO> orderDTOs = _orderService.GetAllOrders()
-                    .Where(o => o.StatusId != 3 &&
+                    .Where(o => o.StatusId != 4 &&
                                 o.OrderDate >= DateOnly.FromDateTime(PeriodFromDate) &&
                                 o.OrderDate <= DateOnly.FromDateTime(PeriodToDate))
                     .ToList();
@@ -138,12 +181,12 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             if (ManagerReportButtonText == "Показать отчет") ManagerReportButtonText = "Скрыть отчет";
             else ManagerReportButtonText = "Показать отчет";
 
-            if (SelectedManager != "Не выбран" && !string.IsNullOrEmpty(ManagerReportButtonText))
+            if (SelectedManager != "Не выбран" && !string.IsNullOrEmpty(SelectedManager))
             {
                 ManagerDTO m = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedManager);
 
                 List<OrderDTO> orderDTOs = _orderService.GetAllOrders()
-                    .Where(o => o.StatusId != 3 &&
+                    .Where(o => o.StatusId != 4 &&
                                 o.ManagerId == m.Id)
                     .ToList();
 
@@ -159,8 +202,8 @@ namespace CDS_MAUI.ViewModels.ReportsVM
                 ManagerOrdersCount = string.Empty;
                 ManagerOrdersSum = string.Empty;
 
-                ManagerOrdersCount += "Количество заказов за выбранный период: ";
-                ManagerOrdersSum += "Выручка за выбранный период: ";
+                ManagerOrdersCount += "Количество заказов выбранного менеджера: ";
+                ManagerOrdersSum += "Выручка выбранного менеджера: ";
 
                 ManagerOrdersCount += ordersCount.ToString();
                 ManagerOrdersSum += ordersSum.ToString("N0");
@@ -170,8 +213,54 @@ namespace CDS_MAUI.ViewModels.ReportsVM
                 ManagerOrdersCount = string.Empty;
                 ManagerOrdersSum = string.Empty;
 
-                ManagerOrdersCount += "Количество заказов за выбранный период: 0";
-                ManagerOrdersSum += "Выручка за выбранный период: 0";
+                ManagerOrdersCount += "Количество заказов выбранного менеджера: 0";
+                ManagerOrdersSum += "Выручка выбранного менеджера: 0";
+            }
+        }
+
+        [RelayCommand]
+        private void ExecuteBrandReport()
+        {
+            IsBrandReportVisible = !IsBrandReportVisible;
+            if (BrandReportButtonText == "Показать отчет") BrandReportButtonText = "Скрыть отчет";
+            else BrandReportButtonText = "Показать отчет";
+
+            if (SelectedBrand != "Не выбрана" && !string.IsNullOrEmpty(SelectedBrand))
+            {
+                BrandDTO b = _carConfigurationService.GetAllBrands().FirstOrDefault(b => b.BrandName == SelectedBrand);
+
+                List<int> carIds = _carService.GetAllCars().Where(c => c.BrandName == b.BrandName).Select(c => c.Id).ToList();
+
+                List<OrderDTO> orderDTOs = _orderService.GetAllOrders()
+                    .Where(o => o.StatusId != 4 &&
+                                carIds.Contains((int)o.CarId))
+                    .ToList();
+
+                int ordersCount = 0;
+                decimal ordersSum = 0;
+
+                foreach (var order in orderDTOs)
+                {
+                    ordersCount++;
+                    ordersSum += (decimal)order.SalePrice;
+                }
+
+                BrandOrdersCount = string.Empty;
+                BrandOrdersSum = string.Empty;
+
+                BrandOrdersCount += "Количество заказов на выбранную марку: ";
+                BrandOrdersSum += "Выручка за выбранную марку: ";
+
+                BrandOrdersCount += ordersCount.ToString();
+                BrandOrdersSum += ordersSum.ToString("N0");
+            }
+            else
+            {
+                BrandOrdersCount = string.Empty;
+                BrandOrdersSum = string.Empty;
+
+                BrandOrdersCount += "Количество заказов на выбранную марку: 0";
+                BrandOrdersSum += "Выручка за выбранную марку: 0";
             }
         }
     }
