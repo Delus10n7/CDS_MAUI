@@ -188,6 +188,186 @@
                     </Border>
                 </VerticalStackLayout>
             </Border>
+
+            <Label Text="Заказы на дополнительные услуги"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+
+            <Border Padding="15"
+                    Margin="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="2">
+
+                <VerticalStackLayout Padding="30, 10" Spacing="20" HorizontalOptions="Fill">
+                    <Label Text="Заказы на дополнительные услуги за период"
+                           FontAttributes="Bold"
+                           FontSize="18"/>
+
+                    <Border Padding="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
+                                <Label Grid.Column="0"
+                                       Text="Выберете начальную дату:"
+                                       VerticalOptions="Center"/>
+
+                                <DatePicker Grid.Column="1"
+                                            Date="{Binding AdditionalServicePeriodFromDate}"/>
+
+                                <Label Grid.Column="2"
+                                       Text="Выберете конечную дату:"
+                                       VerticalOptions="Center"/>
+
+                                <DatePicker Grid.Column="3"
+                                            Date="{Binding AdditionalServicePeriodToDate}"/>
+
+                                <Button Grid.Column="4"
+                                        Text="{Binding PeriodReportButtonText}"
+                                        FontAttributes="Bold"
+                                        Command="{Binding ExecuteAdditionalServicePeriodReportCommand}"/>
+                            </Grid>
+
+                            <Grid IsVisible="{Binding IsAdditionalServicePeriodReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <Border Grid.Column="0"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServicePeriodOrdersCount}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServicePeriodOrdersSum}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Label Text="Заказы на дополнительные услуги конкретного менеджера"
+                           FontAttributes="Bold"
+                           FontSize="18"/>
+
+                    <Border Padding="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
+                                <Label Grid.Column="0" 
+                                       Grid.ColumnSpan="2" 
+                                       Text="Выберете менеджера:"
+                                       VerticalOptions="Center"/>
+
+                                <Picker Grid.Column="2" Grid.ColumnSpan="2" ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedAdditionalServiceManager}"/>
+
+                                <Button Grid.Column="4"
+                                        Text="{Binding AdditionalServiceManagerReportButtonText}"
+                                        FontAttributes="Bold"
+                                        Command="{Binding ExecuteAdditionalServiceManagerReportCommand}"/>
+                            </Grid>
+
+                            <Grid IsVisible="{Binding IsAdditionalServiceManagerReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <Border Grid.Column="0"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServiceManagerOrdersCount}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServiceManagerOrdersSum}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Label Text="Заказы конкретной дополнительной услуги"
+                           FontAttributes="Bold"
+                           FontSize="18"/>
+
+                    <Border Padding="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*, *, *, *, *" ColumnSpacing="20">
+                                <Label Grid.Column="0" 
+                                       Grid.ColumnSpan="2" 
+                                       Text="Выберете услугу:"
+                                       VerticalOptions="Center"/>
+
+                                <Picker Grid.Column="2" Grid.ColumnSpan="2" ItemsSource="{Binding AdditionalServices}" SelectedItem="{Binding SelectedAdditionalService}"/>
+
+                                <Button Grid.Column="4"
+                                        Text="{Binding AdditionalServiceReportButtonText}"
+                                        FontAttributes="Bold"
+                                        Command="{Binding ExecuteAdditionalServiceReportCommand}"/>
+                            </Grid>
+
+                            <Grid IsVisible="{Binding IsAdditionalServiceReportVisible}" ColumnDefinitions="*, *" ColumnSpacing="20">
+                                <Border Grid.Column="0"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServiceOrdersCount}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Padding="15"
+                                        Margin="10"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="2">
+
+                                    <Label Text="{Binding AdditionalServiceOrdersSum}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 

@@ -53,7 +53,7 @@ namespace CDS_MAUI.ViewModels.ReportsVM
         [ObservableProperty]
         private string _managerOrdersSum = "";
 
-        // === ОТЧЕТ ПРОДАЖ МАРКИ
+        // === ОТЧЕТ ПРОДАЖ МАРКИ ===
 
         [ObservableProperty]
         private ObservableCollection<string> _brands = new ObservableCollection<string>();
@@ -73,19 +73,82 @@ namespace CDS_MAUI.ViewModels.ReportsVM
         [ObservableProperty]
         private string _brandOrdersSum = "";
 
+
+
+        // === ОТЧЕТ НА ДОП УСЛУГИ ЗА ПЕРИОД ===
+
+        [ObservableProperty]
+        private DateTime _additionalServicePeriodFromDate;
+
+        [ObservableProperty]
+        private DateTime _additionalServicePeriodToDate;
+
+        [ObservableProperty]
+        private bool _isAdditionalServicePeriodReportVisible = false;
+
+        [ObservableProperty]
+        private string _additionalServicePeriodReportButtonText = "";
+
+        [ObservableProperty]
+        private string _additionalServicePeriodOrdersCount = "";
+
+        [ObservableProperty]
+        private string _additionalServicePeriodOrdersSum = "";
+
+        // === ОТЧЕТ ПРОДАЖ ДОП УСЛУГ МЕНЕДЖЕРА ===
+
+        [ObservableProperty]
+        private string _selectedAdditionalServiceManager = "";
+
+        [ObservableProperty]
+        private bool _isAdditionalServiceManagerReportVisible = false;
+
+        [ObservableProperty]
+        private string _additionalServiceManagerReportButtonText = "";
+
+        [ObservableProperty]
+        private string _additionalServiceManagerOrdersCount = "";
+
+        [ObservableProperty]
+        private string _additionalServiceManagerOrdersSum = "";
+
+        // === ОТЧЕТ ПРОДАЖ ДОП УСЛУГИ ===
+
+        [ObservableProperty]
+        private ObservableCollection<string> _additionalServices = new ObservableCollection<string>();
+
+        [ObservableProperty]
+        private string _selectedAdditionalService = "";
+
+        [ObservableProperty]
+        private bool _isAdditionalServiceReportVisible = false;
+
+        [ObservableProperty]
+        private string _additionalServiceReportButtonText = "";
+
+        [ObservableProperty]
+        private string _additionalServiceOrdersCount = "";
+
+        [ObservableProperty]
+        private string _additionalServiceOrdersSum = "";
+
+
+
         // === СЕРВИСЫ ===
 
         IOrderService _orderService;
         IUserService _userService;
         ICarService _carService;
         ICarConfigurationService _carConfigurationService;
+        IServiceContractsService _serviceContractsService;
 
-        public ReportsViewModel(IOrderService orderService, IUserService userService, ICarService carService, ICarConfigurationService carConfigurationService)
+        public ReportsViewModel(IOrderService orderService, IUserService userService, ICarService carService, ICarConfigurationService carConfigurationService, IServiceContractsService serviceContractsService)
         {
             _orderService = orderService;
             _userService = userService;
             _carService = carService;
             _carConfigurationService = carConfigurationService;
+            _serviceContractsService = serviceContractsService;
 
             Title = "Отчеты";
 
@@ -104,6 +167,21 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             IsBrandReportVisible = false;
             BrandReportButtonText = "Показать отчет";
             InitializeBrands();
+
+            // Отчет доп услуг за период
+            IsAdditionalServicePeriodReportVisible = false;
+            AdditionalServicePeriodReportButtonText = "Показать отчет";
+            AdditionalServicePeriodFromDate = DateTime.Now;
+            AdditionalServicePeriodToDate = DateTime.Now;
+
+            // Отчет продаж доп услуг менеджера
+            IsAdditionalServiceManagerReportVisible = false;
+            AdditionalServiceManagerReportButtonText = "Показать отчет";
+
+            // Отчет продаж доп услуги
+            IsAdditionalServiceReportVisible = false;
+            AdditionalServiceReportButtonText = "Показать отчет";
+            InitializeAdditionalServices();
         }
 
         private void InitializeManagers()
@@ -131,6 +209,20 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             foreach(var b in brandDTOs)
             {
                 Brands.Add(b.BrandName);
+            }
+        }
+
+        private void InitializeAdditionalServices()
+        {
+            AdditionalServices.Clear();
+            AdditionalServices.Add("Не выбрана");
+            SelectedAdditionalService = AdditionalServices[0];
+
+            List<AdditionalServiceDTO> additionalServiceDTOs = _serviceContractsService.GetAllAdditionalServices();
+
+            foreach(var a in additionalServiceDTOs)
+            {
+                AdditionalServices.Add(a.ServiceName);
             }
         }
 
@@ -261,6 +353,143 @@ namespace CDS_MAUI.ViewModels.ReportsVM
 
                 BrandOrdersCount += "Количество заказов на выбранную марку: 0";
                 BrandOrdersSum += "Выручка за выбранную марку: 0";
+            }
+        }
+
+        [RelayCommand]
+        private void ExecuteAdditionalServicePeriodReport()
+        {
+            IsAdditionalServicePeriodReportVisible = !IsAdditionalServicePeriodReportVisible;
+            if (AdditionalServicePeriodReportButtonText == "Показать отчет") AdditionalServicePeriodReportButtonText = "Скрыть отчет";
+            else AdditionalServicePeriodReportButtonText = "Показать отчет";
+
+            if (string.IsNullOrEmpty(AdditionalServicePeriodOrdersCount) && string.IsNullOrEmpty(AdditionalServicePeriodOrdersSum))
+            {
+                List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts()
+                    .Where(s => s.SaleDate >= DateOnly.FromDateTime(AdditionalServicePeriodFromDate) &&
+                                s.SaleDate <= DateOnly.FromDateTime(AdditionalServicePeriodToDate))
+                    .ToList();
+
+                int ordersCount = 0;
+                decimal ordersSum = 0;
+
+                foreach (var order in serviceContractDTOs)
+                {
+                    ordersCount++;
+                    ordersSum += (decimal)order.TotalPrice;
+                }
+
+                AdditionalServicePeriodOrdersCount = string.Empty;
+                AdditionalServicePeriodOrdersSum = string.Empty;
+
+                AdditionalServicePeriodOrdersCount += "Количество заказов за выбранный период: ";
+                AdditionalServicePeriodOrdersSum += "Выручка за выбранный период: ";
+
+                AdditionalServicePeriodOrdersCount += ordersCount.ToString();
+                AdditionalServicePeriodOrdersSum += ordersSum.ToString("N0");
+            }
+            else
+            {
+                AdditionalServicePeriodOrdersCount = string.Empty;
+                AdditionalServicePeriodOrdersSum = string.Empty;
+            }
+        }
+
+        [RelayCommand]
+        private void ExecuteAdditionalServiceManagerReport()
+        {
+            IsAdditionalServiceManagerReportVisible = !IsAdditionalServiceManagerReportVisible;
+            if (AdditionalServiceManagerReportButtonText == "Показать отчет") AdditionalServiceManagerReportButtonText = "Скрыть отчет";
+            else AdditionalServiceManagerReportButtonText = "Показать отчет";
+
+            if (SelectedAdditionalServiceManager != "Не выбран" && !string.IsNullOrEmpty(SelectedAdditionalServiceManager))
+            {
+                ManagerDTO m = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedAdditionalServiceManager);
+
+                List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts()
+                    .Where(s => s.ManagerId == m.Id)
+                    .ToList();
+
+                int ordersCount = 0;
+                decimal ordersSum = 0;
+
+                foreach (var order in serviceContractDTOs)
+                {
+                    ordersCount++;
+                    ordersSum += (decimal)order.TotalPrice;
+                }
+
+                AdditionalServiceManagerOrdersCount = string.Empty;
+                AdditionalServiceManagerOrdersSum = string.Empty;
+
+                AdditionalServiceManagerOrdersCount += "Количество заказов выбранного менеджера: ";
+                AdditionalServiceManagerOrdersSum += "Выручка выбранного менеджера: ";
+
+                AdditionalServiceManagerOrdersCount += ordersCount.ToString();
+                AdditionalServiceManagerOrdersSum += ordersSum.ToString("N0");
+            }
+            else
+            {
+                AdditionalServiceManagerOrdersCount = string.Empty;
+                AdditionalServiceManagerOrdersSum = string.Empty;
+
+                AdditionalServiceManagerOrdersCount += "Количество заказов выбранного менеджера: 0";
+                AdditionalServiceManagerOrdersSum += "Выручка выбранного менеджера: 0";
+            }
+        }
+
+        [RelayCommand]
+        private void ExecuteAdditionalServiceReport()
+        {
+            IsAdditionalServiceReportVisible = !IsAdditionalServiceReportVisible;
+            if (AdditionalServiceReportButtonText == "Показать отчет") AdditionalServiceReportButtonText = "Скрыть отчет";
+            else AdditionalServiceReportButtonText = "Показать отчет";
+
+            if (SelectedAdditionalService != "Не выбрана" && !string.IsNullOrEmpty(SelectedAdditionalService))
+            {
+                AdditionalServiceDTO a = _serviceContractsService.GetAllAdditionalServices().FirstOrDefault(a => a.ServiceName == SelectedAdditionalService);
+
+                List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts();
+                
+                List<int> contractIds = new List<int>();
+                foreach(var contract in serviceContractDTOs)
+                {
+                    foreach(var service in contract.SelectedServices)
+                    {
+                        if (service.AdditionalServiceName == SelectedAdditionalService)
+                        {
+                            contractIds.Add(contract.Id);
+                        }
+                    }
+                }
+
+                serviceContractDTOs = serviceContractDTOs.Where(s => contractIds.Contains(s.Id)).ToList();
+
+                int ordersCount = 0;
+                decimal ordersSum = 0;
+
+                foreach (var order in serviceContractDTOs)
+                {
+                    ordersCount++;
+                    ordersSum += (decimal)order.TotalPrice;
+                }
+
+                AdditionalServiceOrdersCount = string.Empty;
+                AdditionalServiceOrdersSum = string.Empty;
+
+                AdditionalServiceOrdersCount += "Количество заказов на выбранную услугу: ";
+                AdditionalServiceOrdersSum += "Выручка за выбранную услугу: ";
+
+                AdditionalServiceOrdersCount += ordersCount.ToString();
+                AdditionalServiceOrdersSum += ordersSum.ToString("N0");
+            }
+            else
+            {
+                AdditionalServiceOrdersCount = string.Empty;
+                AdditionalServiceOrdersSum = string.Empty;
+
+                AdditionalServiceOrdersCount += "Количество заказов на выбранную марку: 0";
+                AdditionalServiceOrdersSum += "Выручка за выбранную марку: 0";
             }
         }
     }
