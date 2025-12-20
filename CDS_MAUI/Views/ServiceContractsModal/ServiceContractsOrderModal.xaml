@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CDS_MAUI.ViewModels.ServiceContractsVM"
+             xmlns:models="clr-namespace:CDS_MAUI.Models"
+             x:Class="CDS_MAUI.Views.ServiceContractsModal.ServiceContractsOrderModal"
+             x:DataType="viewmodels:ServiceContractsOrderViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *, Auto"
+              RowSpacing="0"
+              Margin="20, 20">
+
+            <!-- Фон с закруглениями -->
+            <Border Grid.RowSpan="3"
+                    StrokeShape="RoundRectangle 16"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    StrokeThickness="1"/>
+
+            <!-- Кнопка закрытия -->
+            <Button Grid.Row="0"
+                    Text="✕"
+                    FontSize="20"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    CornerRadius="20"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="10"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    Command="{Binding CloseModalCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <!-- Контент -->
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*, *"
+                  ColumnSpacing="40"
+                  Padding="20,0">
+
+                <VerticalStackLayout Grid.Column="0" Spacing="20">
+                    <Label Text="Информация о клиенте и менеджере"
+                           FontSize="20"
+                           FontAttributes="Bold"/>
+
+                    <!-- Клиент -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                        <Button Grid.Column="0"
+                                Text="Существующий клиент"
+                                FontAttributes="Bold"
+                                Command="{Binding ShowOldCustomerMenuCommand}"/>
+
+                        <Button Grid.Column="1"
+                                Text="Новый клиент"
+                                FontAttributes="Bold"
+                                Command="{Binding ShowNewCustomerMenuCommand}"/>
+                    </Grid>
+
+                    <Border IsVisible="{Binding OldCustomer}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <SearchBar Placeholder="Введите ФИО, номер телефона или Email клиента"
+                                       Text="{Binding SearchText}"
+                                       SearchCommand="{Binding SearchCommand}"/>
+
+                            <CollectionView ItemsSource="{Binding FilteredCustomers}"
+                                            EmptyView="Введите ФИО, номер телефона или Email клиента"
+                                            Margin="10">
+
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" 
+                                                       ItemSpacing="15" />
+                                </CollectionView.ItemsLayout>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CustomerModel">
+                                        <Border Margin="10"
+                                                Padding="15"
+                                                StrokeShape="RoundRectangle 12"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+
+                                            <Grid ColumnDefinitions="3*, 1*" ColumnSpacing="20">
+                                                <Grid ColumnDefinitions="*, *, *"
+                                                      Grid.Column="0" 
+                                                      ColumnSpacing="20">
+
+                                                    <Label Grid.Column="0"
+                                                           Text="{Binding FullName}"
+                                                           FontAttributes="Bold"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Phone}"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+
+                                                    <Label Grid.Column="2"
+                                                           Text="{Binding Email}"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+                                                </Grid>
+
+                                                <Button Grid.Column="1"
+                                                        Text="Выбрать"
+                                                        FontAttributes="Bold"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ServiceContractsOrderViewModel}},
+                                                            Path=SelectCustomerCommand}"
+                                                        CommandParameter="{Binding .}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border IsVisible="{Binding NewCustomer}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="20">
+                            <Label Text="ФИО клиента"/>
+
+                            <Entry Placeholder="Введите ФИО клиента"
+                                   Text="{Binding CustomerName}"/>
+
+                            <Label Text="Номер телефона клиента"/>
+
+                            <Entry Placeholder="Введите номер телефона клиента"
+                                   Text="{Binding CustomerPhone}"/>
+
+                            <Label Text="Email клиента"/>
+
+                            <Entry Placeholder="Введите Email клиента"
+                                   Text="{Binding CustomerEmail}"/>
+
+                            <Button Text="Создать нового клиента"
+                                    FontAttributes="Bold"
+                                    Command="{Binding SelectNewCustomerCommand}"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Picker Title="Клиент"
+                            ItemsSource="{Binding Customers}"
+                            SelectedItem="{Binding SelectedCustomer}"/>
+
+                    <!-- Менеджер -->
+                    <Picker Title="Менеджер"
+                            ItemsSource="{Binding Managers}"
+                            SelectedItem="{Binding SelectedManager}"/>
+
+                    <Button Text="{Binding OutputFolderPathButtonText}"
+                            FontAttributes="Bold"
+                            Command="{Binding SelectOutputFileFolderCommand}"/>
+                </VerticalStackLayout>
+                
+                <!-- Выбранные доп услуги -->
+                <VerticalStackLayout Grid.Column="1" Spacing="20">
+                    <Label Text="Информация о заказе на дополнительные услуги"
+                           FontSize="20"
+                           FontAttributes="Bold"/>
+                    
+                    <Button Text="Добавить доп услугу"
+                            FontAttributes="Bold"
+                            Command="{Binding ShowAddAdditionalServicePanelCommand}"/>
+
+                    <Border IsVisible="{Binding IsAddAdditionalServicePanelVisible}"
+                            Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            StrokeThickness="2">
+
+                        <VerticalStackLayout Spacing="10">
+                            <Picker Title="Дополнительная услуга"
+                                    ItemsSource="{Binding AdditionalServices}"
+                                    SelectedItem="{Binding SelectedAdditionalService}"/>
+
+                            <Label Text="Количество"/>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="{Binding SelectedQuantity}" VerticalOptions="Center"/>
+                                <Stepper Value="{Binding SelectedQuantity}" Minimum="1" Maximum="99" Increment="1"/>
+                            </HorizontalStackLayout>
+
+                            <Label Text="Цена"/>
+                            <Entry IsReadOnly="True" Placeholder="Не выбрана услуга" Text="{Binding SelectedPrice}"/>
+
+                            <Button Text="Добавить"
+                                    FontAttributes="Bold"
+                                    Command="{Binding AddNewAdditionalServiceItemCommand}"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Padding="15"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            StrokeThickness="2"
+                            HeightRequest="200">
+
+                        <ScrollView>
+                            <StackLayout BindableLayout.ItemsSource="{Binding AdditionalServiceItems}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:AdditionalServiceItemModel">
+                                        <Grid ColumnDefinitions="*, *, *, *" ColumnSpacing="2"
+                                              Padding="2"
+                                              Margin="0,1">
+                                            <Label Text="{Binding Name}"
+                                                   Grid.Column="0"
+                                                   FontSize="12"
+                                                   LineBreakMode="TailTruncation"
+                                                   VerticalTextAlignment="Center"/>
+                                            <Label Text="{Binding FormattedQuantity}"
+                                                   Grid.Column="1"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"/>
+                                            <Label Text="{Binding FormattedPrice}"
+                                                   Grid.Column="2"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"/>
+                                            <Button Grid.Column="3"
+                                                    Text="Удалить"
+                                                    FontSize="12"
+                                                    WidthRequest="80"
+                                                    HeightRequest="20"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ServiceContractsOrderViewModel}}, 
+                                                        Path=DeleteAdditionalServiceItemCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </ScrollView>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Кнопка -->
+            <VerticalStackLayout Grid.Row="2"
+                     Spacing="20"
+                     Padding="0,30,0,30"
+                     HorizontalOptions="Center">
+
+                <Label Text="{Binding SalePriceFormatted}"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"/>
+
+                <Button Text="Оформить заказ"
+                        FontAttributes="Bold"
+                        WidthRequest="250"
+                        Command="{Binding MakeServiceContractOrderCommand}"
+                        IsEnabled="True"/>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

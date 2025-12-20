@@ -9,6 +9,7 @@ using CDS_MAUI.ViewModels.ServiceContractsVM;
 using CDS_MAUI.Views;
 using CDS_MAUI.Views.CarsModal;
 using CDS_MAUI.Views.OrdersModal;
+using CDS_MAUI.Views.ServiceContractsModal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -61,6 +62,7 @@ namespace CDS_MAUI
             builder.Services.AddTransient<OrderDetailsViewModel>();
             builder.Services.AddTransient<CarOrderViewModel>();
             builder.Services.AddTransient<ServiceContractsViewModel>();
+            builder.Services.AddTransient<ServiceContractsOrderViewModel>();
 
             // Регистрация Views
             builder.Services.AddTransient<CarsPage>();
@@ -70,6 +72,7 @@ namespace CDS_MAUI
             builder.Services.AddTransient<OrderDetailsModal>();
             builder.Services.AddTransient<CarOrderModal>();
             builder.Services.AddTransient<ServiceContractsPage>();
+            builder.Services.AddTransient<ServiceContractsOrderModal>();
 
             return builder.Build();
         }

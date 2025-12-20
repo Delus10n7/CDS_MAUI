@@ -123,7 +123,8 @@
             
             <!-- Кнопка оформления доп услуги -->
             <Button Text="Оформить договор на дополнительные услуги"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold"
+                    Command="{Binding ShowServiceContractsOrderModalCommand}"/>
 
             <!-- Контейнер для карточек заказов на доп услуги -->
             <CollectionView ItemsSource="{Binding ServiceContracts}"

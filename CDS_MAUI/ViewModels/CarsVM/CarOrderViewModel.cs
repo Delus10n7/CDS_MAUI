@@ -147,7 +147,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
         IDiscountService _discountService;
 
         // === PDF Генератор ===
-        CarContractPdfGenerator gen;
+        PdfGenerator.PdfGenerator gen;
         CarContractDataModel data;
         CarContractDataModel tradeInData = new CarContractDataModel();
 
@@ -177,7 +177,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             _userService = userService;
             _discountService = discountService;
 
-            gen = new CarContractPdfGenerator();
+            gen = new PdfGenerator.PdfGenerator();
             data = new CarContractDataModel();
 
             Title = "Оформление заказа";
@@ -485,10 +485,14 @@ namespace CDS_MAUI.ViewModels.CarsVM
             try
             {
                 var flag = await Submit();
-                if (!flag) return;
+                if (!flag)
+                {
+                    IsBusy = false;
+                    return;
+                }
 
                 bool confirm = await Shell.Current.DisplayAlert(
-                    "Изменение заказа",
+                    "Оформление заказа",
                     $"Вы хотите оформить {Car.Brand} {Car.Model} на сумму {SalePriceFormatted}?",
                     "Да",
                     "Отмена"
@@ -513,6 +517,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     catch (Exception ex)
                     {
                         await Shell.Current.DisplayAlert("Ошибка!", $"Ошибка генерации договора: {ex.Message}", "ОК");
+                        IsBusy = false;
                         return;
                     }
 
@@ -736,7 +741,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             var folder = await folderPicker.PickSingleFolderAsync();
             return folder?.Path;
         }
-#endif
+        #endif
 
         public async Task OpenGeneratedPdf(string filePath)
         {

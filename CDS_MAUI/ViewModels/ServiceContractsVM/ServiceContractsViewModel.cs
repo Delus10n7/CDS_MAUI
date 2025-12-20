@@ -2,6 +2,7 @@
 using CDS_Interfaces.DTO;
 using CDS_Interfaces.Service;
 using CDS_MAUI.Models;
+using CDS_MAUI.Views.ServiceContractsModal;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -75,10 +76,12 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
 
         // === СЕРВИСЫ ===
         IServiceContractsService _serviceContractsService;
+        IUserService _userService;
 
-        public ServiceContractsViewModel(IServiceContractsService serviceContractsService)
+        public ServiceContractsViewModel(IServiceContractsService serviceContractsService, IUserService userService)
         {
             _serviceContractsService = serviceContractsService;
+            _userService = userService;
 
             Title = "Дополнительные услуги";
             Initialize();
@@ -87,6 +90,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
         private void Initialize()
         {
             InitializeAdditionalServices();
+            InitializeManagers();
 
             LoadAllServiceContracts();
             LoadCurrentPageServiceContracts();
@@ -102,6 +106,19 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
             foreach(var a in additionalServiceDTOs)
             {
                 AdditionalServices.Add(a.ServiceName);
+            }
+        }
+
+        private void InitializeManagers()
+        {
+            Managers.Clear();
+            Managers.Add("Любой");
+
+            List<ManagerDTO> managerDTOs = _userService.GetAllManagers();
+
+            foreach(var m in managerDTOs)
+            {
+                Managers.Add(m.FullName);
             }
         }
 
@@ -201,6 +218,21 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
             CanGoNextPage = false;
 
             LoadCurrentPageServiceContracts();
+        }
+
+        [RelayCommand]
+        private async Task ShowServiceContractsOrderModal()
+        {
+            IsBusy = true;
+
+            try
+            {
+                await Shell.Current.GoToAsync(nameof(ServiceContractsOrderModal), true);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         // === ЗАГРУЗКА ДАННЫХ ===

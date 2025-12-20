@@ -1,5 +1,6 @@
 ﻿using CDS_MAUI.Views.CarsModal;
 using CDS_MAUI.Views.OrdersModal;
+using CDS_MAUI.Views.ServiceContractsModal;
 
 namespace CDS_MAUI
 {
@@ -13,6 +14,7 @@ namespace CDS_MAUI
             Routing.RegisterRoute(nameof(CarDetailsModal), typeof(CarDetailsModal));
             Routing.RegisterRoute(nameof(OrderDetailsModal), typeof(OrderDetailsModal));
             Routing.RegisterRoute(nameof(CarOrderModal), typeof(CarOrderModal));
+            Routing.RegisterRoute(nameof(ServiceContractsOrderModal), typeof(ServiceContractsOrderModal));
         }
     }
 }

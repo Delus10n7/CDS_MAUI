@@ -14,11 +14,11 @@ using Element = iTextSharp.text.Element;
 
 namespace CDS_MAUI.PdfGenerator
 {
-    public class CarContractPdfGenerator
+    public class PdfGenerator
     {
         private BaseFont _russianFont;
 
-        public CarContractPdfGenerator()
+        public PdfGenerator()
         {
             // Инициализируем шрифт для кириллицы
             InitializeRussianFont();
@@ -497,6 +497,213 @@ _____________________                   _____________________
             return filePath;
         }
 
+        public string GenerateServiceContractPdf(ServiceContractDataModel contractData, string outputDirectory)
+        {
+            // Создаем директорию, если она не существует
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            // Генерируем имя файла на основе данных договора
+            string fileName = $"Договор_дополнительные_услуги_{contractData.CustomerName}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            string filePath = Path.Combine(outputDirectory, fileName);
+
+            // Создаем документ
+            Document document = new Document(PageSize.A4);
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
+
+            document.Open();
+
+            // Настройка шрифтов
+            BaseFont baseFont = BaseFont.CreateFont("C:\\Windows\\Fonts\\arial.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            Font titleFont = new Font(baseFont, 16, Font.BOLD);
+            Font headerFont = new Font(baseFont, 12, Font.BOLD);
+            Font normalFont = new Font(baseFont, 10, Font.NORMAL);
+            Font smallFont = new Font(baseFont, 9, Font.NORMAL);
+            Font boldFont = new Font(baseFont, 10, Font.BOLD);
+
+            // Заголовок документа
+            Paragraph title = new Paragraph("ДОГОВОР НА ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ", titleFont);
+            title.Alignment = Element.ALIGN_CENTER;
+            title.SpacingAfter = 20;
+            document.Add(title);
+
+            // Место и дата заключения договора
+            Paragraph locationDate = new Paragraph($"г. {contractData.CarDealershipCity} \"{contractData.ContractDay}\" {contractData.ContractMonth} {contractData.ContractYear} г.", normalFont);
+            locationDate.Alignment = Element.ALIGN_RIGHT;
+            locationDate.SpacingAfter = 20;
+            document.Add(locationDate);
+
+            // Основной текст договора
+            string contractText = @"
+Мы, нижеподписавшиеся:
+
+ИСПОЛНИТЕЛЬ: Автосалон '" + contractData.CarDealershipCity + @"', в лице уполномоченного представителя,
+
+и
+
+ЗАКАЗЧИК: " + contractData.CustomerName + @", действующий(ая) от своего имени,
+
+заключили настоящий договор о нижеследующем:
+
+1. ПРЕДМЕТ ДОГОВОРА
+
+1.1. Исполнитель обязуется оказать Заказчику дополнительные услуги по автомобилю, а Заказчик обязуется принять и оплатить данные услуги.
+
+1.2. Автомобиль, к которому относятся дополнительные услуги:";
+
+            Paragraph text1 = new Paragraph(contractText, normalFont);
+            text1.Alignment = Element.ALIGN_JUSTIFIED;
+            text1.SpacingAfter = 10;
+            document.Add(text1);
+
+            // Таблица с характеристиками автомобиля
+            PdfPTable carTable = new PdfPTable(2);
+            carTable.WidthPercentage = 100;
+            carTable.SpacingAfter = 10;
+
+            // Настройка ширины колонок
+            float[] widths = new float[] { 40f, 60f };
+            carTable.SetWidths(widths);
+
+            AddCarTableRow(carTable, "Марка:", "____________________", normalFont);
+            AddCarTableRow(carTable, "Модель:", "____________________", normalFont);
+            AddCarTableRow(carTable, "Гос. номер:", "____________________", normalFont);
+            AddCarTableRow(carTable, "VIN:", "____________________", normalFont);
+            AddCarTableRow(carTable, "Год выпуска:", "____________________", normalFont);
+
+            document.Add(carTable);
+
+            // Перечень дополнительных услуг
+            Paragraph servicesTitle = new Paragraph("1.3. Перечень дополнительных услуг:", normalFont);
+            servicesTitle.SpacingAfter = 5;
+            document.Add(servicesTitle);
+
+            // Таблица с услугами (4 колонки: №, Наименование, Количество, Стоимость)
+            PdfPTable servicesTable = new PdfPTable(4);
+            servicesTable.WidthPercentage = 100;
+            servicesTable.SpacingAfter = 15;
+
+            float[] servicesWidths = new float[] { 5f, 50f, 10f, 35f };
+            servicesTable.SetWidths(servicesWidths);
+
+            // Заголовки таблицы услуг
+            AddServicesTableHeader(servicesTable, "№", "Наименование услуги", "Кол-во", "Стоимость", headerFont);
+
+            // Добавление услуг
+            if (contractData.AdditionalServiceItems != null && contractData.AdditionalServiceItems.Count > 0)
+            {
+                int serviceNumber = 1;
+
+                foreach (var service in contractData.AdditionalServiceItems)
+                {
+                    AddServicesTableRow(servicesTable,
+                        serviceNumber.ToString(),
+                        service.Name,
+                        service.Quantity > 0 ? service.Quantity.ToString() : "1",
+                        service.FormattedPrice,
+                        normalFont);
+
+                    serviceNumber++;
+                }
+
+                // Итоговая строка (объединяем первые 3 колонки)
+                PdfPCell totalLabelCell = new PdfPCell(new Phrase("ИТОГО:", boldFont));
+                totalLabelCell.Border = PdfPCell.NO_BORDER;
+                totalLabelCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                totalLabelCell.Colspan = 3;
+                totalLabelCell.Padding = 5;
+
+                var priceString = contractData.FormattedPrice + " руб.";
+                PdfPCell totalValueCell = new PdfPCell(new Phrase(priceString, boldFont));
+                totalValueCell.Border = PdfPCell.NO_BORDER;
+                totalValueCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                totalValueCell.Padding = 5;
+
+                servicesTable.AddCell(totalLabelCell);
+                servicesTable.AddCell(totalValueCell);
+            }
+
+            document.Add(servicesTable);
+
+            // Продолжение текста договора
+            string contractText2 = @"
+
+2. СТОИМОСТЬ УСЛУГ И ПОРЯДОК РАСЧЕТОВ
+
+2.1. Общая стоимость услуг составляет: " + contractData.FormattedPrice + @" руб.
+
+2.2. Срок оказания услуг: ______________________
+
+3. ПРАВА И ОБЯЗАННОСТИ СТОРОН
+
+3.1. Исполнитель обязуется:
+    - оказать услуги в соответствии с условиями настоящего договора;
+    - использовать качественные материалы и комплектующие;
+    - предоставить гарантию на выполненные работы в течение 12 месяцев.
+
+3.2. Заказчик обязуется:
+    - предоставить автомобиль в оговоренный срок;
+    - оплатить услуги в соответствии с условиями договора;
+    - принять выполненные работы.
+
+4. ГАРАНТИЙНЫЕ ОБЯЗАТЕЛЬСТВА
+
+4.1. Исполнитель предоставляет гарантию на выполненные работы и установленное оборудование сроком на 12 месяцев.
+
+4.2. Гарантия не распространяется на случаи повреждений, возникших в результате:
+    - несоблюдения правил эксплуатации;
+    - проведения ремонтных работ третьими лицами;
+    - механических повреждений;
+    - воздействия внешних факторов.
+
+5. ОТВЕТСТВЕННОСТЬ СТОРОН
+
+5.1. За неисполнение или ненадлежащее исполнение обязательств по настоящему договору стороны несут ответственность в соответствии с действующим законодательством РФ.
+
+6. СРОК ДЕЙСТВИЯ ДОГОВОРА
+
+6.1. Настоящий договор вступает в силу с момента его подписания и действует до полного исполнения сторонами своих обязательств.
+
+7. ПРОЧИЕ УСЛОВИЯ
+
+7.1. Все изменения и дополнения к настоящему договору оформляются дополнительными соглашениями, подписанными обеими сторонами.
+
+7.2. Споры и разногласия разрешаются путем переговоров, а при недостижении согласия - в судебном порядке.
+
+7.3. Настоящий договор составлен в двух экземплярах, имеющих одинаковую юридическую силу, по одному для каждой из сторон.
+
+8. ПОДПИСИ СТОРОН
+
+ИСПОЛНИТЕЛЬ:                                ЗАКАЗЧИК:
+
+_____________________                   _____________________
+(подпись)                                            (подпись)
+
+_____________________                   _____________________
+(Ф.И.О.)                                               (Ф.И.О.)
+
+М.П.
+
+Контактный телефон: _______________
+Адрес: _____________________________
+
+Дата начала работ: ________________________
+";
+
+            Paragraph text2 = new Paragraph(contractText2, normalFont);
+            text2.Alignment = Element.ALIGN_JUSTIFIED;
+            document.Add(text2);
+
+            // Добавляем нумерацию страниц
+            AddPageNumbers(writer, document, smallFont);
+
+            document.Close();
+
+            return filePath;
+        }
+
         private void AddCarTableRow(PdfPTable table, string label, string value, Font font)
         {
             PdfPCell labelCell = new PdfPCell(new Phrase(label, font));
@@ -526,6 +733,67 @@ _____________________                   _____________________
             footer.AddCell(cell);
 
             footer.WriteSelectedRows(0, -1, document.LeftMargin, document.BottomMargin, writer.DirectContent);
+        }
+
+        private void AddServicesTableHeader(PdfPTable table, string col1, string col2, string col3, string col4, Font font)
+        {
+            PdfPCell cell1 = new PdfPCell(new Phrase(col1, font));
+            PdfPCell cell2 = new PdfPCell(new Phrase(col2, font));
+            PdfPCell cell3 = new PdfPCell(new Phrase(col3, font));
+            PdfPCell cell4 = new PdfPCell(new Phrase(col4, font));
+
+            cell1.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell2.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell3.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell4.HorizontalAlignment = Element.ALIGN_CENTER;
+
+            cell1.BackgroundColor = new BaseColor(220, 220, 220);
+            cell2.BackgroundColor = new BaseColor(220, 220, 220);
+            cell3.BackgroundColor = new BaseColor(220, 220, 220);
+            cell4.BackgroundColor = new BaseColor(220, 220, 220);
+
+            cell1.BorderWidth = 0.5f;
+            cell2.BorderWidth = 0.5f;
+            cell3.BorderWidth = 0.5f;
+            cell4.BorderWidth = 0.5f;
+
+            cell1.Padding = 5;
+            cell2.Padding = 5;
+            cell3.Padding = 5;
+            cell4.Padding = 5;
+
+            table.AddCell(cell1);
+            table.AddCell(cell2);
+            table.AddCell(cell3);
+            table.AddCell(cell4);
+        }
+
+        private void AddServicesTableRow(PdfPTable table, string col1, string col2, string col3, string col4, Font font)
+        {
+            PdfPCell cell1 = new PdfPCell(new Phrase(col1, font));
+            PdfPCell cell2 = new PdfPCell(new Phrase(col2, font));
+            PdfPCell cell3 = new PdfPCell(new Phrase(col3, font));
+            PdfPCell cell4 = new PdfPCell(new Phrase(col4, font));
+
+            cell1.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell2.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell3.HorizontalAlignment = Element.ALIGN_CENTER;
+            cell4.HorizontalAlignment = Element.ALIGN_RIGHT;
+
+            cell1.BorderWidth = 0.5f;
+            cell2.BorderWidth = 0.5f;
+            cell3.BorderWidth = 0.5f;
+            cell4.BorderWidth = 0.5f;
+
+            cell1.Padding = 5;
+            cell2.Padding = 5;
+            cell3.Padding = 5;
+            cell4.Padding = 5;
+
+            table.AddCell(cell1);
+            table.AddCell(cell2);
+            table.AddCell(cell3);
+            table.AddCell(cell4);
         }
     }
 }

@@ -117,6 +117,9 @@
 	  <MauiXaml Update="Views\ReportsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ServiceContractsModal\ServiceContractsOrderModal.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ServiceContractsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

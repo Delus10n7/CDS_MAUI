@@ -1,6 +1,7 @@
 ﻿using CDS_DAL.Context;
 using CDS_DomainModel.Entities;
 using CDS_Interfaces.Repository;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace CDS_DAL.RepositorySQL
         private DriveTypeRepositorySQL driveTypeRepository;
         private OrderStatusRepositorySQL orderStatusRepository;
         private AdditionalServiceRepositorySQL additionalServiceRepository;
+        private SelectedServiceRepositorySQL selectedServiceRepository;
 
         public DbReposSQL(SqlDbContext context)
         {
@@ -192,6 +194,16 @@ namespace CDS_DAL.RepositorySQL
                 if (additionalServiceRepository == null)
                     additionalServiceRepository = new AdditionalServiceRepositorySQL(db);
                 return additionalServiceRepository;
+            }
+        }
+
+        public IRepository<SelectedService> SelectedServices
+        {
+            get
+            {
+                if (selectedServiceRepository == null)
+                    selectedServiceRepository = new SelectedServiceRepositorySQL(db);
+                return selectedServiceRepository;
             }
         }
 

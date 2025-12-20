@@ -47,6 +47,17 @@ namespace CDS_BLL.Service
             });
             Save();
         }
+        public void CreateSelectedService(SelectedServiceDTO s)
+        {
+            db.SelectedServices.Create(new SelectedService
+            {
+                ServiceContractId = s.ServiceContractId,
+                AdditionalServiceId = s.AdditionalServiceId,
+                Quantity = s.Quantity,
+                TotalPrice = s.TotalPrice
+            });
+            Save();
+        }
         public void UpdateServiceContract(ServiceContractDTO s)
         {
             var serviceContract = db.ServiceContracts.GetItem(s.Id);
