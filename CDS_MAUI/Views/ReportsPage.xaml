@@ -368,6 +368,14 @@
                     </Border>
                 </VerticalStackLayout>
             </Border>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                   IsRunning="{Binding IsBusy}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HeightRequest="50"
+                   WidthRequest="50"/>
         </VerticalStackLayout>
     </ScrollView>
 

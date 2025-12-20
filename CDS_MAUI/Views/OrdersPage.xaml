@@ -254,13 +254,6 @@
                                VerticalOptions="Center"
                                HeightRequest="50"
                                WidthRequest="50"/>
-
-            <!-- Сообщение об ошибке -->
-            <Label Text="{Binding ErrorMessage}"
-                   IsVisible="{Binding HasError}"
-                   TextColor="Red"
-                   HorizontalOptions="Center"
-                   Margin="10"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

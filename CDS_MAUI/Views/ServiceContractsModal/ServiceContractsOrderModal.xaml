@@ -271,6 +271,15 @@
                         Command="{Binding MakeServiceContractOrderCommand}"
                         IsEnabled="True"/>
             </VerticalStackLayout>
+
+            <!-- Индикатор загрузки -->
+            <ActivityIndicator Grid.RowSpan="3"
+                   IsVisible="{Binding IsBusy}"
+                   IsRunning="{Binding IsBusy}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HeightRequest="50"
+                   WidthRequest="50"/>
         </Grid>
     </ScrollView>
 </ContentPage>
