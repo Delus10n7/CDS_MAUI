@@ -43,7 +43,7 @@
                    TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
             <!-- Детали заказа -->
-            <VerticalStackLayout Spacing="20" Margin="20">
+            <VerticalStackLayout Grid.Row="2" Spacing="20" Margin="20">
 
                 <Grid ColumnDefinitions="*, *">
                     <Label Text="VIN:"
@@ -101,8 +101,7 @@
                            TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                     
                     <Label Grid.Column="1"
-                           Text="{Binding Order.FormattedPrice}"
-                           TextColor="{StaticResource Success}"/>
+                           Text="{Binding Order.FormattedPrice}"/>
                 </Grid>
             </VerticalStackLayout>
 

@@ -48,7 +48,7 @@ public partial class OrderDetailsViewModel : BaseViewModel
 
     partial void OnOrderChanged(OrderModel value)
     {
-        SelectedOrderStatus = Order.Status;
+        SelectedOrderStatus = value.Status;
     }
 
     [RelayCommand]
