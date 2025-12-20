@@ -22,10 +22,12 @@ public partial class OrderDetailsViewModel : BaseViewModel
 
     // === СЕРВИСЫ ===
     IOrderService _orderService;
+    ICarService _carService;
 
-    public OrderDetailsViewModel(IOrderService orderService)
+    public OrderDetailsViewModel(IOrderService orderService, ICarService carService)
     {
         _orderService = orderService;
+        _carService = carService;
 
         Title = "Детали заказа";
         InitializeOrderStatuses();
@@ -39,7 +41,8 @@ public partial class OrderDetailsViewModel : BaseViewModel
 
         foreach (var orderStatus in _orderStatusDTOs)
         {
-            OrderStatuses.Add(orderStatus.StatusName);
+            if (orderStatus.StatusName != "Отменен")
+                OrderStatuses.Add(orderStatus.StatusName);
         }
     }
 
@@ -74,6 +77,45 @@ public partial class OrderDetailsViewModel : BaseViewModel
                 _orderService.UpdateOrder(orderDTO);
 
                 await Shell.Current.DisplayAlert("Успех!", $"Заказ на {Order.Brand} {Order.Model} успешно отредактирован", "OK");
+
+                await CloseModal();
+            }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task CancelOrder()
+    {
+        if (Order == null) return;
+
+        IsBusy = true;
+
+        try
+        {
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Отменение заказа",
+                $"Вы хотите отменить заказ на {Order.Brand} {Order.Model}?",
+                "Да",
+                "Отмена"
+            );
+
+            if (confirm)
+            {
+                // Логика отмены заказа
+
+                OrderDTO orderDTO = _orderService.GetOrder(Order.Id);
+                orderDTO.StatusId = 4; // Отменен
+                _orderService.UpdateOrder(orderDTO);
+
+                CarDTO carDTO = _carService.GetCar((int)orderDTO.CarId);
+                carDTO.AvailabilityId = 1; // В наличии
+                _carService.UpdateCar(carDTO);
+
+                await Shell.Current.DisplayAlert("Успех!", $"Заказ на {Order.Brand} {Order.Model} успешно отменен", "OK");
 
                 await CloseModal();
             }

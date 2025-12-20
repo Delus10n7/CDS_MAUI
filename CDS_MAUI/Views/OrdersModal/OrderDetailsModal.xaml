@@ -114,16 +114,29 @@
 
                 <Label Text="{Binding Order.FormattedSalePrice}"
                        FontSize="28"
-                       FontAttributes="Bold"/>
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
 
-                <Button Text="Изменить заказ"
-                        CornerRadius="10"
-                        HeightRequest="50"
-                        WidthRequest="220"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Command="{Binding EditOrderCommand}"
-                        IsEnabled="{Binding IsNotBusy}"/>
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                    <Button Grid.Column="0"
+                            Text="Отменить заказ"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            WidthRequest="220"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Command="{Binding CancelOrderCommand}"/>
+
+                    <Button Grid.Column="1"
+                            Text="Изменить заказ"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            WidthRequest="220"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Command="{Binding EditOrderCommand}"
+                            IsEnabled="{Binding IsNotBusy}"/>
+                </Grid>
             </VerticalStackLayout>
 
             <!-- Индикатор загрузки -->
