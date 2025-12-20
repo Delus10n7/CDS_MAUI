@@ -435,6 +435,8 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                     await Shell.Current.DisplayAlert("Успех!", $"Заказ на сумму {SalePriceFormatted} успешно создан\n" +
                         $"PDF договор сохранен в папку {SelectedOutputFolderPath}", "OK");
 
+                    await OpenGeneratedPdf(GeneratedContractFilePath);
+
                     await CloseModal();
                 }
             }
@@ -513,6 +515,36 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
             var folder = await folderPicker.PickSingleFolderAsync();
             return folder?.Path;
         }
-        #endif
+#endif
+
+        public async Task OpenGeneratedPdf(string filePath)
+        {
+            try
+            {
+                // Проверяем существование файла
+                if (!File.Exists(filePath))
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Ошибка",
+                        $"Файл не найден:\n{filePath}",
+                        "OK");
+                    return;
+                }
+
+                // Открываем файл с помощью Launcher
+                await Launcher.Default.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile(filePath),
+                    Title = "Открыть PDF"
+                });
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Ошибка открытия",
+                    $"Не удалось открыть файл: {ex.Message}",
+                    "OK");
+            }
+        }
     }
 }

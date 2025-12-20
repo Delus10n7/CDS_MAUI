@@ -241,7 +241,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
         {
             _allServiceContracts.Clear();
 
-            List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts().OrderByDescending(i => i.SaleDate).ToList();
+            List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts().OrderByDescending(i => i.SaleDate).OrderByDescending(i => i.Id).ToList();
 
             foreach (var contract in serviceContractDTOs)
             {
