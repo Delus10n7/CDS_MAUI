@@ -366,7 +366,8 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             if (string.IsNullOrEmpty(AdditionalServicePeriodOrdersCount) && string.IsNullOrEmpty(AdditionalServicePeriodOrdersSum))
             {
                 List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts()
-                    .Where(s => s.SaleDate >= DateOnly.FromDateTime(AdditionalServicePeriodFromDate) &&
+                    .Where(s => s.ContractStatus != "Отменен" &&
+                                s.SaleDate >= DateOnly.FromDateTime(AdditionalServicePeriodFromDate) &&
                                 s.SaleDate <= DateOnly.FromDateTime(AdditionalServicePeriodToDate))
                     .ToList();
 
@@ -407,7 +408,7 @@ namespace CDS_MAUI.ViewModels.ReportsVM
                 ManagerDTO m = _userService.GetAllManagers().FirstOrDefault(m => m.FullName == SelectedAdditionalServiceManager);
 
                 List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts()
-                    .Where(s => s.ManagerId == m.Id)
+                    .Where(s => s.ContractStatus != "Отменен" && s.ManagerId == m.Id)
                     .ToList();
 
                 int ordersCount = 0;
@@ -449,7 +450,7 @@ namespace CDS_MAUI.ViewModels.ReportsVM
             {
                 AdditionalServiceDTO a = _serviceContractsService.GetAllAdditionalServices().FirstOrDefault(a => a.ServiceName == SelectedAdditionalService);
 
-                List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts();
+                List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts().Where(i => i.ContractStatus != "Отменен").ToList();
                 
                 List<int> contractIds = new List<int>();
                 foreach(var contract in serviceContractDTOs)
