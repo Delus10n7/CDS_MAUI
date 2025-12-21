@@ -14,6 +14,7 @@ namespace CDS_Interfaces.DTO
         public int ManagerId { get; set; }
         public decimal? TotalPrice { get; set; }
         public DateOnly? SaleDate { get; set; }
+        public string? ContractStatus { get; set; }
 
         // Навигационные свойства
         public string? CustomerName { get; set; }
@@ -29,6 +30,7 @@ namespace CDS_Interfaces.DTO
             ManagerId = s.ManagerId;
             TotalPrice = s.TotalPrice;
             SaleDate = s.SaleDate;
+            ContractStatus = s.ContractStatus;
 
             // Навигационные свойства
             CustomerName = s.Client.FullName;

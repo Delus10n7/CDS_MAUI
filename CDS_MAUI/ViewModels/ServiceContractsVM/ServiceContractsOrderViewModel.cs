@@ -405,6 +405,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                     serviceContractDTO.TotalPrice = _salePrice;
                     var date = DateOnly.FromDateTime(DateTime.Now);
                     serviceContractDTO.SaleDate = date;
+                    serviceContractDTO.ContractStatus = "В ожидании";
 
                     _serviceContractsService.CreateServiceContract(serviceContractDTO);
 

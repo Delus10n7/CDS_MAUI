@@ -395,6 +395,8 @@ public partial class SqlDbContext : DbContext
 
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
 
+            entity.Property(e => e.ContractStatus).HasMaxLength(100);
+
             entity.HasOne(d => d.Client).WithMany(p => p.ServiceContractsClient)
                 .HasForeignKey(d => d.ClientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

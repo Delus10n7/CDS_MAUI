@@ -15,6 +15,7 @@ namespace CDS_MAUI.Models
         public string? ManagerName { get; set; }
         public decimal? Price { get; set; }
         public string? Date { get; set; }
+        public string? Status { get; set; }
         public ObservableCollection<AdditionalServiceItemModel> AdditionalServiceItems { get; set; } = new ObservableCollection<AdditionalServiceItemModel>();
 
         public string? FormattedPrice => Price?.ToString("N0") + " руб." ?? string.Empty;
@@ -30,6 +31,7 @@ namespace CDS_MAUI.Models
             ManagerName = sc.ManagerName;
             Price = sc.TotalPrice;
             Date = sc.SaleDate.ToString();
+            Status = sc.ContractStatus;
 
             foreach(var ss in sc.SelectedServices)
             {

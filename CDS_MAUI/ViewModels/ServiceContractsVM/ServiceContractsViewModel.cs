@@ -235,13 +235,53 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
             }
         }
 
+        [RelayCommand]
+        private async Task ChangeContractStatus(ServiceContractModel contract)
+        {
+            if (contract == null) return;
+
+            string action = await Shell.Current.DisplayActionSheet(
+                "Изменить статус заказа",
+                "Закрыть",
+                null,
+                "Выполнен",
+                "В ожидании",
+                "Отменен");
+
+            if (string.IsNullOrEmpty(action) || action == "Закрыть")
+            {
+                return;
+            }
+
+            if (action == "Отменен")
+            {
+                bool confirm = await Shell.Current.DisplayAlert(
+                "Подтверждение отмены",
+                "Вы уверены, что хотите отменить заказ?",
+                "Да, отменить",
+                "Нет");
+
+                if (!confirm)
+                    return;
+            }
+
+            contract.Status = action;
+
+            ServiceContractDTO contractDTO = _serviceContractsService.GetServiceContract(contract.Id);
+            contractDTO.ContractStatus = contract.Status;
+            _serviceContractsService.UpdateServiceContract(contractDTO);
+
+            Refresh();
+        }
+
         // === ЗАГРУЗКА ДАННЫХ ===
 
         private void LoadAllServiceContracts()
         {
             _allServiceContracts.Clear();
 
-            List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts().OrderByDescending(i => i.SaleDate).OrderByDescending(i => i.Id).ToList();
+            List<ServiceContractDTO> serviceContractDTOs = _serviceContractsService.GetAllServiceContracts().Where(i => i.ContractStatus != "Отменен")
+                .OrderByDescending(i => i.SaleDate).OrderByDescending(i => i.Id).ToList();
 
             foreach (var contract in serviceContractDTOs)
             {

@@ -43,7 +43,8 @@ namespace CDS_BLL.Service
                 ClientId = s.ClientId,
                 ManagerId = s.ManagerId,
                 TotalPrice = s.TotalPrice,
-                SaleDate = s.SaleDate
+                SaleDate = s.SaleDate,
+                ContractStatus = s.ContractStatus
             });
             Save();
         }
@@ -71,6 +72,7 @@ namespace CDS_BLL.Service
             serviceContract.ManagerId = s.ManagerId;
             serviceContract.TotalPrice = s.TotalPrice;
             serviceContract.SaleDate = s.SaleDate;
+            serviceContract.ContractStatus = s.ContractStatus;
 
             db.ServiceContracts.Update(serviceContract);
             Save();

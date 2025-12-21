@@ -15,6 +15,8 @@ public partial class ServiceContracts
 
     public DateOnly? SaleDate { get; set; }
 
+    public string? ContractStatus { get; set; }
+
     public virtual UserBase Client { get; set; } = null!;
 
     public virtual UserBase Manager { get; set; } = null!;
