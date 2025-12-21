@@ -61,6 +61,57 @@ public partial class SqlDbContext : DbContext
     public virtual DbSet<Manager> Managers { get; set; }
     public virtual DbSet<Administrator> Administrators { get; set; }
 
+    // Инициализация БД
+    public async Task EnsureDatabaseCreatedAsync(CancellationToken cancellationToken = default)
+    {
+        await Database.EnsureCreatedAsync(cancellationToken);
+    }
+
+    public async Task<bool> DatabaseExistsAsync(CancellationToken cancellationToken = default)
+    {
+        return await Database.CanConnectAsync(cancellationToken);
+    }
+
+    public async Task<bool> TablesExistAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Проверяем наличие хотя бы одной таблицы
+            var result = await Database.ExecuteSqlRawAsync(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES",
+                cancellationToken);
+
+            return result > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task InitializeDatabaseAsync(CancellationToken cancellationToken = default)
+    {
+        // Проверяем существование базы данных
+        var dbExists = await DatabaseExistsAsync(cancellationToken);
+
+        if (!dbExists)
+        {
+            // Если базы нет - просто создаем
+            await Database.EnsureCreatedAsync(cancellationToken);
+        }
+        else
+        {
+            // Если база есть - проверяем наличие таблиц
+            var tablesExist = await TablesExistAsync(cancellationToken);
+
+            if (!tablesExist)
+            {
+                // Если таблиц нет - создаем их
+                await Database.EnsureCreatedAsync(cancellationToken);
+            }
+        }
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserBase>()

@@ -53,6 +53,7 @@ namespace CDS_MAUI
             builder.Services.AddScoped<IReportService, ReportService>();
             builder.Services.AddScoped<IServiceContractsService, ServiceContractsService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 
             // Регистрация ViewModels
             builder.Services.AddTransient<CarsViewModel>();
@@ -74,7 +75,11 @@ namespace CDS_MAUI
             builder.Services.AddTransient<ServiceContractsPage>();
             builder.Services.AddTransient<ServiceContractsOrderModal>();
 
-            return builder.Build();
+            var app = builder.Build();
+
+            InitializeDatabase(app);
+
+            return app;
         }
 
         private static IConfiguration LoadConfiguration()
@@ -98,6 +103,24 @@ namespace CDS_MAUI
             return new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
+        }
+
+        private static void InitializeDatabase(MauiApp app)
+        {
+            // Используем Task.Run, чтобы не блокировать UI поток
+            Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var databaseService = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
+                    await databaseService.InitializeDatabaseAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Ошибка инициализации БД: {ex.Message}");
+                }
+            }).Wait();
         }
     }
 }
