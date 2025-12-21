@@ -57,7 +57,7 @@
                     <VerticalStackLayout HorizontalOptions="Center"
                                          VerticalOptions="Center"
                                          Spacing="10">
-                        <Image Source="dotnet_bot.png"
+                        <Image Source="car_photo_placeholder.png"
                                HeightRequest="200"
                                WidthRequest="200"
                                Aspect="AspectFit"/>
