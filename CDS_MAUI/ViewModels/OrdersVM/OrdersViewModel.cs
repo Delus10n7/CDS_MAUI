@@ -175,7 +175,6 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         {
             FilterOrders();
             LoadCurrentPageOrders();
-            IsFilterPanelVisible = false;
         }
 
         [RelayCommand]
@@ -301,7 +300,8 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
         private void FilterOrders()
         {
-            // Фильтрация заказов
+            bool flag = FilterSubmit();
+            if (!flag) return;
 
             var filtered = _allOrders.ToList();
 
@@ -364,6 +364,35 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
             if (Orders.Count > 5) HasFooterPageButtons = true;
             else HasFooterPageButtons = false;
+        }
+
+        private bool FilterSubmit()
+        {
+            if (!string.IsNullOrEmpty(PriceFrom))
+            {
+                if (!decimal.TryParse(PriceFrom, out var price))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Цена должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(PriceTo))
+            {
+                if (!decimal.TryParse(PriceTo, out var price))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Цена должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

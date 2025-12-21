@@ -252,8 +252,11 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
         }
 
         [RelayCommand]
-        private void SelectNewCustomer()
+        private async Task SelectNewCustomer()
         {
+            bool flag = await NewCustomerSubmit();
+            if (!flag) return;
+
             NewCustomer = false;
             OldCustomer = false;
 
@@ -270,7 +273,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                 {
                     if (c.PhoneNumber == CustomerPhone)
                     {
-                        Shell.Current.DisplayAlert(
+                        await Shell.Current.DisplayAlert(
                             "Клиент уже существует!",
                             $"Клиент с номером телефона {CustomerPhone} уже существует",
                             "ОК");
@@ -278,7 +281,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                     }
                     if (c.Email == CustomerEmail)
                     {
-                        Shell.Current.DisplayAlert(
+                        await Shell.Current.DisplayAlert(
                             "Клиент уже существует!",
                             $"Клиент с email {CustomerEmail} уже существует",
                             "ОК");
@@ -302,7 +305,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                 newCustomer = new CustomerModel(newCustomerDTO);
                 _selectedCustomerModel = newCustomer;
 
-                Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlert(
                             "Клиент успешно создан!",
                             $"Клиент {CustomerName} успешно создан",
                             "ОК");
@@ -495,6 +498,59 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не добавлены дополнительные услуги", "ОК");
                 return false;
             }
+            return true;
+        }
+
+        private async Task<bool> NewCustomerSubmit()
+        {
+            if (string.IsNullOrEmpty(CustomerName))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введено ФИО клиента", "ОК");
+                return false;
+            }
+            else if (!CustomerName.All(char.IsLetter))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"ФИО может состоять только из букв", "ОК");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(CustomerPhone))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен телефон клиента", "ОК");
+                return false;
+            }
+            else if (!CustomerPhone.StartsWith("+7"))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Телефонный номер должен начинаться на +7", "ОК");
+                return false;
+            }
+            else if (!long.TryParse(CustomerPhone.Substring(2), out long num))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Телефонный номер должен состоять из цифр", "ОК");
+                return false;
+            }
+            else if (CustomerPhone.Substring(2).Length != 10)
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Телефонный номер должен состоять из 10 цифр после +7. Введено: {CustomerPhone.Substring(2).Length}", "ОК");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(CustomerEmail))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Не введен email клиента", "ОК");
+                return false;
+            }
+            else if (!CustomerEmail.Contains('@'))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Email должен содеражть знак '@'", "ОК");
+                return false;
+            }
+            else if (!CustomerEmail.EndsWith(".com") && !CustomerEmail.EndsWith(".ru"))
+            {
+                await Shell.Current.DisplayAlert("Ошибка!", $"Email должен заканчиваться на '.com' или '.ru'", "ОК");
+                return false;
+            }
+
             return true;
         }
 

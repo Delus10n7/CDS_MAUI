@@ -136,7 +136,8 @@
                             <Label Text="ФИО клиента"/>
 
                             <Entry Placeholder="Введите ФИО клиента"
-                                   Text="{Binding CustomerName}"/>
+                                   Text="{Binding CustomerName}"
+                                   Keyboard="Telephone"/>
 
                             <Label Text="Номер телефона клиента"/>
 
@@ -146,7 +147,8 @@
                             <Label Text="Email клиента"/>
 
                             <Entry Placeholder="Введите Email клиента"
-                                   Text="{Binding CustomerEmail}"/>
+                                   Text="{Binding CustomerEmail}"
+                                   Keyboard="Email"/>
 
                             <Button Text="Создать нового клиента"
                                     FontAttributes="Bold"
@@ -213,14 +215,16 @@
                                     <Label Text="Пробег"/>
 
                                     <Entry Placeholder="Введите пробег авто"
-                                           Text="{Binding TradeInCarMileage}"/>
+                                           Text="{Binding TradeInCarMileage}"
+                                           Keyboard="Numeric"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="1" Spacing="10">
                                     <Label Text="Год выпуска"/>
 
                                     <Entry Placeholder="Введите год выпуска авто"
-                                           Text="{Binding TradeInCarYear}"/>
+                                           Text="{Binding TradeInCarYear}"
+                                           Keyboard="Numeric"/>
                                 </VerticalStackLayout>
                             </Grid>
 
@@ -229,14 +233,16 @@
                                     <Label Text="Объем двигателя"/>
 
                                     <Entry Placeholder="Введите объем двигателя авто"
-                                           Text="{Binding TradeInCarEngineVolume}"/>
+                                           Text="{Binding TradeInCarEngineVolume}"
+                                           Keyboard="Numeric"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="1" Spacing="10">
                                     <Label Text="Мощность двигателя"/>
 
                                     <Entry Placeholder="Введите мощность двигателя авто"
-                                           Text="{Binding TradeInCarEnginePower}"/>
+                                           Text="{Binding TradeInCarEnginePower}"
+                                           Keyboard="Numeric"/>
                                 </VerticalStackLayout>
                             </Grid>
 
@@ -266,14 +272,16 @@
                                 <Label Text="Цвет"/>
 
                                 <Entry Placeholder="Введите цвет авто"
-                                       Text="{Binding TradeInCarColor}"/>
+                                       Text="{Binding TradeInCarColor}"
+                                       Keyboard="Text"/>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Оценочная цена авто"/>
 
                                 <Entry Placeholder="Введите стоимость авто"
-                                       Text="{Binding TradeInCarPrice}"/>
+                                       Text="{Binding TradeInCarPrice}"
+                                       Keyboard="Numeric"/>
                             </VerticalStackLayout>
 
                             <Button Text="Добавить авто в трейд-ин"

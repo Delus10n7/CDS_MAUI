@@ -155,7 +155,6 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
         {
             FilterServiceContracts();
             LoadCurrentPageServiceContracts();
-            IsFilterPanelVisible = false;
         }
 
         [RelayCommand]
@@ -293,6 +292,9 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
 
         private void FilterServiceContracts()
         {
+            bool flag = FilterSubmit();
+            if (!flag) return;
+
             var filtered = _allServiceContracts.ToList();
 
             if (SelectedAdditionalService != "Любая" && !string.IsNullOrEmpty(SelectedAdditionalService))
@@ -363,6 +365,35 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
 
             if (ServiceContracts.Count > 5) HasFooterPageButtons = true;
             else HasFooterPageButtons = false;
+        }
+
+        private bool FilterSubmit()
+        {
+            if (!string.IsNullOrEmpty(PriceFrom))
+            {
+                if (!decimal.TryParse(PriceFrom, out var price))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Цена должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(PriceTo))
+            {
+                if (!decimal.TryParse(PriceTo, out var price))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Цена должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

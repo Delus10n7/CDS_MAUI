@@ -219,7 +219,6 @@ namespace CDS_MAUI.ViewModels.CarsVM
         {
             FilterCars();
             LoadCurrentPageCars();
-            IsFilterPanelVisible = false;
         }
 
         [RelayCommand]
@@ -313,6 +312,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
         {
             Models.Clear();
             Models.Add("Любая");
+            SelectedModel = Models[0];
 
             if (brand == "Любой" || string.IsNullOrEmpty(brand))
                 return;
@@ -352,6 +352,9 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
         private void FilterCars()
         {
+            bool flag = FilterSubmit();
+            if (!flag) return;
+
             var filtered = _allCars.ToList();
 
             // Фильтрация по марке
@@ -380,10 +383,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             // Фильтрация по объему двигателя
             if (!string.IsNullOrEmpty(EngineVolumeFrom))
-                filtered = filtered.Where(c => c.EngineVolume >= Decimal.Parse(EngineVolumeFrom)).ToList();
+                filtered = filtered.Where(c => c.EngineVolume >= Convert.ToDecimal(EngineVolumeFrom)).ToList();
 
             if (!string.IsNullOrEmpty(EngineVolumeTo))
-                filtered = filtered.Where(c => c.EngineVolume <= Decimal.Parse(EngineVolumeTo)).ToList();
+                filtered = filtered.Where(c => c.EngineVolume <= Convert.ToDecimal(EngineVolumeTo)).ToList();
 
             // Фильтрация по мощности двигателя
             if (!string.IsNullOrEmpty(EnginePowerFrom))
@@ -432,6 +435,61 @@ namespace CDS_MAUI.ViewModels.CarsVM
 
             if (Cars.Count >= 5) HasFooterPageButtons = true;
             else HasFooterPageButtons = false;
+        }
+
+        private bool FilterSubmit()
+        {
+            if (!string.IsNullOrEmpty(EngineVolumeFrom))
+            {
+                EngineVolumeFrom = EngineVolumeFrom.Replace('.', ',');
+                if (!decimal.TryParse(EngineVolumeFrom, out decimal volume))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Объем двигателя должен быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(EngineVolumeTo))
+            {
+                EngineVolumeTo = EngineVolumeTo.Replace('.', ',');
+                if (!decimal.TryParse(EngineVolumeTo, out decimal volume))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Объем двигателя должен быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(EnginePowerFrom))
+            {
+                if (!int.TryParse(EnginePowerFrom, out int power))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Мощность двигателя должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(EnginePowerTo))
+            {
+                if (!int.TryParse(EnginePowerTo, out int power))
+                {
+                    Shell.Current.DisplayAlert(
+                        "Ошибка",
+                        "Мощность двигателя должена быть числом",
+                        "ОК");
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
