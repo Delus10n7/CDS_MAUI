@@ -324,10 +324,10 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
 
             // Фильтрация по сумме заказа
             if (!string.IsNullOrEmpty(PriceFrom))
-                filtered = filtered.Where(o => o.TotalPrice >= Decimal.Parse(PriceFrom)).ToList();
+                filtered = filtered.Where(o => o.TotalPrice >= Convert.ToDecimal(PriceFrom)).ToList();
 
             if (!string.IsNullOrEmpty(PriceTo))
-                filtered = filtered.Where(o => o.TotalPrice <= Decimal.Parse(PriceTo)).ToList();
+                filtered = filtered.Where(o => o.TotalPrice <= Convert.ToDecimal(PriceTo)).ToList();
 
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
@@ -371,6 +371,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
         {
             if (!string.IsNullOrEmpty(PriceFrom))
             {
+                PriceFrom = PriceFrom.Replace('.', ',');
                 if (!decimal.TryParse(PriceFrom, out var price))
                 {
                     Shell.Current.DisplayAlert(
@@ -383,6 +384,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
 
             if (!string.IsNullOrEmpty(PriceTo))
             {
+                PriceTo = PriceTo.Replace('.', ',');
                 if (!decimal.TryParse(PriceTo, out var price))
                 {
                     Shell.Current.DisplayAlert(

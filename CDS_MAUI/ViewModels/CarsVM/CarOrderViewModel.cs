@@ -44,6 +44,12 @@ namespace CDS_MAUI.ViewModels.CarsVM
         // === СКИДКА ===
 
         [ObservableProperty]
+        private ObservableCollection<DiscountModel> _executedDiscountsNames = new();
+
+        [ObservableProperty]
+        private bool _isDiscountNamesVisible = false;
+
+        [ObservableProperty]
         private string _discountPercent = "";
 
         [ObservableProperty]
@@ -569,22 +575,29 @@ namespace CDS_MAUI.ViewModels.CarsVM
             List<DiscountDTO> loyaltyDiscounts = new List<DiscountDTO>();
             List<OrderDTO> orderDTOs = new List<OrderDTO>();
             CustomerDTO customer = new CustomerDTO();
+            ExecutedDiscountsNames.Clear();
 
             foreach (var discount in discountDTOs)
             {
                 if (discount.ModelId != null && discount.ModelId == Car.ModelId 
                     && discount.DiscountPercent > discountPercent)
                 {
+                    ExecutedDiscountsNames.Add(new DiscountModel(discount.DiscountName, discount.DiscountPercent.ToString()));
+
                     discountPercent = discount.DiscountPercent;
                 }
                 else if (discount.BrandId != null && discount.BrandId == Car.BrandId 
                     && discount.DiscountPercent > discountPercent)
                 {
+                    ExecutedDiscountsNames.Add(new DiscountModel(discount.DiscountName, discount.DiscountPercent.ToString()));
+
                     discountPercent = discount.DiscountPercent;
                 }
                 else if (SelectedTradeInCar != "Нет" && !string.IsNullOrEmpty(SelectedTradeInCar)
                     && discount.DiscountTypeId == 5 && discount.DiscountPercent > discountPercent)
                 {
+                    ExecutedDiscountsNames.Add(new DiscountModel(discount.DiscountName, discount.DiscountPercent.ToString()));
+
                     discountPercent = discount.DiscountPercent;
                     loyaltyDiscounts.Add(discount);
                     tradeInCarValue = Convert.ToDecimal(TradeInCarPrice);
@@ -606,6 +619,8 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     if (discount.OrdersNeeded == null) loyaltyDiscountPercent += discount.DiscountPercent;
                     else if (discount.OrdersNeeded <= orderDTOs.Count)
                     {
+                        ExecutedDiscountsNames.Add(new DiscountModel(discount.DiscountName, discount.DiscountPercent.ToString()));
+
                         loyaltyDiscountPercent += discount.DiscountPercent;
                     }
                 }
@@ -617,12 +632,11 @@ namespace CDS_MAUI.ViewModels.CarsVM
             
             if (discountPercent > 0)
             {
+                IsDiscountNamesVisible = true;
+
                 if (tradeInCarValue != (decimal)0.0)
                 {
-                    var price = Car.Price;
-                    price -= tradeInCarValue;
-
-                    var priceWithTradeIn = (price - (price * (discountPercent / 100)));
+                    var priceWithTradeIn = (Car.Price - (Car.Price * (discountPercent / 100))) - tradeInCarValue;
                     SalePriceFormatted = priceWithTradeIn?.ToString("N0") + " руб.";
 
                     _salePrice = (Car.Price - (Car.Price * (discountPercent / 100)));
@@ -632,6 +646,10 @@ namespace CDS_MAUI.ViewModels.CarsVM
                     _salePrice = (Car.Price - (Car.Price * (discountPercent / 100)));
                     SalePriceFormatted = _salePrice?.ToString("N0") + " руб.";
                 }
+            }
+            else
+            {
+                IsDiscountNamesVisible = false;
             }
         }
 
@@ -710,7 +728,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             }
             else
             {
-                TradeInCarEngineVolume.Replace('.', ',');
+                TradeInCarEngineVolume = TradeInCarEngineVolume.Replace('.', ',');
                 if (!decimal.TryParse(TradeInCarEngineVolume, out decimal engineVolume))
                 {
                     await Shell.Current.DisplayAlert("Ошибка!", $"Объем двигателя должен быть числом", "ОК");
@@ -725,7 +743,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             }
             else
             {
-                TradeInCarEnginePower.Replace('.', ',');
+                TradeInCarEnginePower = TradeInCarEnginePower.Replace('.', ',');
                 if (!int.TryParse(TradeInCarEnginePower, out int enginePower))
                 {
                     await Shell.Current.DisplayAlert("Ошибка!", $"Мощность двигателя должна быть числом", "ОК");
@@ -767,7 +785,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
             }
             else
             {
-                TradeInCarPrice.Replace('.', ',');
+                TradeInCarPrice = TradeInCarPrice.Replace('.', ',');
                 if (!decimal.TryParse(TradeInCarPrice, out decimal price))
                 {
                     await Shell.Current.DisplayAlert("Ошибка!", $"Цена должна быть числом", "ОК");

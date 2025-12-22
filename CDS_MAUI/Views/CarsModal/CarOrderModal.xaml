@@ -364,6 +364,30 @@
                                FontAttributes="Bold"/>
                     </Grid>
 
+                    <Border IsVisible="{Binding IsDiscountNamesVisible}"
+                            Padding="10"
+                            Margin="10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            StrokeThickness="2">
+
+                        <CollectionView ItemsSource="{Binding ExecutedDiscountsNames}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:DiscountModel">
+                                    <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="14"/>
+
+                                        <Label Grid.Column="1"
+                                               Text="{Binding FormattedPercent}"
+                                               FontSize="14"/>      
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+
                     <Grid ColumnDefinitions="1*, 2*" ColumnSpacing="20" IsVisible="{Binding IsTradeIn}">
                         <Label Text="Сумма по трейд-ин:"
                                FontSize="16"
