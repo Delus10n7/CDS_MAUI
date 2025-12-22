@@ -708,10 +708,14 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не введен объем двигателя авто в трейд-ин", "ОК");
                 return false;
             }
-            else if (!decimal.TryParse(TradeInCarEngineVolume, out decimal engineVolume))
+            else
             {
-                await Shell.Current.DisplayAlert("Ошибка!", $"Объем двигателя должен быть числом", "ОК"); 
-                return false;
+                TradeInCarEngineVolume.Replace('.', ',');
+                if (!decimal.TryParse(TradeInCarEngineVolume, out decimal engineVolume))
+                {
+                    await Shell.Current.DisplayAlert("Ошибка!", $"Объем двигателя должен быть числом", "ОК");
+                    return false;
+                }
             }
 
             if (string.IsNullOrEmpty(TradeInCarEnginePower))
@@ -719,10 +723,15 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не введена мощность двигателя авто в трейд-ин", "ОК");
                 return false;
             }
-            else if (!int.TryParse(TradeInCarEnginePower, out int enginePower))
+            else
             {
-                await Shell.Current.DisplayAlert("Ошибка!", $"Мощность двигателя должна быть числом", "ОК");
-                return false;
+                TradeInCarEnginePower.Replace('.', ',');
+                if (!int.TryParse(TradeInCarEnginePower, out int enginePower))
+                {
+                    await Shell.Current.DisplayAlert("Ошибка!", $"Мощность двигателя должна быть числом", "ОК");
+                    return false;
+                }
+                    
             }
 
             if (string.IsNullOrEmpty(SelectedEngineType))
@@ -756,10 +765,15 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не введена цена авто в трейд-ин", "ОК");
                 return false;
             }
-            else if (!decimal.TryParse(TradeInCarPrice, out decimal price))
+            else
             {
-                await Shell.Current.DisplayAlert("Ошибка!", $"Цена должна быть числом", "ОК");
-                return false;
+                TradeInCarPrice.Replace('.', ',');
+                if (!decimal.TryParse(TradeInCarPrice, out decimal price))
+                {
+                    await Shell.Current.DisplayAlert("Ошибка!", $"Цена должна быть числом", "ОК");
+                    return false;
+                }
+                    
             }
 
             return true;
@@ -772,7 +786,7 @@ namespace CDS_MAUI.ViewModels.CarsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не введено ФИО клиента", "ОК");
                 return false;
             }
-            else if (!CustomerName.All(char.IsLetter))
+            else if (!CustomerName.Where(c => !char.IsWhiteSpace(c)).All(char.IsLetter))
             {
                 await Shell.Current.DisplayAlert("Ошибка!", $"ФИО может состоять только из букв", "ОК");
                 return false;

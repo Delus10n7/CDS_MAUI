@@ -370,6 +370,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
         {
             if (!string.IsNullOrEmpty(PriceFrom))
             {
+                PriceFrom.Replace('.', ',');
                 if (!decimal.TryParse(PriceFrom, out var price))
                 {
                     Shell.Current.DisplayAlert(
@@ -382,6 +383,7 @@ namespace CDS_MAUI.ViewModels.OrdersVM
 
             if (!string.IsNullOrEmpty(PriceTo))
             {
+                PriceTo.Replace('.', ',');
                 if (!decimal.TryParse(PriceTo, out var price))
                 {
                     Shell.Current.DisplayAlert(

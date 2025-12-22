@@ -508,7 +508,7 @@ namespace CDS_MAUI.ViewModels.ServiceContractsVM
                 await Shell.Current.DisplayAlert("Ошибка!", $"Не введено ФИО клиента", "ОК");
                 return false;
             }
-            else if (!CustomerName.All(char.IsLetter))
+            else if (!CustomerName.Where(c => !char.IsWhiteSpace(c)).All(char.IsLetter))
             {
                 await Shell.Current.DisplayAlert("Ошибка!", $"ФИО может состоять только из букв", "ОК");
                 return false;
